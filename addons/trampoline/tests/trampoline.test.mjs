@@ -13,13 +13,13 @@ function world() {
 }
 
 /** Builds a size×size trampoline with its bed corner at 10, 64, 20. */
-function build(size, { corners = false, wool = () => "minecraft:white_wool" } = {}) {
+function build(size, { corners = false, edge = () => "minecraft:oak_planks" } = {}) {
   const w = world();
   for (let dx = -1; dx <= size; dx++) {
     for (let dz = -1; dz <= size; dz++) {
       const inside = (n) => n >= 0 && n < size;
       if (inside(dx) && inside(dz)) w.set(10 + dx, 64, 20 + dz, "minecraft:slime");
-      else if (inside(dx) || inside(dz)) w.set(10 + dx, 64, 20 + dz, wool(dx, dz));
+      else if (inside(dx) || inside(dz)) w.set(10 + dx, 64, 20 + dz, edge(dx, dz));
       else if (corners) w.set(10 + dx, 64, 20 + dz, "minecraft:oak_planks");
     }
   }
@@ -27,7 +27,7 @@ function build(size, { corners = false, wool = () => "minecraft:white_wool" } = 
 }
 
 for (const size of Object.keys(SIZES).map(Number)) {
-  test(`finds a size ${size} trampoline from the last slime or wool block placed`, () => {
+  test(`finds a size ${size} trampoline from the last slime or edge block placed`, () => {
     const w = build(size);
     const expected = { x: 10, y: 64, z: 20, size };
     assert.deepEqual(findTrampoline(w.getType, 10 + size - 1, 64, 20 + size - 1), expected); // far bed corner
@@ -40,10 +40,16 @@ test("corners can be empty or any block", () => {
   assert.equal(findTrampoline(build(3, { corners: true }).getType, 10, 64, 20)?.size, 3);
 });
 
-test("wool colours can be mixed", () => {
-  const colours = ["red", "blue", "lime", "yellow"];
-  const w = build(4, { wool: (dx, dz) => `minecraft:${colours[(dx + dz + 8) % 4]}_wool` });
+test("the edge can mix any planks and any wool", () => {
+  const edges = ["oak_planks", "cherry_planks", "red_wool", "bamboo_planks", "lime_wool", "crimson_planks"];
+  const w = build(4, { edge: (dx, dz) => `minecraft:${edges[(dx + dz + 12) % edges.length]}` });
   assert.equal(findTrampoline(w.getType, 11, 64, 21)?.size, 4);
+});
+
+test("other blocks do not count as an edge", () => {
+  for (const block of ["minecraft:cobblestone", "minecraft:oak_log", "minecraft:oak_slab", "minecraft:dirt"]) {
+    assert.equal(findTrampoline(build(3, { edge: () => block }).getType, 10, 64, 20), undefined, block);
+  }
 });
 
 test("a missing edge block means no trampoline yet", () => {
@@ -61,7 +67,7 @@ test("a bed with a non-slime block is not a trampoline", () => {
 test("an edge one block higher or lower does not count", () => {
   const w = build(2);
   w.delete(9, 64, 20);
-  w.set(9, 65, 20, "minecraft:white_wool");
+  w.set(9, 65, 20, "minecraft:oak_planks");
   assert.equal(findTrampoline(w.getType, 10, 64, 20), undefined);
 });
 
@@ -103,6 +109,6 @@ test("the starter chest holds enough to build the biggest trampoline", () => {
   const kit = starterKit();
   const count = (match) => kit.filter(({ item }) => match(item)).reduce((n, { amount }) => n + amount, 0);
   assert.equal(count((item) => item === "minecraft:slime"), biggest * biggest);
-  assert.ok(count((item) => item.endsWith("_wool")) >= 4 * biggest);
+  assert.ok(count((item) => item.endsWith("_planks")) >= 4 * biggest);
   assert.ok(kit.every(({ amount }) => amount <= 64), "each slot holds at most one stack");
 });

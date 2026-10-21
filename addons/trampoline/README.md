@@ -10,7 +10,7 @@ Bigger trampolines bounce you higher.
 The first time you join a world with this mod, a chest appears next to you with:
 
 - 25 slime blocks
-- 20 wool, in red, yellow, lime, and light blue
+- 20 planks: oak, birch, spruce, and dark oak
 - an iron shovel to dig the hole
 
 That's enough for the biggest 5×5 trampoline.
@@ -21,13 +21,14 @@ If there's no flat spot next to you, the blocks go straight into your inventory.
 
 1. Dig a hole one block deep. For a 3×3 trampoline, make it 5×5.
 2. Fill the middle with **slime blocks** in a square.
-3. Put **wool** (any colour, mix them!) all around the slime.
-   The four corners can be anything: wool, dirt, or nothing.
+3. Put **planks** all around the slime. Any wood works, and you can mix them.
+   Want it colourful? **Wool** works too, in any colour, mixed with planks or not.
+   The four corners can be anything: planks, dirt, or nothing.
 4. When you place the last block, you hear a ding and see sparkles. It's ready!
 
 ```text
     . W W W .        S = slime block
-    W S S S W        W = wool, any colour
+    W S S S W        W = planks (any wood) or wool
     W S S S W        . = corner, anything
     W S S S W
     . W W W .
@@ -46,5 +47,5 @@ If there's no flat spot next to you, the blocks go straight into your inventory.
 
 - Jump on and you keep bouncing. **Sneak** to stop.
 - No fall damage for 10 seconds after a bounce, even if you fly off the side.
-- Break any slime or wool block and it stops being a trampoline. Put it back to rebuild it.
+- Break any slime or edge block and it stops being a trampoline. Put it back to rebuild it.
 - Want different heights? Change `strength` in [`behavior_pack/scripts/trampoline.js`](./behavior_pack/scripts/trampoline.js), then run `npm test` to see the new heights.

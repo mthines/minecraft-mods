@@ -37,7 +37,7 @@ function typeAt(dimension) {
   };
 }
 
-// Placing the last slime or wool block turns the pattern into a trampoline, like lighting a portal.
+// Placing the last slime or edge block turns the pattern into a trampoline, like lighting a portal.
 world.afterEvents.playerPlaceBlock.subscribe(({ block, player }) => {
   if (!isBed(block.typeId) && !isEdge(block.typeId)) return;
 
@@ -66,7 +66,7 @@ world.afterEvents.playerPlaceBlock.subscribe(({ block, player }) => {
   );
 });
 
-// Breaking any slime or wool block of a trampoline turns it back into normal blocks.
+// Breaking any slime or edge block of a trampoline turns it back into normal blocks.
 world.afterEvents.playerBreakBlock.subscribe(({ block, player }) => {
   const { x, y, z } = block.location;
   const dimension = block.dimension.id;

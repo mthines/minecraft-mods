@@ -2,7 +2,7 @@
   "format_version": 2,
   "header": {
     "name": "Trampolines",
-    "description": "Build a slime and wool pattern to make a trampoline. Bigger ones bounce higher.",
+    "description": "Build a slime and planks pattern to make a trampoline. Bigger ones bounce higher.",
     "uuid": "433e9a14-474f-46d7-9b5a-29b509232650",
     "version": [1, 0, 0],
     "min_engine_version": [1, 21, 80]

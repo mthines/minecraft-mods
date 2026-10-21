@@ -1,9 +1,9 @@
 // The trampoline rules. Nothing in here talks to Minecraft, so tests can run it on a computer.
 //
-// A trampoline is a square of slime blocks with a ring of wool around it, all on the same level:
+// A trampoline is a square of slime blocks with a wooden edge around it, all on the same level:
 //
 //     . W W W .        S = slime block (the bouncy bed)
-//     W S S S W        W = wool, any colour (the padded edge)
+//     W S S S W        W = planks of any wood, or wool of any colour (the edge)
 //     W S S S W        . = corners, can be anything
 //     W S S S W
 //     . W W W .
@@ -26,7 +26,8 @@ const SIZES_BIGGEST_FIRST = Object.keys(SIZES).map(Number).sort((a, b) => b - a)
 export const isBed = (typeId) => typeId === "minecraft:slime";
 
 /** @param {string | undefined} typeId */
-export const isEdge = (typeId) => typeId?.endsWith("_wool") ?? false;
+// Planks are easy to get from any tree. Wool still works for colourful trampolines.
+export const isEdge = (typeId) => (typeId?.endsWith("_planks") || typeId?.endsWith("_wool")) ?? false;
 
 /**
  * @typedef {(x: number, y: number, z: number) => string | undefined} GetType
@@ -105,18 +106,18 @@ export function isOverBed(t, x, z) {
   return x >= t.x && x < t.x + t.size && z >= t.z && z < t.z + t.size;
 }
 
-const WOOL_COLOURS = ["red", "yellow", "lime", "light_blue"];
+const WOODS = ["oak", "birch", "spruce", "dark_oak"];
 
 /**
- * What's in the starter chest: enough slime and wool for the biggest trampoline, and a shovel to dig the hole.
+ * What's in the starter chest: enough slime and planks for the biggest trampoline, and a shovel to dig the hole.
  * @returns {{ item: string, amount: number }[]}
  */
 export function starterKit() {
   const biggest = Math.max(...Object.keys(SIZES).map(Number));
   return [
     { item: "minecraft:slime", amount: biggest * biggest },
-    // One colour per side of the edge.
-    ...WOOL_COLOURS.map((colour) => ({ item: `minecraft:${colour}_wool`, amount: biggest })),
+    // One kind of wood per side of the edge.
+    ...WOODS.map((wood) => ({ item: `minecraft:${wood}_planks`, amount: biggest })),
     { item: "minecraft:iron_shovel", amount: 1 },
   ];
 }

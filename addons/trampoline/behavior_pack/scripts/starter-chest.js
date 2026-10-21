@@ -35,12 +35,12 @@ world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
     spot.dimension.setBlockType(spot.location, "minecraft:chest");
     const chest = spot.getComponent("minecraft:inventory")?.container;
     for (const item of items) chest?.addItem(item);
-    player.sendMessage("§aA chest with §etrampoline blocks§a appeared next to you! Build slime with a wool edge.");
+    player.sendMessage("§aA chest with §etrampoline blocks§a appeared next to you! Build slime with a wooden edge.");
   } else {
     // Nowhere flat to put a chest (in water, say): straight into their pockets instead.
     const inventory = player.getComponent("minecraft:inventory")?.container;
     for (const item of items) inventory?.addItem(item);
-    player.sendMessage("§aYou got §etrampoline blocks§a! Build slime with a wool edge.");
+    player.sendMessage("§aYou got §etrampoline blocks§a! Build slime with a wooden edge.");
   }
   player.setDynamicProperty(GOT_KIT, true);
 });

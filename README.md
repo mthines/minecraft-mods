@@ -8,7 +8,7 @@ Our own Minecraft Bedrock add-ons, plus a private server to play them on togethe
 | --- | --- | --- |
 | [`welcome`](./addons/welcome) | Says hi when you join | Code: 10 lines of JavaScript |
 | [`rainbow-cookie`](./addons/rainbow-cookie) | A new cookie that makes you fast and bouncy. Craft it from a cookie, sugar, and glow berries. | Item + picture + recipe + a little code |
-| [`trampoline`](./addons/trampoline) | Build slime blocks with a wool edge, like a portal, and get a trampoline. Bigger ones bounce higher. You get the blocks in a chest when you first join. | Code, with tests |
+| [`trampoline`](./addons/trampoline) | Build slime blocks with a wooden edge, like a portal, and get a trampoline. Bigger ones bounce higher. You get the blocks in a chest when you first join. | Code, with tests |
 | [`party-commands`](./addons/party-commands) | `/function party` and `/function sunny`, and 9 dirt crafts into 1 diamond | No code: commands and a recipe |
 
 Each add-on is a folder in `addons/` with up to two packs:
