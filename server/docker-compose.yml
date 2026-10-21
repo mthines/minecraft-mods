@@ -1,0 +1,23 @@
+# Bedrock Dedicated Server. Start it with:  docker compose up -d   (from this folder)
+services:
+  bedrock:
+    image: itzg/minecraft-bedrock-server:latest
+    container_name: family-bedrock
+    restart: unless-stopped
+    ports:
+      - "19132:19132/udp"
+    volumes:
+      - ./data:/data
+    stdin_open: true # lets `docker attach family-bedrock` reach the server console
+    tty: true
+    environment:
+      EULA: "TRUE" # you accept https://www.minecraft.net/eula by starting the server
+      VERSION: "LATEST" # every device must run the same Minecraft version as the server
+      SERVER_NAME: "Family Server"
+      GAMEMODE: "survival"
+      DIFFICULTY: "easy"
+      ALLOW_CHEATS: "true" # needed for /function party and other commands
+      ONLINE_MODE: "true" # players must sign in with a Microsoft account
+      ALLOW_LIST: "true" # only the gamertags below can join
+      ALLOW_LIST_USERS: "YourGamertag,KidGamertag1,KidGamertag2"
+      TEXTUREPACK_REQUIRED: "true" # sends the resource packs to everyone who joins

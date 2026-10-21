@@ -1,0 +1,21 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Welcome",
+    "description": "Says hi when you join the world.",
+    "uuid": "fdf57025-7cb9-4aeb-ae40-e3dd6fa2e553",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 80]
+  },
+  "modules": [
+    { "type": "data", "uuid": "63fe8d64-cc5b-4352-a854-be1a067ce36a", "version": [1, 0, 0] },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "3a1b2380-50e7-4288-a320-ccddd10a68ed",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [{ "module_name": "@minecraft/server", "version": "2.8.0" }]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "minecraft-mods",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "new": "node tools/new-addon.mjs",
+    "validate": "node tools/validate.mjs",
+    "build": "node tools/validate.mjs && node tools/build.mjs",
+    "deploy": "node tools/validate.mjs && node tools/deploy.mjs"
+  },
+  "devDependencies": {
+    "@minecraft/server": "2.8.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

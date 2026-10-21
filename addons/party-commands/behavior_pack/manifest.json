@@ -1,0 +1,13 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Party Commands",
+    "description": "Fun chat commands and a silly dirt-to-diamond recipe.",
+    "uuid": "e5694bd5-69ae-4c5b-b9b5-1e938535356e",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 80]
+  },
+  "modules": [
+    { "type": "data", "uuid": "c739315b-6af5-410d-8da1-a1c654560788", "version": [1, 0, 0] }
+  ]
+}
