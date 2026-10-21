@@ -41,6 +41,7 @@ addons/rainbow-cookie/
 ## Play the mods
 
 **Together on the server (any device, including Switch):** follow [`server/README.md`](./server/README.md).
+Host it on Linux (like Omarchy) if anyone plays on a console; a Mac works for tablets, phones, and PCs.
 The server sends the mods to every device that joins.
 
 **On one tablet, phone, or Windows PC:** open `dist/rainbow-cookie.mcaddon` on the device and Minecraft imports it.

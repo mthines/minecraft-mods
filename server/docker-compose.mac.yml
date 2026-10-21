@@ -1,0 +1,10 @@
+# macOS runs Docker inside a small virtual machine, so the server can't share the Mac's network.
+# Publish the ports instead, and tell players' devices the Mac's Wi-Fi address.
+services:
+  bedrock:
+    network_mode: bridge
+    ports:
+      - "19132:19132/tcp"
+      - "19140-19155:19140-19155/udp"
+    environment:
+      SERVER_UDP_PORTS: "${HOST_IP:?run ./start.sh, which sets HOST_IP to this Mac's Wi-Fi address}:19140-19155:19140-19155"

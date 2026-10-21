@@ -1,11 +1,12 @@
-# Bedrock Dedicated Server. Start it with:  docker compose up -d   (from this folder)
+# Bedrock Dedicated Server. Start it with ./start.sh (it picks the right setup for Linux or macOS).
 services:
   bedrock:
     image: itzg/minecraft-bedrock-server:latest
     container_name: family-bedrock
     restart: unless-stopped
-    ports:
-      - "19132:19132/udp"
+    # Linux: share the computer's network, so the server shows up under LAN Games.
+    # macOS can't do this; start.sh adds docker-compose.mac.yml instead.
+    network_mode: host
     volumes:
       - ./data:/data
     stdin_open: true # lets `docker attach family-bedrock` reach the server console
@@ -16,8 +17,14 @@ services:
       SERVER_NAME: "Family Server"
       GAMEMODE: "survival"
       DIFFICULTY: "easy"
+      MAX_PLAYERS: "10"
       ALLOW_CHEATS: "true" # needed for /function party and other commands
       ONLINE_MODE: "true" # players must sign in with a Microsoft account
       ALLOW_LIST: "true" # only the gamertags below can join
       ALLOW_LIST_USERS: "YourGamertag,KidGamertag1,KidGamertag2"
+      OPS: "YourGamertag" # operators can run commands like /function party
       TEXTUREPACK_REQUIRED: "true" # sends the resource packs to everyone who joins
+      # Players connect on TCP 19132, then play over one UDP port each from this range.
+      # Keep at least one port per player (MAX_PLAYERS).
+      SERVER_UDP_PORTS: "19140-19155"
+      ENABLE_LAN_VISIBILITY: "true" # announces the server on UDP 7551

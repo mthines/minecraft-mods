@@ -4,61 +4,119 @@ The server runs Mojang's Bedrock Dedicated Server in Docker.
 Every Bedrock device can join it: Switch, Xbox, PlayStation, iPad, Android, and Windows.
 Devices get the mods automatically when they join, so you never install anything on the consoles.
 
-## What you need
+## Which computer to use
 
-- An always-on x86-64 computer: an old laptop, a mini PC, or a Linux box. A Raspberry Pi works but runs the server through emulation, so expect lag.
-- [Docker](https://docs.docker.com/get-docker/) with Docker Compose.
-- [Node.js](https://nodejs.org/) 20 or newer, to deploy the add-ons.
-- A Microsoft account for every player. On child accounts, a parent must allow **"Join multiplayer games"** in [Xbox Family Settings](https://www.xbox.com/family-app).
+| | Omarchy (Linux) | MacBook |
+| --- | --- | --- |
+| Shows up under **LAN Games** | Yes | No, devices add it by IP address |
+| Switch and other consoles can join | Yes, through LAN Games | No: consoles can't add a server by IP |
+| Speed | Full speed | Slower: Apple Silicon emulates the x86 server |
+| Best for | The family server | Testing mods on an iPad, phone, or PC |
 
-## First start
+Use Omarchy if the kids play on a Switch.
+Whichever you pick, keep it plugged in and stop it sleeping while people play.
 
-1. Open `docker-compose.yml` and put your family's gamertags in `ALLOW_LIST_USERS`.
-2. Start the server so it creates the world:
+## Before you start
+
+- Every player needs a Microsoft account. On child accounts, a parent must allow **"Join multiplayer games"** in [Xbox Family Settings](https://www.xbox.com/family-app).
+- Install [Node.js](https://nodejs.org/) 20 or newer, to deploy the add-ons.
+- Open `docker-compose.yml` and put your family's gamertags in `ALLOW_LIST_USERS`, and your own in `OPS`.
+  Operators can use commands like `/function party`.
+
+## Set up on Omarchy
+
+Omarchy comes with Docker and a firewall that blocks everything coming in.
+
+1. Make sure Docker starts on boot:
 
    ```bash
-   cd server
-   docker compose up -d
-   docker compose logs -f   # wait for "Server started.", then press Ctrl+C
+   sudo systemctl enable --now docker
    ```
 
-3. Copy the add-ons in and turn them on, then restart:
+2. Let Minecraft through the firewall:
 
    ```bash
-   cd ..
+   sudo ufw allow 19132/tcp comment 'minecraft join'
+   sudo ufw allow 19140:19155/udp comment 'minecraft gameplay'
+   sudo ufw allow 7551/udp comment 'minecraft LAN games'
+   ```
+
+   The server shares Omarchy's network directly, so plain `ufw` rules work and `ufw-docker` isn't needed.
+
+3. Continue with [Start the server](#start-the-server).
+
+## Set up on a MacBook
+
+1. Install [OrbStack](https://orbstack.dev/) or [Docker Desktop](https://www.docker.com/products/docker-desktop/), and open it once.
+2. If macOS asks whether Docker may accept incoming connections, choose **Allow**.
+3. Continue with [Start the server](#start-the-server).
+
+`start.sh` looks up your Mac's Wi-Fi address and tells the server to use it.
+If your Mac gets a new address (after a router restart, say), run `./start.sh` again.
+
+## Start the server
+
+1. Start it, and wait for `Server started.` in the log (press Ctrl+C to stop watching):
+
+   ```bash
+   ./server/start.sh
+   docker logs -f family-bedrock
+   ```
+
+2. Copy the add-ons in and turn them on, then restart:
+
+   ```bash
    npm run deploy
-   docker compose -f server/docker-compose.yml restart
+   docker restart family-bedrock
    ```
 
-4. Make yourself an operator so `/function party` works:
+3. Check that other devices can reach it. From a different computer on the same Wi-Fi:
 
    ```bash
-   docker attach family-bedrock
-   op YourGamertag
-   # detach with Ctrl+P then Ctrl+Q (Ctrl+C would stop the server)
+   curl http://<server-ip>:19132/v1/join
    ```
 
-Run `npm run deploy` and restart again whenever you change a mod.
+   It answers with the server's name and version.
+
+Run `npm run deploy` and `docker restart family-bedrock` again whenever you change a mod.
+Restarting also updates the server to the newest Minecraft version.
 
 ## Joining
 
-| Where the player is | How they join |
+| Device | How to join |
 | --- | --- |
-| Same Wi-Fi, any device | **Play → Friends**. The server appears under **LAN Games**. |
-| Elsewhere, on a phone, tablet, or PC | **Play → Servers → Add Server**, using your home's public IP and port `19132`. Forward UDP `19132` on your router to the server computer. |
-| Elsewhere, on a console | Consoles can't add custom servers. Use a tool like [BedrockConnect](https://github.com/Pugmatt/BedrockConnect), or have them join through a friend on the same network. |
+| Any device, server on Omarchy, same Wi-Fi | **Play → Friends → LAN Games** |
+| iPad, phone, or PC | **Play → Servers → Add Server**: the server computer's IP address, port `19132` |
+| Switch, Xbox, or PlayStation, server on a Mac | Not possible: consoles only see LAN Games and featured servers |
+
+Find the server computer's IP address with `ip -4 addr` on Omarchy, or `ipconfig getifaddr en0` on a Mac.
+
+Playing with friends outside your home means opening ports on your router to the internet.
+For a family server, keep it on your home Wi-Fi.
 
 ## When something goes wrong
 
 | Symptom | Fix |
 | --- | --- |
-| "Outdated client" or "Outdated server" | Update Minecraft on the device, or restart the server so `VERSION: LATEST` pulls the new release. |
+| "Outdated client" or "Outdated server" | Update Minecraft on the device, or run `docker restart family-bedrock` to update the server. |
+| "You're not invited to play on this server" | Add that gamertag to `ALLOW_LIST_USERS`, then run `./server/start.sh` again. |
+| The server isn't under LAN Games | On Omarchy, check the three `ufw` rules with `sudo ufw status`. The device must be on the same Wi-Fi, not a guest network. On a Mac, add it by IP address instead. |
+| "Unable to connect to world" after adding by IP | The UDP ports are blocked: check the firewall (Omarchy) or allow incoming connections (Mac). On a Mac, run `./server/start.sh` again if its address changed. |
 | The cookie shows as a purple-and-black box | The resource pack didn't load. Check `TEXTUREPACK_REQUIRED` is `"true"` and rerun `npm run deploy`. |
-| A script mod does nothing | Run `docker compose logs` and look for `[Scripting]` errors. |
-| "Unknown command" for `/function party` | The player isn't an operator, or `ALLOW_CHEATS` is off. |
-| Kids can't see the server under LAN Games | The server computer and the device must be on the same network, and the firewall must allow UDP `19132`. |
+| A script mod does nothing | Run `docker logs family-bedrock` and look for `[Scripting]` errors. |
+| "Unknown command" for `/function party` | Put that player's gamertag in `OPS` and run `./server/start.sh` again, or check that `ALLOW_CHEATS` is on. |
+
+## Server console
+
+To type commands straight into the server:
+
+```bash
+docker attach family-bedrock
+# for example: op KidGamertag1
+# leave with Ctrl+P then Ctrl+Q (Ctrl+C would stop the server)
+```
 
 ## Backups
 
 The whole world lives in `server/data/worlds/`.
-Stop the server and copy that folder somewhere safe before big changes.
+Stop the server with `docker stop family-bedrock` and copy that folder somewhere safe before big changes.
