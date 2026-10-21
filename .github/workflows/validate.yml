@@ -13,6 +13,7 @@ jobs:
         with:
           node-version: 22
       - run: node tools/validate.mjs
+      - run: node --test "addons/**/*.test.mjs"
       - run: node tools/build.mjs
       - uses: actions/upload-artifact@v4
         with:

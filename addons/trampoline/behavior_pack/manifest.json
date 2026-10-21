@@ -1,0 +1,21 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Trampolines",
+    "description": "Build a slime and wool pattern to make a trampoline. Bigger ones bounce higher.",
+    "uuid": "433e9a14-474f-46d7-9b5a-29b509232650",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 80]
+  },
+  "modules": [
+    { "type": "data", "uuid": "1ef0f445-e3c9-40b3-8058-27bd0a112620", "version": [1, 0, 0] },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "2e0a8185-199e-470a-86aa-9e4c405364ac",
+      "version": [1, 0, 0],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [{ "module_name": "@minecraft/server", "version": "2.8.0" }]
+}

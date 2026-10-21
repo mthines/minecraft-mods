@@ -8,6 +8,7 @@ Our own Minecraft Bedrock add-ons, plus a private server to play them on togethe
 | --- | --- | --- |
 | [`welcome`](./addons/welcome) | Says hi when you join | Code: 10 lines of JavaScript |
 | [`rainbow-cookie`](./addons/rainbow-cookie) | A new cookie that makes you fast and bouncy. Craft it from a cookie, sugar, and glow berries. | Item + picture + recipe + a little code |
+| [`trampoline`](./addons/trampoline) | Build slime blocks with a wool edge, like a portal, and get a trampoline. Bigger ones bounce higher. | Code, with tests |
 | [`party-commands`](./addons/party-commands) | `/function party` and `/function sunny`, and 9 dirt crafts into 1 diamond | No code: commands and a recipe |
 
 Each add-on is a folder in `addons/` with up to two packs:
@@ -80,6 +81,7 @@ After a change, type `/reload` in the world to reload scripts and functions with
 - When you change a pack that's already in a world, raise its `version` (for example `[1, 0, 0]` → `[1, 1, 0]`) so devices download the new one.
 - Start new item names with `family:`, like `family:lava_boots`, so they never clash with Minecraft's own.
 - Run `npm run validate` before playing. It catches broken JSON, copied UUIDs, and missing pictures.
+- Put tests in a `tests/` folder next to the packs, like [`addons/trampoline/tests`](./addons/trampoline/tests). They never get packed into the `.mcaddon`.
 
 ## Ideas to try next
 
@@ -95,6 +97,7 @@ After a change, type `/reload` in the world to reload scripts and functions with
 | --- | --- |
 | `npm run new -- <name>` | Make a new add-on with fresh pack IDs |
 | `npm run validate` | Check every add-on for mistakes |
+| `npm test` | Run every add-on's tests (files ending in `.test.mjs`) |
 | `npm run build` | Check, then write `dist/<name>.mcaddon` files |
 | `npm run build -- <name>` | Build only one add-on |
 | `npm run deploy` | Copy every add-on to the server in `server/data` and turn them on |

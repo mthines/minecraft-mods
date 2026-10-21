@@ -5,6 +5,7 @@
   "scripts": {
     "new": "node tools/new-addon.mjs",
     "validate": "node tools/validate.mjs",
+    "test": "node --test \"addons/**/*.test.mjs\"",
     "build": "node tools/validate.mjs && node tools/build.mjs",
     "deploy": "node tools/validate.mjs && node tools/deploy.mjs"
   },
