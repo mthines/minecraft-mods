@@ -104,3 +104,19 @@ export function covers(t, x, y, z) {
 export function isOverBed(t, x, z) {
   return x >= t.x && x < t.x + t.size && z >= t.z && z < t.z + t.size;
 }
+
+const WOOL_COLOURS = ["red", "yellow", "lime", "light_blue"];
+
+/**
+ * What's in the starter chest: enough slime and wool for the biggest trampoline, and a shovel to dig the hole.
+ * @returns {{ item: string, amount: number }[]}
+ */
+export function starterKit() {
+  const biggest = Math.max(...Object.keys(SIZES).map(Number));
+  return [
+    { item: "minecraft:slime", amount: biggest * biggest },
+    // One colour per side of the edge.
+    ...WOOL_COLOURS.map((colour) => ({ item: `minecraft:${colour}_wool`, amount: biggest })),
+    { item: "minecraft:iron_shovel", amount: 1 },
+  ];
+}

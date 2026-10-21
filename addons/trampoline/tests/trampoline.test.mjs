@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { SIZES, covers, findTrampoline } from "../behavior_pack/scripts/trampoline.js";
+import { SIZES, covers, findTrampoline, starterKit } from "../behavior_pack/scripts/trampoline.js";
 
 /** A pretend world: a map from "x,y,z" to block type. */
 function world() {
@@ -96,4 +96,13 @@ test("bigger trampolines bounce higher, close to the advertised height", () => {
     assert.ok(Math.abs(h - SIZES[size].blocks) / SIZES[size].blocks < 0.1, `size ${size} flies ${h.toFixed(1)} blocks`);
     previous = h;
   }
+});
+
+test("the starter chest holds enough to build the biggest trampoline", () => {
+  const biggest = Math.max(...Object.keys(SIZES).map(Number));
+  const kit = starterKit();
+  const count = (match) => kit.filter(({ item }) => match(item)).reduce((n, { amount }) => n + amount, 0);
+  assert.equal(count((item) => item === "minecraft:slime"), biggest * biggest);
+  assert.ok(count((item) => item.endsWith("_wool")) >= 4 * biggest);
+  assert.ok(kit.every(({ amount }) => amount <= 64), "each slot holds at most one stack");
 });

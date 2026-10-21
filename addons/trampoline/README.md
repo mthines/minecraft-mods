@@ -3,6 +3,20 @@
 Build a pattern of blocks, like a Nether portal, and it turns into a trampoline.
 Bigger trampolines bounce you higher.
 
+![The four trampoline patterns, from 2×2 to 5×5, and how high each one bounces](./patterns.png)
+
+## The starter chest
+
+The first time you join a world with this mod, a chest appears next to you with:
+
+- 25 slime blocks
+- 20 wool, in red, yellow, lime, and light blue
+- an iron shovel to dig the hole
+
+That's enough for the biggest 5×5 trampoline.
+Everyone gets their own chest, once per world.
+If there's no flat spot next to you, the blocks go straight into your inventory.
+
 ## How to build one
 
 1. Dig a hole one block deep. For a 3×3 trampoline, make it 5×5.

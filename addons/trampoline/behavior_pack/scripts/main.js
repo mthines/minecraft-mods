@@ -1,5 +1,6 @@
 import { EntityDamageCause, system, world } from "@minecraft/server";
 import { SIZES, covers, findTrampoline, isBed, isComplete, isEdge, isOverBed } from "./trampoline.js";
+import "./starter-chest.js";
 
 const COOLDOWN_TICKS = 8; // 20 ticks = 1 second
 const SAFE_LANDING_TICKS = 200; // after a bounce, falls don't hurt for 10 seconds
