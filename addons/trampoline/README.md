@@ -9,11 +9,11 @@ Bigger trampolines bounce you higher.
 
 The first time you join a world with this mod, a chest appears next to you with:
 
-- 25 slime blocks
-- 20 planks: oak, birch, spruce, and dark oak
+- 100 slime blocks
+- 40 planks: oak, birch, spruce, and dark oak
 - an iron shovel to dig the hole
 
-That's enough for the biggest 5×5 trampoline.
+That's enough for the biggest 10×10 trampoline, or lots of small ones.
 Everyone gets their own chest, once per world.
 If there's no flat spot next to you, the blocks go straight into your inventory.
 
@@ -42,6 +42,11 @@ If there's no flat spot next to you, the blocks go straight into your inventory.
 | 3×3 | 5×5 | 8 blocks high |
 | 4×4 | 6×6 | 14 blocks high |
 | 5×5 | 7×7 | 22 blocks high |
+| 6×6 | 8×8 | 30 blocks high |
+| 7×7 | 9×9 | 40 blocks high |
+| 8×8 | 10×10 | 52 blocks high |
+| 9×9 | 11×11 | 66 blocks high |
+| 10×10 | 12×12 | 80 blocks high |
 
 ## Good to know
 

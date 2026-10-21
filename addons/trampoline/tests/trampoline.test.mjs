@@ -72,7 +72,8 @@ test("an edge one block higher or lower does not count", () => {
 });
 
 test("sizes bigger than the biggest supported size are not trampolines", () => {
-  const w = build(6);
+  const tooBig = Math.max(...Object.keys(SIZES).map(Number)) + 1;
+  const w = build(tooBig);
   assert.equal(findTrampoline(w.getType, 12, 64, 22), undefined);
 });
 
@@ -111,4 +112,5 @@ test("the starter chest holds enough to build the biggest trampoline", () => {
   assert.equal(count((item) => item === "minecraft:slime"), biggest * biggest);
   assert.ok(count((item) => item.endsWith("_planks")) >= 4 * biggest);
   assert.ok(kit.every(({ amount }) => amount <= 64), "each slot holds at most one stack");
+  assert.ok(kit.length <= 27, "everything fits in one chest");
 });

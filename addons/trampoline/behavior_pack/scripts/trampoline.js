@@ -17,6 +17,11 @@ export const SIZES = {
   3: { strength: 1.18, blocks: 8 },
   4: { strength: 1.63, blocks: 14 },
   5: { strength: 2.11, blocks: 22 },
+  6: { strength: 2.54, blocks: 30 },
+  7: { strength: 3.01, blocks: 40 },
+  8: { strength: 3.53, blocks: 52 },
+  9: { strength: 4.1, blocks: 66 },
+  10: { strength: 4.62, blocks: 80 },
 };
 
 // Biggest first, so a block shared by two possible trampolines picks the one actually built.
@@ -41,11 +46,7 @@ export const isEdge = (typeId) => (typeId?.endsWith("_planks") || typeId?.endsWi
  * @param {Trampoline} t
  */
 export function isComplete(getType, { x, y, z, size }) {
-  for (let dx = 0; dx < size; dx++) {
-    for (let dz = 0; dz < size; dz++) {
-      if (!isBed(getType(x + dx, y, z + dz))) return false;
-    }
-  }
+  // Edge first: a wrong guess inside a big field of slime fails on its first block.
   for (let i = 0; i < size; i++) {
     if (
       !isEdge(getType(x + i, y, z - 1)) ||
@@ -54,6 +55,11 @@ export function isComplete(getType, { x, y, z, size }) {
       !isEdge(getType(x + size, y, z + i))
     ) {
       return false;
+    }
+  }
+  for (let dx = 0; dx < size; dx++) {
+    for (let dz = 0; dz < size; dz++) {
+      if (!isBed(getType(x + dx, y, z + dz))) return false;
     }
   }
   return true;
@@ -115,9 +121,18 @@ const WOODS = ["oak", "birch", "spruce", "dark_oak"];
 export function starterKit() {
   const biggest = Math.max(...Object.keys(SIZES).map(Number));
   return [
-    { item: "minecraft:slime", amount: biggest * biggest },
+    ...stacks("minecraft:slime", biggest * biggest),
     // One kind of wood per side of the edge.
-    ...WOODS.map((wood) => ({ item: `minecraft:${wood}_planks`, amount: biggest })),
+    ...WOODS.flatMap((wood) => stacks(`minecraft:${wood}_planks`, biggest)),
     { item: "minecraft:iron_shovel", amount: 1 },
   ];
+}
+
+/**
+ * A chest slot holds at most 64 blocks, so split big amounts into full stacks.
+ * @param {string} item
+ * @param {number} amount
+ */
+function stacks(item, amount) {
+  return Array.from({ length: Math.ceil(amount / 64) }, (_, i) => ({ item, amount: Math.min(64, amount - i * 64) }));
 }
