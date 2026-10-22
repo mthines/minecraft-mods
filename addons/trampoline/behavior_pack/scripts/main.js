@@ -1,6 +1,7 @@
 import { EntityDamageCause, system, world } from "@minecraft/server";
 import { SIZES, covers, findTrampoline, isBed, isComplete, isEdge, isOverBed } from "./trampoline.js";
 import "./starter-chest.js";
+import { emit } from "./telemetry.js";
 
 const COOLDOWN_TICKS = 8; // 20 ticks = 1 second
 const SAFE_LANDING_TICKS = 200; // after a bounce, falls don't hurt for 10 seconds
@@ -60,6 +61,11 @@ world.afterEvents.playerPlaceBlock.subscribe(({ block, player }) => {
       });
     }
   }
+  emit("trampoline.built", {
+    "minecraft.player.name": player.name,
+    "minecraft.trampoline.size": found.size,
+    "minecraft.trampoline.height_blocks": SIZES[found.size].blocks,
+  });
   player.playSound("random.levelup");
   player.onScreenDisplay.setActionBar(
     `§aSize ${found.size} trampoline! §fBounces about ${SIZES[found.size].blocks} blocks high.`,
@@ -75,6 +81,9 @@ world.afterEvents.playerBreakBlock.subscribe(({ block, player }) => {
   if (broken.length === 0) return;
 
   save(all().filter((t) => !broken.includes(t)));
+  for (const t of broken) {
+    emit("trampoline.broken", { "minecraft.player.name": player.name, "minecraft.trampoline.size": t.size });
+  }
   player.sendMessage("§cTrampoline broken!");
 });
 
@@ -99,6 +108,7 @@ system.runInterval(() => {
     // Explosions or pistons can break a trampoline without a player breaking a block.
     if (!isComplete(typeAt(player.dimension), t)) {
       save(all().filter((other) => other !== t));
+      emit("trampoline.broken", { "minecraft.trampoline.size": t.size, "minecraft.trampoline.cause": "damaged" });
       continue;
     }
 
@@ -106,6 +116,11 @@ system.runInterval(() => {
     player.applyKnockback({ x: 0, z: 0 }, Math.max(0, SIZES[t.size].strength - vy));
     player.playSound("mob.slime.big");
     lastBounce.set(player.id, now);
+    emit("trampoline.bounce", {
+      "minecraft.player.name": player.name,
+      "minecraft.trampoline.size": t.size,
+      "minecraft.trampoline.height_blocks": SIZES[t.size].blocks,
+    });
   }
 }, 1);
 

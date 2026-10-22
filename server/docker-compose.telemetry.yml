@@ -1,0 +1,28 @@
+# Sends the server's logs, game events, and CPU/memory to Dash0 through an OpenTelemetry Collector.
+# ./start.sh adds this file when server/.env has a DASH0_AUTH_TOKEN.
+services:
+  bedrock:
+    environment:
+      CONTENT_LOG_CONSOLE_OUTPUT_ENABLED: "true" # script errors show up in the console, and so in Dash0
+    logging:
+      # Docker hands every console line to the Collector; `docker logs` keeps working too.
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        fluentd-async: "true" # start the server even when the Collector isn't up yet
+        tag: family-bedrock
+    depends_on:
+      - otelcol
+
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:0.162.0
+    container_name: family-otelcol
+    restart: unless-stopped
+    command: ["--config=/etc/otelcol/config.yaml"]
+    user: "0" # needs root to read /var/run/docker.sock for CPU and memory stats
+    env_file: .env
+    volumes:
+      - ./otelcol/config.yaml:/etc/otelcol/config.yaml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "127.0.0.1:24224:24224" # only Docker on this computer may send logs

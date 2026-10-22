@@ -1,4 +1,5 @@
 import { ItemStack, world } from "@minecraft/server";
+import { emit } from "./telemetry.js";
 import { starterKit } from "./trampoline.js";
 
 const GOT_KIT = "family:got_trampoline_kit";
@@ -43,4 +44,5 @@ world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
     player.sendMessage("§aYou got §etrampoline blocks§a! Build slime with a wooden edge.");
   }
   player.setDynamicProperty(GOT_KIT, true);
+  emit("starter_chest.given", { "minecraft.player.name": player.name, "minecraft.starter_chest.placed": Boolean(spot) });
 });

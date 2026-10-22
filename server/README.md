@@ -81,6 +81,27 @@ If your Mac gets a new address (after a router restart, say), run `./start.sh` a
 Run `npm run deploy` and `docker restart family-bedrock` again whenever you change a mod.
 Restarting also updates the server to the newest Minecraft version.
 
+## Make quick changes
+
+Keep this running while you work on a mod:
+
+```bash
+npm run watch
+```
+
+Every time you save a file in `addons/`, it checks the add-on, copies it to the server, and applies it:
+
+| You changed | What happens | How long |
+| --- | --- | --- |
+| Code (`scripts/`) or commands (`functions/`) | The server runs `/reload`. Stay in the world and try it again. | About a second |
+| Anything else: items, recipes, pictures, `manifest.json` | The server restarts. Rejoin the world. | About 20 seconds |
+
+Script errors from the server show up right under the change, marked ⚠.
+Broken JSON never reaches the server: the watcher tells you what to fix.
+A changed picture needs a higher `version` in the resource pack's `manifest.json`, or devices keep the old one.
+
+This works the same on Omarchy and on a Mac.
+
 ## Joining
 
 | Device | How to join |
@@ -94,6 +115,74 @@ Find the server computer's IP address with `ip -4 addr` on Omarchy, or `ipconfig
 Playing with friends outside your home means opening ports on your router to the internet.
 For a family server, keep it on your home Wi-Fi.
 
+## Send telemetry to Dash0
+
+An [OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) can run next to the server and send to Dash0:
+
+- **Logs:** every line the server prints, with severity, so script errors arrive as `ERROR`.
+- **Game events:** log records with an event name and attributes, from the server and the mods.
+- **Metrics:** CPU, memory, and network of the server container, every 30 seconds.
+
+It follows Michele Mancioppi's [Monitoring Minecraft with OpenTelemetry](https://www.dash0.com/blog/monitoring-minecraft-with-opentelemetry), adapted for Bedrock.
+Bedrock's server isn't Java, so instead of the Java agent, Docker hands the server's console to the Collector.
+
+### Turn it on
+
+1. Copy the example settings and fill in your endpoint and auth token from Dash0 (**Settings → Endpoints** and **Settings → Auth Tokens**):
+
+   ```bash
+   cp server/.env.example server/.env
+   ```
+
+   `server/.env` holds a secret, so Git ignores it.
+
+2. Run `./server/start.sh` again. It prints `Sending telemetry to Dash0` and starts the `family-otelcol` container next to the server.
+
+Everything arrives with `service.namespace` `minecraft` and `service.name` `bedrock-server`.
+To turn it off, delete `server/.env` and run `./server/start.sh` again.
+
+### Game events
+
+| `event.name` | When | Attributes |
+| --- | --- | --- |
+| `minecraft.server.started` | The server is ready | |
+| `minecraft.player.connected` / `minecraft.player.disconnected` | Someone joins or leaves | `minecraft.player.name` |
+| `minecraft.trampoline.built` | A trampoline comes alive | `minecraft.player.name`, `minecraft.trampoline.size`, `minecraft.trampoline.height_blocks` |
+| `minecraft.trampoline.bounce` | Someone bounces | same as above |
+| `minecraft.trampoline.broken` | A trampoline stops working | `minecraft.trampoline.size`, and `minecraft.player.name` or `minecraft.trampoline.cause` |
+| `minecraft.starter_chest.given` | A first-time player gets the chest | `minecraft.player.name`, `minecraft.starter_chest.placed` |
+| `minecraft.rainbow_cookie.eaten` | Someone eats a rainbow cookie | `minecraft.player.name` |
+
+To add an event to your own mod, print one JSON line with an `event.name`:
+
+```js
+console.log(JSON.stringify({ "event.name": "minecraft.lava_boots.worn", "minecraft.player.name": player.name }));
+```
+
+The trampoline mod has a small helper for this in [`telemetry.js`](../addons/trampoline/behavior_pack/scripts/telemetry.js).
+
+### Example alerts
+
+Dash0 turns logs into the `dash0.logs` metric, so you can alert on them with PromQL.
+
+The server stopped (no CPU numbers for 5 minutes):
+
+```promql
+absent_over_time({otel_metric_name="container.cpu.utilization", service_name="bedrock-server"}[5m])
+```
+
+A mod is throwing errors:
+
+```promql
+sum(increase({otel_metric_name="dash0.logs", service_name="bedrock-server", otel_log_severity_range="ERROR"}[10m])) > 0
+```
+
+Bounces in the last hour, per trampoline size:
+
+```promql
+sum by (minecraft_trampoline_size) (increase({otel_metric_name="dash0.logs", event_name="minecraft.trampoline.bounce"}[1h]))
+```
+
 ## When something goes wrong
 
 | Symptom | Fix |
@@ -103,7 +192,8 @@ For a family server, keep it on your home Wi-Fi.
 | The server isn't under LAN Games | On Omarchy, check the three `ufw` rules with `sudo ufw status`. The device must be on the same Wi-Fi, not a guest network. On a Mac, add it by IP address instead. |
 | "Unable to connect to world" after adding by IP | The UDP ports are blocked: check the firewall (Omarchy) or allow incoming connections (Mac). On a Mac, run `./server/start.sh` again if its address changed. |
 | The cookie shows as a purple-and-black box | The resource pack didn't load. Check `TEXTUREPACK_REQUIRED` is `"true"` and rerun `npm run deploy`. |
-| A script mod does nothing | Run `docker logs family-bedrock` and look for `[Scripting]` errors. |
+| A script mod does nothing | Run `docker logs family-bedrock` and look for `[Scripting]` errors, or use `npm run watch`, which shows them. |
+| Nothing arrives in Dash0 | Run `docker logs family-otelcol` and look for `error`. Check the endpoint (port `4317`) and token in `server/.env`. |
 | "Unknown command" for `/function party` | Put that player's gamertag in `OPS` and run `./server/start.sh` again, or check that `ALLOW_CHEATS` is on. |
 
 ## Server console
