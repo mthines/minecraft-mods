@@ -162,6 +162,10 @@ To turn it off, delete `server/.env` and run `./server/start.sh` again.
 | `minecraft.trampoline.broken` | A trampoline stops working | `minecraft.trampoline.size`, and `minecraft.player.name` or `minecraft.trampoline.cause` |
 | `minecraft.starter_chest.given` | A first-time player gets the chest | `minecraft.player.name`, `minecraft.starter_chest.placed` |
 | `minecraft.rainbow_cookie.eaten` | Someone eats a rainbow cookie | `minecraft.player.name` |
+| `minecraft.block.broken` | Someone digs, chops, or mines a block | `minecraft.player.name`, `minecraft.block.type` (like `oak_log`), `minecraft.block.category` (`wood`, `dirt`, `stone`, `ore`, `sand`, `leaves`, `planks`, `plant`, or `other`), `minecraft.held_item.type` (`hand` when empty) |
+| `minecraft.block.placed` | Someone builds with a block | `minecraft.player.name`, `minecraft.block.type`, `minecraft.block.category` |
+| `minecraft.mob.killed` | A player beats a mob | `minecraft.player.name`, `minecraft.mob.type` (like `zombie`) |
+| `minecraft.player.died` | A player dies | `minecraft.player.name`, `minecraft.death.cause` (like `fall` or `entityAttack`), `minecraft.mob.type` (`none` if no mob did it) |
 
 To add an event to your own mod, print one JSON line with an `event.name`:
 
@@ -170,6 +174,13 @@ console.log(JSON.stringify({ "event.name": "minecraft.lava_boots.worn", "minecra
 ```
 
 The trampoline mod has a small helper for this in [`telemetry.js`](../addons/trampoline/behavior_pack/scripts/telemetry.js).
+
+### Family dashboard
+
+[`dash0/family-dashboard.json`](dash0/family-dashboard.json) is a dashboard made for kids: big counters for wood chopped, blocks dug, mobs beaten and cookies eaten, leaderboards, what got everyone killed, and how hard the server is working.
+The game events above come from the Game Stats mod ([`addons/game-stats`](../addons/game-stats)).
+
+To add it in Dash0: **Dashboards → + Add → Edit as JSON**, paste the file's contents, then **Apply** and save.
 
 ### Example alerts
 
