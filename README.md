@@ -98,6 +98,27 @@ After a change, type `/reload` in the world to reload scripts and functions with
 
 ## Commands
 
+Run the server with `./mc` from this folder (`./mc help` lists everything):
+
+| Command | What it does |
+| --- | --- |
+| `./mc start` (or `npm start`) | Copy the add-ons in, start the server, and wait until players can join. Starts Colima on a Mac if needed. |
+| `./mc dev` (or `npm run dev`) | `start`, then send each change to the server as you save |
+| `./mc stop` (or `npm stop`) | Stop the server |
+| `./mc restart` | Restart the server, to load changed add-ons |
+| `./mc status` | Is it running, and can players join? |
+| `./mc logs` | Follow the server log |
+| `./mc console` | Type server commands (leave with Ctrl+P, then Ctrl+Q) |
+| `./mc cmd time set day` | Run one server command |
+
+To use `mc` from any folder, link it into a folder on your `PATH`:
+
+```bash
+ln -s "$PWD/mc" ~/.local/bin/mc
+```
+
+For the add-ons:
+
 | Command | What it does |
 | --- | --- |
 | `npm run new -- <name>` | Make a new add-on with fresh pack IDs |

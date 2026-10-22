@@ -3,6 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "start": "./mc start",
+    "stop": "./mc stop",
+    "dev": "./mc dev",
     "new": "node tools/new-addon.mjs",
     "validate": "node tools/validate.mjs",
     "test": "node --test \"addons/**/*.test.mjs\"",

@@ -3,6 +3,11 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
+if [[ "$(uname)" == "Darwin" ]] && command -v colima >/dev/null && ! colima status >/dev/null 2>&1; then
+  echo "Starting Colima..."
+  colima start --network-address --port-forwarder grpc
+fi
+
 files=(-f docker-compose.yml)
 # Colima started with --network-address gives its VM an address the Mac reaches without NAT.
 # Host networking inside that VM is the only setup where the game's NetherNet (WebRTC) connection works.

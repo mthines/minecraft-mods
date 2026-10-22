@@ -66,21 +66,15 @@ Without a VM address (Docker Desktop, OrbStack, or Colima without `--network-add
 
 ## Start the server
 
-1. Start it, and wait for `Server started.` in the log (press Ctrl+C to stop watching):
+1. From the repo folder, copy the add-ons in and start the server:
 
    ```bash
-   ./server/start.sh
-   docker logs -f family-bedrock
+   ./mc start
    ```
 
-2. Copy the add-ons in and turn them on, then restart:
+   It waits until players can join. `./mc logs` follows the log, and `./mc help` lists the other commands.
 
-   ```bash
-   npm run deploy
-   docker restart family-bedrock
-   ```
-
-3. Check that other devices can reach it. From a different computer on the same Wi-Fi:
+2. Check that other devices can reach it. From a different computer on the same Wi-Fi:
 
    ```bash
    curl http://<server-ip>:19132/v1/join
@@ -88,7 +82,7 @@ Without a VM address (Docker Desktop, OrbStack, or Colima without `--network-add
 
    It answers with the server's name and version.
 
-Run `npm run deploy` and `docker restart family-bedrock` again whenever you change a mod.
+After changing a mod, run `./mc start` again and then `./mc restart`, or use `./mc dev` to do it as you save.
 Restarting also updates the server to the newest Minecraft version.
 
 ## Make quick changes
@@ -117,7 +111,7 @@ This works the same on Omarchy and on a Mac.
 | Device | How to join |
 | --- | --- |
 | Any device, server on Omarchy, same Wi-Fi | **Play → Friends → LAN Games** |
-| iPad, phone, or PC | **Play → Servers → Add Server**: the server computer's IP address, port `19132` (on a Mac, the address `start.sh` prints) |
+| iPad, phone, or PC | **Play → Servers → Add Server**: the server computer's IP address, port `19132` (on a Mac, the address `./mc start` prints) |
 | Switch, Xbox, or PlayStation, server on a Mac | Not possible: consoles only see LAN Games and featured servers |
 
 Find the server computer's IP address with `ip -4 addr` on Omarchy, or `ipconfig getifaddr en0` on a Mac.
@@ -146,10 +140,10 @@ Bedrock's server isn't Java, so instead of the Java agent, Docker hands the serv
 
    `server/.env` holds a secret, so Git ignores it.
 
-2. Run `./server/start.sh` again. It prints `Sending telemetry to Dash0` and starts the `family-otelcol` container next to the server.
+2. Run `./mc start` again. It prints `Sending telemetry to Dash0` and starts the `family-otelcol` container next to the server.
 
 Everything arrives with `service.namespace` `minecraft` and `service.name` `bedrock-server`.
-To turn it off, delete `server/.env` and run `./server/start.sh` again.
+To turn it off, delete `server/.env` and run `./mc start` again.
 
 ### Game events
 
@@ -226,14 +220,14 @@ Three things now handle it:
 | Symptom | Fix |
 | --- | --- |
 | "Outdated client" or "Outdated server" | Update Minecraft on the device, or run `docker restart family-bedrock` to update the server. |
-| "You're not invited to play on this server" | Add that gamertag to `ALLOW_LIST_USERS`, then run `./server/start.sh` again. |
+| "You're not invited to play on this server" | Add that gamertag to `ALLOW_LIST_USERS`, then run `./mc start` again. |
 | The server isn't under LAN Games | On Omarchy, check the three `ufw` rules with `sudo ufw status`. The device must be on the same Wi-Fi, not a guest network. On a Mac, add it by IP address instead. |
-| "Unable to connect to world" after adding by IP | The UDP ports are blocked: check the firewall (Omarchy) or allow incoming connections (Mac). On a Mac, run `./server/start.sh` again if its address changed. |
+| "Unable to connect to world" after adding by IP | The UDP ports are blocked: check the firewall (Omarchy) or allow incoming connections (Mac). On a Mac, run `./mc start` again if its address changed. |
 | The cookie shows as a purple-and-black box | The resource pack didn't load. Check `TEXTUREPACK_REQUIRED` is `"true"` and rerun `npm run deploy`. |
 | A script mod does nothing | Run `docker logs family-bedrock` and look for `[Scripting]` errors, or use `npm run watch`, which shows them. |
 | Nothing arrives in Dash0 | Run `docker logs family-otelcol` and look for `error`. Check the endpoint (port `4317`) and token in `server/.env`. |
 | "Multiplayer Connection Failed: NetherNet" right after a restart | The server waits up to a minute for its join port after a restart. Wait until `docker ps` shows `(healthy)` and join again. See [Recovering on its own](#recovering-on-its-own). |
-| "Unknown command" for `/function party` | Put that player's gamertag in `OPS` and run `./server/start.sh` again, or check that `ALLOW_CHEATS` is on. |
+| "Unknown command" for `/function party` | Put that player's gamertag in `OPS` and run `./mc start` again, or check that `ALLOW_CHEATS` is on. |
 
 ## Server console
 
