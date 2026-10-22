@@ -13,6 +13,7 @@ Usage: ./mc <command>
   stop       Stop the server
   restart    Restart the server, to load changed add-ons
   status     Show whether the server is running and accepting joins
+  mods       List the mods the server loaded
   logs       Follow the server log (Ctrl+C stops following, not the server)
   console    Type server commands; leave with Ctrl+P then Ctrl+Q
   cmd <...>  Run one server command, e.g. ./mc cmd time set day
@@ -51,6 +52,18 @@ case "${1:-help}" in
     wait_until_joinable
     ;;
   status) docker compose -p server ps --format "table {{.Name}}\t{{.Status}}" ;;
+  mods)
+    # The server prints a "Pack Stack" line for every behavior pack it loads; show the last start's.
+    echo "Mods the server loaded when it last started:"
+    docker logs "$SERVER" 2>&1 | awk '
+      /INFO\] Starting Server/ { n = 0 }
+      /Pack Stack - / {
+        name = $0; sub(/.*Pack Stack - \[[0-9]+\] /, "", name); sub(/ \(id:.*/, "", name)
+        ver = $0; sub(/.*version: /, "", ver); sub(/\).*/, "", ver)
+        list[n++] = sprintf("  %-20s %s", name, ver)
+      }
+      END { for (i = 0; i < n; i++) print list[i]; if (n == 0) print "  none (is the server running? ./mc status)" }'
+    ;;
   logs) docker logs -f --tail 50 "$SERVER" ;;
   console)
     echo "Type a command like: give @a diamond 5"
