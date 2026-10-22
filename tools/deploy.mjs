@@ -7,8 +7,9 @@ import { deploy } from "./lib/deploy.mjs";
 const dataDir = resolve(process.argv[2] ?? join(ROOT, "server", "data"));
 const world = process.argv[3] ?? "Bedrock level";
 try {
-  const copied = deploy(dataDir, world);
+  const { copied, removed } = deploy(dataDir, world);
   for (const name of copied) console.log(`copied ${name}`);
+  for (const name of removed) console.log(`removed ${name} (its add-on is gone)`);
   console.log(`Turned on ${copied.length} packs in "${world}". Restart the server.`);
 } catch (e) {
   console.error(e instanceof Error ? e.message : e);

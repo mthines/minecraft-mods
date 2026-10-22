@@ -108,9 +108,15 @@ Run the server with `./mc` from this folder (`./mc help` lists everything):
 | `./mc restart` | Restart the server, to load changed add-ons |
 | `./mc status` | Is it running, and can players join? |
 | `./mc mods` | List the mods the server loaded |
+| `./mc install ~/Downloads/cool.mcaddon` | Install a downloaded add-on into `addons/` and restart. Installing a newer file of it updates it; a broken one is rolled back. |
+| `./mc remove <name>` | Remove an add-on from `addons/` and turn it off in the world |
+| `./mc update` | Update the server to the newest Minecraft, so updated devices can still join |
+| `./mc kit [player]` | Give diamond tools to everyone online (or one player) |
 | `./mc logs` | Follow the server log |
 | `./mc console` | Type server commands (leave with Ctrl+P, then Ctrl+Q) |
 | `./mc cmd time set day` | Run one server command |
+
+Add-ons from `mc install` are other people's work: check their license before you commit them.
 
 To use `mc` from any folder, link it into a folder on your `PATH`:
 
