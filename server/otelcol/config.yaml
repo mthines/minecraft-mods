@@ -44,6 +44,7 @@ processors:
           # JSON numbers arrive as decimals; sizes and heights are whole blocks.
           - 'set(log.attributes["minecraft.trampoline.size"], Int(log.attributes["minecraft.trampoline.size"])) where log.attributes["minecraft.trampoline.size"] != nil'
           - 'set(log.attributes["minecraft.trampoline.height_blocks"], Int(log.attributes["minecraft.trampoline.height_blocks"])) where log.attributes["minecraft.trampoline.height_blocks"] != nil'
+          - 'set(log.attributes["minecraft.player.level"], Int(log.attributes["minecraft.player.level"])) where log.attributes["minecraft.player.level"] != nil'
 
           # The server's own player lines: "Player connected: Steve, xuid: 2535..." and
           # "Player Spawned: Steve xuid: 2535..." (no comma). Gamertags can contain spaces.

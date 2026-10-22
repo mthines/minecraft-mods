@@ -1,19 +1,21 @@
-import { world } from "@minecraft/server";
+import { EquipmentSlot, world } from "@minecraft/server";
+import "./adventures.js";
 import { category, shortName } from "./blocks.js";
-
-// Game events for the OpenTelemetry Collector, which sends them to Dash0 (see server/otelcol/config.yaml).
-// Each event is one JSON line in the server console; the Collector turns it into a log record.
-/**
- * @param {string} name what happened, like "block.broken"
- * @param {Record<string, string | number | boolean>} attributes details, like the block type
- */
-function emit(name, attributes) {
-  console.log(JSON.stringify({ "event.name": `minecraft.${name}`, ...attributes }));
-}
+import { emit } from "./telemetry.js";
 
 /** @param {import("@minecraft/server").BlockType} type */
 function blockAttributes(type) {
   return { "minecraft.block.type": shortName(type.id), "minecraft.block.category": category(type.id) };
+}
+
+/** What the player holds in their main hand, like "diamond_sword", or "hand" when it's empty. */
+function heldItem(/** @type {import("@minecraft/server").Player} */ player) {
+  try {
+    const item = player.getComponent("minecraft:equippable")?.getEquipment(EquipmentSlot.Mainhand);
+    return item ? shortName(item.typeId) : "hand";
+  } catch {
+    return "hand";
+  }
 }
 
 // Digging, chopping, and mining. The block is already air here, so read what it was.
@@ -40,9 +42,11 @@ world.afterEvents.entityDie.subscribe(({ deadEntity, damageSource }) => {
       "minecraft.mob.type": attacker ? shortName(attacker.typeId) : "none",
     });
   } else if (attacker?.typeId === "minecraft:player") {
+    const player = /** @type {import("@minecraft/server").Player} */ (attacker);
     emit("mob.killed", {
-      "minecraft.player.name": /** @type {import("@minecraft/server").Player} */ (attacker).name,
+      "minecraft.player.name": player.name,
       "minecraft.mob.type": shortName(deadEntity.typeId),
+      "minecraft.held_item.type": heldItem(player),
     });
   }
 });

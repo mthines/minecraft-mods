@@ -158,8 +158,13 @@ To turn it off, delete `server/.env` and run `./mc start` again.
 | `minecraft.rainbow_cookie.eaten` | Someone eats a rainbow cookie | `minecraft.player.name` |
 | `minecraft.block.broken` | Someone digs, chops, or mines a block | `minecraft.player.name`, `minecraft.block.type` (like `oak_log`), `minecraft.block.category` (`wood`, `dirt`, `stone`, `ore`, `sand`, `leaves`, `planks`, `plant`, or `other`), `minecraft.held_item.type` (`hand` when empty) |
 | `minecraft.block.placed` | Someone builds with a block | `minecraft.player.name`, `minecraft.block.type`, `minecraft.block.category` |
-| `minecraft.mob.killed` | A player beats a mob | `minecraft.player.name`, `minecraft.mob.type` (like `zombie`) |
+| `minecraft.mob.killed` | A player beats a mob | `minecraft.player.name`, `minecraft.mob.type` (like `zombie`), `minecraft.held_item.type` (like `diamond_sword`, `hand` when empty) |
 | `minecraft.player.died` | A player dies | `minecraft.player.name`, `minecraft.death.cause` (like `fall` or `entityAttack`), `minecraft.mob.type` (`none` if no mob did it) |
+| `minecraft.player.playing` | Once a minute for everyone online, so counting them counts minutes played | `minecraft.player.name`, `minecraft.dimension` (`overworld`, `nether`, or `end`), `minecraft.biome` (like `plains`) |
+| `minecraft.player.traveled` | Someone went another 100 blocks (sideways, so trampoline bounces don't count) | `minecraft.player.name`, `minecraft.travel.mode` (`walking`, `sprinting`, `swimming`, `riding`, `gliding`, or `flying`), `minecraft.mount.type` when riding (like `horse` or `boat`) |
+| `minecraft.player.level_up` | Someone reaches a new XP level | `minecraft.player.name`, `minecraft.player.level` |
+| `minecraft.player.dimension_changed` | Someone goes through a portal | `minecraft.player.name`, `minecraft.dimension.from`, `minecraft.dimension.to` |
+| `minecraft.item.consumed` | Someone eats or drinks something | `minecraft.player.name`, `minecraft.item.type` (like `cooked_beef` or `potion`) |
 
 To add an event to your own mod, print one JSON line with an `event.name`:
 
@@ -171,7 +176,13 @@ The trampoline mod has a small helper for this in [`telemetry.js`](../addons/tra
 
 ### Family dashboard
 
-[`dash0/family-dashboard.json`](dash0/family-dashboard.json) is a dashboard made for kids: big counters for wood chopped, blocks dug, mobs beaten and cookies eaten, leaderboards, what got everyone killed, and how hard the server is working.
+[`dash0/family-dashboard.json`](dash0/family-dashboard.json) is a dashboard made for kids: big counters for blocks dug and built, trampoline bounces, mobs beaten, wood chopped, ores found and cookies eaten, who did the most of each, what got everyone killed, how high the trampolines bounce, and (folded away, for grown-ups) how hard the server is working.
+
+Play time, travel, level-ups, snacks, and portal trips (the `player.playing` to `item.consumed` events above) arrive once this version of Game Stats is on the server, so they aren't on the dashboard yet. Add panels for them after a play session, when Dash0 has data to check the queries against. For example, minutes played per player:
+
+```promql
+sum by (minecraft_player_name) (increase({otel_metric_name="dash0.logs", event_name="minecraft.player.playing"}[$__range]))
+```
 The game events above come from the Game Stats mod ([`addons/game-stats`](../addons/game-stats)).
 
 To add it in Dash0: **Dashboards → + Add → Edit as JSON**, paste the file's contents, then **Apply** and save.

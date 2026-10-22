@@ -1,195 +1,16 @@
 {
   "kind": "Dashboard",
   "metadata": {
-    "name": "family-server",
+    "name": "bedrock-server-family-fun-stats",
     "project": "minecraft"
   },
   "spec": {
     "display": {
-      "name": "⛏️ Family Server"
+      "name": "⛏️ Family Server – Fun Stats",
+      "description": "What everyone dug, built, bounced, beat, and how they got got, on the family Minecraft Bedrock server. Subject: service_name=bedrock-server game events (dash0.logs grouped by event_name)."
     },
     "duration": "24h",
-    "variables": [],
-    "layouts": [
-      {
-        "kind": "Grid",
-        "spec": {
-          "items": [
-            {
-              "x": 0,
-              "y": 0,
-              "width": 24,
-              "height": 3,
-              "content": {
-                "$ref": "#/spec/panels/intro"
-              }
-            },
-            {
-              "x": 0,
-              "y": 3,
-              "width": 6,
-              "height": 4,
-              "content": {
-                "$ref": "#/spec/panels/wood"
-              }
-            },
-            {
-              "x": 6,
-              "y": 3,
-              "width": 6,
-              "height": 4,
-              "content": {
-                "$ref": "#/spec/panels/dug"
-              }
-            },
-            {
-              "x": 12,
-              "y": 3,
-              "width": 6,
-              "height": 4,
-              "content": {
-                "$ref": "#/spec/panels/placed"
-              }
-            },
-            {
-              "x": 18,
-              "y": 3,
-              "width": 6,
-              "height": 4,
-              "content": {
-                "$ref": "#/spec/panels/ores"
-              }
-            },
-            {
-              "x": 0,
-              "y": 7,
-              "width": 6,
-              "height": 4,
-              "content": {
-                "$ref": "#/spec/panels/mobs"
-              }
-            },
-            {
-              "x": 6,
-              "y": 7,
-              "width": 6,
-              "height": 4,
-              "content": {
-                "$ref": "#/spec/panels/deaths"
-              }
-            },
-            {
-              "x": 12,
-              "y": 7,
-              "width": 6,
-              "height": 4,
-              "content": {
-                "$ref": "#/spec/panels/bounces"
-              }
-            },
-            {
-              "x": 18,
-              "y": 7,
-              "width": 6,
-              "height": 4,
-              "content": {
-                "$ref": "#/spec/panels/cookies"
-              }
-            },
-            {
-              "x": 0,
-              "y": 11,
-              "width": 8,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/digLeaders"
-              }
-            },
-            {
-              "x": 8,
-              "y": 11,
-              "width": 8,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/buildLeaders"
-              }
-            },
-            {
-              "x": 16,
-              "y": 11,
-              "width": 8,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/fightLeaders"
-              }
-            },
-            {
-              "x": 0,
-              "y": 19,
-              "width": 8,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/whatDug"
-              }
-            },
-            {
-              "x": 8,
-              "y": 19,
-              "width": 8,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/whatBeat"
-              }
-            },
-            {
-              "x": 16,
-              "y": 19,
-              "width": 8,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/whatGotUs"
-              }
-            },
-            {
-              "x": 0,
-              "y": 27,
-              "width": 24,
-              "height": 8,
-              "content": {
-                "$ref": "#/spec/panels/activity"
-              }
-            },
-            {
-              "x": 0,
-              "y": 35,
-              "width": 12,
-              "height": 7,
-              "content": {
-                "$ref": "#/spec/panels/cpu"
-              }
-            },
-            {
-              "x": 12,
-              "y": 35,
-              "width": 6,
-              "height": 7,
-              "content": {
-                "$ref": "#/spec/panels/healed"
-              }
-            },
-            {
-              "x": 18,
-              "y": 35,
-              "width": 6,
-              "height": 7,
-              "content": {
-                "$ref": "#/spec/panels/errors"
-              }
-            }
-          ]
-        }
-      }
-    ],
+    "refreshInterval": "1m",
     "panels": {
       "intro": {
         "kind": "Panel",
@@ -200,47 +21,17 @@
           "plugin": {
             "kind": "Markdown",
             "spec": {
-              "text": "## ⛏️ What happened on the Family Server?\nEvery time someone digs, builds, fights, or bounces, the server writes it down. Those notes travel to Dash0, which counts them and draws these pictures. That's **observability**: seeing what's going on inside a computer without looking over anyone's shoulder."
+              "text": "## 👋 Welcome to the Family Server stats!\nEvery block you dig, everything you build, every trampoline bounce and every creeper fight shows up here. Pick a time in the top right: **Last 24 hours** is today, **Last 7 days** is the whole week. Numbers update every minute while you play.\n"
             }
           }
-        }
-      },
-      "wood": {
-        "kind": "Panel",
-        "spec": {
-          "display": {
-            "name": "🌳 Wood chopped"
-          },
-          "plugin": {
-            "kind": "StatChart",
-            "spec": {
-              "calculation": "last",
-              "format": {
-                "unit": "decimal",
-                "decimalPlaces": 0
-              }
-            }
-          },
-          "queries": [
-            {
-              "kind": "TimeSeriesQuery",
-              "spec": {
-                "plugin": {
-                  "kind": "PrometheusTimeSeriesQuery",
-                  "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.block.broken\", minecraft_block_category=\"wood\"}[$__range])) or vector(0)"
-                  }
-                }
-              }
-            }
-          ]
         }
       },
       "dug": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "⛏️ Blocks dug"
+            "name": "⛏️ Blocks dug",
+            "description": "Blocks broken by anyone: digging, chopping, mining."
           },
           "plugin": {
             "kind": "StatChart",
@@ -259,7 +50,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.block.broken\"}[$__range])) or vector(0)"
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.broken\"}[$__range])) or vector(0)"
                   }
                 }
               }
@@ -271,7 +62,8 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🧱 Blocks placed"
+            "name": "🧱 Blocks built",
+            "description": "Blocks placed by anyone."
           },
           "plugin": {
             "kind": "StatChart",
@@ -290,100 +82,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.block.placed\"}[$__range])) or vector(0)"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      },
-      "ores": {
-        "kind": "Panel",
-        "spec": {
-          "display": {
-            "name": "💎 Ores found"
-          },
-          "plugin": {
-            "kind": "StatChart",
-            "spec": {
-              "calculation": "last",
-              "format": {
-                "unit": "decimal",
-                "decimalPlaces": 0
-              }
-            }
-          },
-          "queries": [
-            {
-              "kind": "TimeSeriesQuery",
-              "spec": {
-                "plugin": {
-                  "kind": "PrometheusTimeSeriesQuery",
-                  "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.block.broken\", minecraft_block_category=\"ore\"}[$__range])) or vector(0)"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      },
-      "mobs": {
-        "kind": "Panel",
-        "spec": {
-          "display": {
-            "name": "⚔️ Mobs defeated"
-          },
-          "plugin": {
-            "kind": "StatChart",
-            "spec": {
-              "calculation": "last",
-              "format": {
-                "unit": "decimal",
-                "decimalPlaces": 0
-              }
-            }
-          },
-          "queries": [
-            {
-              "kind": "TimeSeriesQuery",
-              "spec": {
-                "plugin": {
-                  "kind": "PrometheusTimeSeriesQuery",
-                  "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.mob.killed\"}[$__range])) or vector(0)"
-                  }
-                }
-              }
-            }
-          ]
-        }
-      },
-      "deaths": {
-        "kind": "Panel",
-        "spec": {
-          "display": {
-            "name": "💀 Times we died"
-          },
-          "plugin": {
-            "kind": "StatChart",
-            "spec": {
-              "calculation": "last",
-              "format": {
-                "unit": "decimal",
-                "decimalPlaces": 0
-              }
-            }
-          },
-          "queries": [
-            {
-              "kind": "TimeSeriesQuery",
-              "spec": {
-                "plugin": {
-                  "kind": "PrometheusTimeSeriesQuery",
-                  "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.player.died\"}[$__range])) or vector(0)"
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.placed\"}[$__range])) or vector(0)"
                   }
                 }
               }
@@ -395,7 +94,8 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🦘 Trampoline bounces"
+            "name": "🦘 Trampoline bounces",
+            "description": "Every bounce on a trampoline from the Trampoline mod."
           },
           "plugin": {
             "kind": "StatChart",
@@ -414,7 +114,135 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.trampoline.bounce\"}[$__range])) or vector(0)"
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.trampoline.bounce\"}[$__range])) or vector(0)"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "mobs": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "⚔️ Mobs defeated",
+            "description": "Mobs beaten by a player."
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {
+              "calculation": "last",
+              "format": {
+                "unit": "decimal",
+                "decimalPlaces": 0
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.mob.killed\"}[$__range])) or vector(0)"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "deaths": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "💀 Times we died",
+            "description": "Player deaths, from anything."
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {
+              "calculation": "last",
+              "format": {
+                "unit": "decimal",
+                "decimalPlaces": 0
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.player.died\"}[$__range])) or vector(0)"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "wood": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "🌳 Wood chopped",
+            "description": "Logs, stems and wood blocks broken."
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {
+              "calculation": "last",
+              "format": {
+                "unit": "decimal",
+                "decimalPlaces": 0
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.broken\", minecraft_block_category=\"wood\"}[$__range])) or vector(0)"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "ores": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "💎 Ores found",
+            "description": "Ore blocks mined: coal, iron, gold, diamond, ancient debris and friends."
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {
+              "calculation": "last",
+              "format": {
+                "unit": "decimal",
+                "decimalPlaces": 0
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.broken\", minecraft_block_category=\"ore\"}[$__range])) or vector(0)"
                   }
                 }
               }
@@ -426,7 +254,8 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🍪 Rainbow cookies eaten"
+            "name": "🍪 Rainbow cookies eaten",
+            "description": "Rainbow cookies from the Rainbow Cookie mod."
           },
           "plugin": {
             "kind": "StatChart",
@@ -445,7 +274,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.rainbow_cookie.eaten\"}[$__range])) or vector(0)"
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.rainbow_cookie.eaten\"}[$__range])) or vector(0)"
                   }
                 }
               }
@@ -457,17 +286,17 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🏆 Best diggers"
+            "name": "🏆 Best diggers",
+            "description": "Blocks dug per player."
           },
           "plugin": {
-            "kind": "BarChart",
+            "kind": "PieChart",
             "spec": {
               "calculation": "last",
-              "format": {
-                "unit": "decimal",
-                "decimalPlaces": 0
-              },
-              "sort": "desc"
+              "legend": {
+                "position": "right",
+                "mode": "list"
+              }
             }
           },
           "queries": [
@@ -477,7 +306,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (minecraft_player_name) (increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.block.broken\"}[$__range]))",
+                    "query": "topk(10, sum by (minecraft_player_name) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.broken\"}[$__range])))",
                     "seriesNameFormat": "{{minecraft_player_name}}"
                   }
                 }
@@ -490,17 +319,17 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🏗️ Best builders"
+            "name": "🏗️ Best builders",
+            "description": "Blocks placed per player."
           },
           "plugin": {
-            "kind": "BarChart",
+            "kind": "PieChart",
             "spec": {
               "calculation": "last",
-              "format": {
-                "unit": "decimal",
-                "decimalPlaces": 0
-              },
-              "sort": "desc"
+              "legend": {
+                "position": "right",
+                "mode": "list"
+              }
             }
           },
           "queries": [
@@ -510,7 +339,40 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (minecraft_player_name) (increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.block.placed\"}[$__range]))",
+                    "query": "topk(10, sum by (minecraft_player_name) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.placed\"}[$__range])))",
+                    "seriesNameFormat": "{{minecraft_player_name}}"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "bounceLeaders": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "🦘 Bounciest",
+            "description": "Trampoline bounces per player."
+          },
+          "plugin": {
+            "kind": "PieChart",
+            "spec": {
+              "calculation": "last",
+              "legend": {
+                "position": "right",
+                "mode": "list"
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "topk(10, sum by (minecraft_player_name) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.trampoline.bounce\"}[$__range])))",
                     "seriesNameFormat": "{{minecraft_player_name}}"
                   }
                 }
@@ -523,17 +385,17 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🗡️ Best fighters"
+            "name": "🗡️ Best fighters",
+            "description": "Mobs defeated per player."
           },
           "plugin": {
-            "kind": "BarChart",
+            "kind": "PieChart",
             "spec": {
               "calculation": "last",
-              "format": {
-                "unit": "decimal",
-                "decimalPlaces": 0
-              },
-              "sort": "desc"
+              "legend": {
+                "position": "right",
+                "mode": "list"
+              }
             }
           },
           "queries": [
@@ -543,7 +405,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (minecraft_player_name) (increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.mob.killed\"}[$__range]))",
+                    "query": "topk(10, sum by (minecraft_player_name) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.mob.killed\"}[$__range])))",
                     "seriesNameFormat": "{{minecraft_player_name}}"
                   }
                 }
@@ -556,7 +418,8 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🪨 What we dug"
+            "name": "🪨 What we dug",
+            "description": "The 10 block types broken most."
           },
           "plugin": {
             "kind": "PieChart",
@@ -575,8 +438,74 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (minecraft_block_category) (increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.block.broken\"}[$__range]))",
-                    "seriesNameFormat": "{{minecraft_block_category}}"
+                    "query": "topk(10, sum by (minecraft_block_type) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.broken\"}[$__range])))",
+                    "seriesNameFormat": "{{minecraft_block_type}}"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "whatBuilt": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "🏠 What we built with",
+            "description": "The 10 block types placed most."
+          },
+          "plugin": {
+            "kind": "PieChart",
+            "spec": {
+              "calculation": "last",
+              "legend": {
+                "position": "right",
+                "mode": "list"
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "topk(10, sum by (minecraft_block_type) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.placed\"}[$__range])))",
+                    "seriesNameFormat": "{{minecraft_block_type}}"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "tools": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "🪓 Favorite tools",
+            "description": "What players held while digging (hand = empty hand)."
+          },
+          "plugin": {
+            "kind": "PieChart",
+            "spec": {
+              "calculation": "last",
+              "legend": {
+                "position": "right",
+                "mode": "list"
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "topk(10, sum by (minecraft_held_item_type) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.block.broken\"}[$__range])))",
+                    "seriesNameFormat": "{{minecraft_held_item_type}}"
                   }
                 }
               }
@@ -588,7 +517,8 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🧟 Mobs we beat"
+            "name": "🧟 Mobs we beat",
+            "description": "Mobs defeated, by type."
           },
           "plugin": {
             "kind": "PieChart",
@@ -607,7 +537,7 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (minecraft_mob_type) (increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.mob.killed\"}[$__range]))",
+                    "query": "topk(10, sum by (minecraft_mob_type) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.mob.killed\"}[$__range])))",
                     "seriesNameFormat": "{{minecraft_mob_type}}"
                   }
                 }
@@ -620,7 +550,8 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "😵 What got us"
+            "name": "😵 What got us",
+            "description": "Deaths by who did it and how (none = no mob, like falling or suffocating)."
           },
           "plugin": {
             "kind": "PieChart",
@@ -639,8 +570,41 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (minecraft_death_cause) (increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.player.died\"}[$__range]))",
-                    "seriesNameFormat": "{{minecraft_death_cause}}"
+                    "query": "topk(10, sum by (minecraft_mob_type, minecraft_death_cause) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.player.died\"}[$__range])))",
+                    "seriesNameFormat": "{{minecraft_mob_type}} · {{minecraft_death_cause}}"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "bounceHeight": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "🚀 How high we bounced",
+            "description": "Bounces by how high the trampoline launches you. Bigger trampolines bounce higher."
+          },
+          "plugin": {
+            "kind": "PieChart",
+            "spec": {
+              "calculation": "last",
+              "legend": {
+                "position": "right",
+                "mode": "list"
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum by (minecraft_trampoline_height_blocks) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.trampoline.bounce\"}[$__range]))",
+                    "seriesNameFormat": "{{minecraft_trampoline_height_blocks}} blocks high"
                   }
                 }
               }
@@ -652,20 +616,25 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "📈 Busy times"
+            "name": "📈 What we were doing, and when",
+            "description": "Game events over time. Tall bars are busy play sessions."
           },
           "plugin": {
             "kind": "TimeSeriesChart",
             "spec": {
               "visual": {
-                "display": "bar",
-                "areaOpacity": 0.4
+                "display": "bar"
               },
               "yAxis": {
                 "format": {
-                  "unit": "decimal"
+                  "unit": "decimal",
+                  "decimalPlaces": 0
                 },
                 "min": 0
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list"
               }
             }
           },
@@ -676,8 +645,8 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum by (event_name) (increase({otel_metric_name=\"dash0.logs\", event_name=~\"minecraft\\\\.(block|mob|player\\\\.died|trampoline\\\\.bounce).*\"}[$__interval]))",
-                    "seriesNameFormat": "{{event_name}}"
+                    "query": "label_replace(sum by (event_name) (increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=~\"minecraft[.](block|mob|player[.]died|trampoline|rainbow_cookie).*\"}[$__interval])), \"what\", \"$1\", \"event_name\", \"minecraft[.](.*)\")",
+                    "seriesNameFormat": "{{what}}"
                   }
                 }
               }
@@ -689,20 +658,22 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🖥️ How hard is the server working? (CPU %)"
+            "name": "🖥️ How hard the server is working (CPU)",
+            "description": "CPU used by the bedrock-server container. About 0.4% when nobody is playing."
           },
           "plugin": {
             "kind": "TimeSeriesChart",
             "spec": {
-              "visual": {
-                "display": "line",
-                "areaOpacity": 0.4
-              },
               "yAxis": {
                 "format": {
-                  "unit": "percent"
+                  "unit": "percent",
+                  "decimalPlaces": 1
                 },
                 "min": 0
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list"
               }
             }
           },
@@ -713,8 +684,8 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "avg({otel_metric_name=\"container.cpu.utilization\", service_name=\"bedrock-server\"})",
-                    "seriesNameFormat": "server"
+                    "query": "avg by (service_name) ({otel_metric_name=\"container.cpu.utilization\", service_name=\"bedrock-server\"})",
+                    "seriesNameFormat": "{{service_name}}"
                   }
                 }
               }
@@ -722,11 +693,51 @@
           ]
         }
       },
-      "healed": {
+      "memory": {
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🩹 Times the server fixed itself"
+            "name": "🧠 Server memory",
+            "description": "Memory used by the bedrock-server container. About 2 GB when this dashboard was built."
+          },
+          "plugin": {
+            "kind": "TimeSeriesChart",
+            "spec": {
+              "yAxis": {
+                "format": {
+                  "unit": "bytes",
+                  "decimalPlaces": 1
+                },
+                "min": 0
+              },
+              "legend": {
+                "position": "bottom",
+                "mode": "list"
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "max by (service_name) ({otel_metric_name=\"container.memory.usage.total\", service_name=\"bedrock-server\"})",
+                    "seriesNameFormat": "{{service_name}}"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "restarts": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "🔄 Server starts",
+            "description": "Times the server started (./mc start, restart, or a dev reload)."
           },
           "plugin": {
             "kind": "StatChart",
@@ -745,7 +756,39 @@
                 "plugin": {
                   "kind": "PrometheusTimeSeriesQuery",
                   "spec": {
-                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.server.healed\"}[$__range])) or vector(0)"
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.server.started\"}[$__range])) or vector(0)"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "healed": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "🩹 Times the server fixed itself",
+            "description": "Restarts by the autoheal container after the server went unhealthy."
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {
+              "calculation": "last",
+              "format": {
+                "unit": "decimal",
+                "decimalPlaces": 0
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", service_name=\"bedrock-server\", event_name=\"minecraft.server.healed\"}[$__range])) or vector(0)"
                   }
                 }
               }
@@ -757,7 +800,8 @@
         "kind": "Panel",
         "spec": {
           "display": {
-            "name": "🐞 Server errors"
+            "name": "🐞 Server error lines",
+            "description": "ERROR lines in the server log. Most are 'No targets matched selector' from ./mc kit when nobody is online, which is harmless."
           },
           "plugin": {
             "kind": "StatChart",
@@ -784,6 +828,318 @@
           ]
         }
       }
-    }
+    },
+    "layouts": [
+      {
+        "kind": "Grid",
+        "spec": {
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 3,
+              "content": {
+                "$ref": "#/spec/panels/intro"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "🏅 Big numbers",
+            "collapse": {
+              "open": true
+            }
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/dug"
+              }
+            },
+            {
+              "x": 6,
+              "y": 0,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/placed"
+              }
+            },
+            {
+              "x": 12,
+              "y": 0,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/bounces"
+              }
+            },
+            {
+              "x": 18,
+              "y": 0,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/mobs"
+              }
+            },
+            {
+              "x": 0,
+              "y": 4,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/deaths"
+              }
+            },
+            {
+              "x": 6,
+              "y": 4,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/wood"
+              }
+            },
+            {
+              "x": 12,
+              "y": 4,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/ores"
+              }
+            },
+            {
+              "x": 18,
+              "y": 4,
+              "width": 6,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/cookies"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "🏆 Who did the most?",
+            "collapse": {
+              "open": true
+            }
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 6,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/digLeaders"
+              }
+            },
+            {
+              "x": 6,
+              "y": 0,
+              "width": 6,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/buildLeaders"
+              }
+            },
+            {
+              "x": 12,
+              "y": 0,
+              "width": 6,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/bounceLeaders"
+              }
+            },
+            {
+              "x": 18,
+              "y": 0,
+              "width": 6,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/fightLeaders"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "🧱 Digging and building",
+            "collapse": {
+              "open": true
+            }
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 8,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/whatDug"
+              }
+            },
+            {
+              "x": 8,
+              "y": 0,
+              "width": 8,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/whatBuilt"
+              }
+            },
+            {
+              "x": 16,
+              "y": 0,
+              "width": 8,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/tools"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "⚔️ Fights and trampolines",
+            "collapse": {
+              "open": true
+            }
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 8,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/whatBeat"
+              }
+            },
+            {
+              "x": 8,
+              "y": 0,
+              "width": 8,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/whatGotUs"
+              }
+            },
+            {
+              "x": 16,
+              "y": 0,
+              "width": 8,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/bounceHeight"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "📈 When we played",
+            "collapse": {
+              "open": true
+            }
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 24,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/activity"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "kind": "Grid",
+        "spec": {
+          "display": {
+            "title": "🛠️ For grown-ups: the server",
+            "collapse": {
+              "open": false
+            }
+          },
+          "items": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/cpu"
+              }
+            },
+            {
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 8,
+              "content": {
+                "$ref": "#/spec/panels/memory"
+              }
+            },
+            {
+              "x": 0,
+              "y": 8,
+              "width": 8,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/restarts"
+              }
+            },
+            {
+              "x": 8,
+              "y": 8,
+              "width": 8,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/healed"
+              }
+            },
+            {
+              "x": 16,
+              "y": 8,
+              "width": 8,
+              "height": 4,
+              "content": {
+                "$ref": "#/spec/panels/errors"
+              }
+            }
+          ]
+        }
+      }
+    ]
   }
 }
