@@ -20,8 +20,9 @@ services:
       MAX_PLAYERS: "10"
       ALLOW_CHEATS: "true" # needed for /function party and other commands
       ONLINE_MODE: "true" # players must sign in with a Microsoft account
-      ALLOW_LIST: "true" # only the gamertags below can join
-      ALLOW_LIST_USERS: "YourGamertag,KidGamertag1,KidGamertag2"
+      ALLOW_LIST: "false" # "true" = only the gamertags below can join
+      # Any names here turn the allow list back on, e.g. "YourGamertag,KidGamertag1,KidGamertag2"
+      ALLOW_LIST_USERS: ""
       OPS: "YourGamertag" # operators can run commands like /function party
       TEXTUREPACK_REQUIRED: "true" # sends the resource packs to everyone who joins
       # Players connect on TCP 19132, then play over one UDP port each from this range.

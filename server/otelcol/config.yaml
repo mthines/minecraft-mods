@@ -45,8 +45,9 @@ processors:
           - 'set(log.attributes["minecraft.trampoline.size"], Int(log.attributes["minecraft.trampoline.size"])) where log.attributes["minecraft.trampoline.size"] != nil'
           - 'set(log.attributes["minecraft.trampoline.height_blocks"], Int(log.attributes["minecraft.trampoline.height_blocks"])) where log.attributes["minecraft.trampoline.height_blocks"] != nil'
 
-          # The server's own player lines: "Player connected: Steve, xuid: 2535..."
-          - 'set(log.cache["player"], ExtractPatterns(log.body, "^Player (?P<action>connected|disconnected|Spawned): (?P<name>[^,]+)")) where IsMatch(log.body, "^Player (connected|disconnected|Spawned): ")'
+          # The server's own player lines: "Player connected: Steve, xuid: 2535..." and
+          # "Player Spawned: Steve xuid: 2535..." (no comma). Gamertags can contain spaces.
+          - 'set(log.cache["player"], ExtractPatterns(log.body, "^Player (?P<action>connected|disconnected|Spawned): (?P<name>.+?),? xuid:")) where IsMatch(log.body, "^Player (connected|disconnected|Spawned): .+ xuid:")'
           - 'set(log.attributes["event.name"], Concat(["minecraft.player.", ToLowerCase(log.cache["player"]["action"])], "")) where log.cache["player"]["action"] != nil'
           - 'set(log.attributes["minecraft.player.name"], log.cache["player"]["name"]) where log.cache["player"]["name"] != nil'
           - 'set(log.attributes["event.name"], "minecraft.server.started") where log.body == "Server started."'

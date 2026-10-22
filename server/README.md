@@ -47,14 +47,22 @@ Omarchy comes with Docker and a firewall that blocks everything coming in.
 
 ## Set up on a MacBook
 
-1. Install [OrbStack](https://orbstack.dev/) or [Docker Desktop](https://www.docker.com/products/docker-desktop/), and open it once.
-   [Colima](https://github.com/abiosoft/colima) works too, but its default port forwarding passes only TCP, and the game needs UDP.
-   Start it with `colima start --port-forwarder grpc` (once you've done this, `colima start` remembers it).
-2. If macOS asks whether Docker may accept incoming connections, choose **Allow**.
-3. Continue with [Start the server](#start-the-server).
+1. Install [Colima](https://github.com/abiosoft/colima) and start it with its own network address:
 
-`start.sh` looks up your Mac's Wi-Fi address and tells the server to use it.
-If your Mac gets a new address (after a router restart, say), run `./start.sh` again.
+   ```bash
+   colima start --network-address --port-forwarder grpc
+   ```
+
+   Colima remembers these options for the next `colima start`. Restarting Colima stops every other container it runs.
+2. Continue with [Start the server](#start-the-server).
+
+Minecraft 1.26 connects over NetherNet (WebRTC), which fails through Docker's port forwarding with "Multiplayer Connection Failed: NetherNet".
+With `--network-address`, the Colima VM gets an address like `192.168.64.2`, and `start.sh` runs the server directly on the VM's network.
+It prints that address: on the Mac, add the server with it, port `19132`.
+
+That address only works from the Mac itself. For iPads and phones to join, the VM likely needs Colima's `bridged` network mode (untested here), which you can only choose when you create the VM (`colima delete`, then `colima start --network-address --network-mode bridged --port-forwarder grpc`). `colima delete` removes all of the VM's images and volumes.
+
+Without a VM address (Docker Desktop, OrbStack, or Colima without `--network-address`), `start.sh` falls back to forwarding ports from the Mac's Wi-Fi address and warns that joining will likely fail.
 
 ## Start the server
 
@@ -109,7 +117,7 @@ This works the same on Omarchy and on a Mac.
 | Device | How to join |
 | --- | --- |
 | Any device, server on Omarchy, same Wi-Fi | **Play → Friends → LAN Games** |
-| iPad, phone, or PC | **Play → Servers → Add Server**: the server computer's IP address, port `19132` |
+| iPad, phone, or PC | **Play → Servers → Add Server**: the server computer's IP address, port `19132` (on a Mac, the address `start.sh` prints) |
 | Switch, Xbox, or PlayStation, server on a Mac | Not possible: consoles only see LAN Games and featured servers |
 
 Find the server computer's IP address with `ip -4 addr` on Omarchy, or `ipconfig getifaddr en0` on a Mac.
