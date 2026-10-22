@@ -2,8 +2,6 @@
 # ./start.sh adds this file when server/.env has a DASH0_AUTH_TOKEN.
 services:
   bedrock:
-    environment:
-      CONTENT_LOG_CONSOLE_OUTPUT_ENABLED: "true" # script errors show up in the console, and so in Dash0
     logging:
       # Docker hands every console line to the Collector; `docker logs` keeps working too.
       driver: fluentd

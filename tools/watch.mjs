@@ -56,7 +56,7 @@ async function apply() {
         console.log("  Changed a picture? Raise the resource pack's version in manifest.json, or devices keep the old one.");
       }
     }
-    await showScriptErrors(since);
+    await showScriptErrors(since, files.every((f) => RELOADABLE.test(f)) ? "reloaded" : "Server started");
   } catch (e) {
     console.log(`\n[${time}] ✗ ${e instanceof Error ? e.message.split("\n")[0] : e}`);
     console.log(`  Is the server running? Start it with ./server/start.sh`);
@@ -71,10 +71,20 @@ function describe(files) {
   return names.length <= 3 ? names.join(", ") : `${names.length} files`;
 }
 
-/** Shows script errors the server printed after `since`, so mistakes don't go unnoticed. */
-async function showScriptErrors(since) {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  const { stdout, stderr } = await run("docker", ["logs", "--since", since, CONTAINER]);
-  const problems = `${stdout}\n${stderr}`.split("\n").filter((line) => /\b(ERROR|WARN)\]/.test(line));
+/**
+ * Shows script errors the server printed after `since`, so mistakes don't go unnoticed.
+ * Waits for the line that says the server is done (a restart takes a while), or a minute at most.
+ * @param {string} since
+ * @param {string} doneLine
+ */
+async function showScriptErrors(since, doneLine) {
+  let output = "";
+  for (let waited = 0; waited < 60_000 && !output.includes(doneLine); waited += 1000) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const { stdout, stderr } = await run("docker", ["logs", "--since", since, CONTAINER]);
+    output = `${stdout}\n${stderr}`;
+  }
+  if (doneLine === "Server started" && output.includes(doneLine)) console.log("  Server is back up.");
+  const problems = output.split("\n").filter((line) => /\b(ERROR|WARN)\]/.test(line));
   for (const line of problems) console.log(`  ⚠ ${line.trim()}`);
 }

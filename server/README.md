@@ -48,6 +48,8 @@ Omarchy comes with Docker and a firewall that blocks everything coming in.
 ## Set up on a MacBook
 
 1. Install [OrbStack](https://orbstack.dev/) or [Docker Desktop](https://www.docker.com/products/docker-desktop/), and open it once.
+   [Colima](https://github.com/abiosoft/colima) works too, but its default port forwarding passes only TCP, and the game needs UDP.
+   Start it with `colima start --port-forwarder grpc` (once you've done this, `colima start` remembers it).
 2. If macOS asks whether Docker may accept incoming connections, choose **Allow**.
 3. Continue with [Start the server](#start-the-server).
 

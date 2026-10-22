@@ -28,3 +28,4 @@ services:
       # Keep at least one port per player (MAX_PLAYERS).
       SERVER_UDP_PORTS: "19140-19155"
       ENABLE_LAN_VISIBILITY: "true" # announces the server on UDP 7551
+      CONTENT_LOG_CONSOLE_OUTPUT_ENABLED: "true" # script errors show up in `docker logs`, npm run watch, and Dash0
