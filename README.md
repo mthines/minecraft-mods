@@ -102,3 +102,4 @@ After a change, type `/reload` in the world to reload scripts and functions with
 | `npm run build` | Check, then write `dist/<name>.mcaddon` files |
 | `npm run build -- <name>` | Build only one add-on |
 | `npm run deploy` | Copy every add-on to the server in `server/data` and turn them on |
+| `npm run watch` | Send each change to the running server as you save; code reloads in about a second |
