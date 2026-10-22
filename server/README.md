@@ -104,7 +104,7 @@ Every time you save a file in `addons/`, it checks the add-on, copies it to the 
 | You changed | What happens | How long |
 | --- | --- | --- |
 | Code (`scripts/`) or commands (`functions/`) | The server runs `/reload`. Stay in the world and try it again. | About a second |
-| Anything else: items, recipes, pictures, `manifest.json` | The server restarts. Rejoin the world. | About 20 seconds |
+| Anything else: items, recipes, pictures, `manifest.json` | The server restarts. Rejoin the world when `npm run watch` says it's back up. | 20 seconds to a minute |
 
 Script errors from the server show up right under the change, marked ⚠.
 Broken JSON never reaches the server: the watcher tells you what to fix.
@@ -198,11 +198,28 @@ A mod is throwing errors:
 sum(increase({otel_metric_name="dash0.logs", service_name="bedrock-server", otel_log_severity_range="ERROR"}[10m])) > 0
 ```
 
+The server got stuck and restarted itself (see [Recovering on its own](#recovering-on-its-own)):
+
+```promql
+sum(increase({otel_metric_name="dash0.logs", event_name="minecraft.server.healed"}[1h])) > 0
+```
+
 Bounces in the last hour, per trampoline size:
 
 ```promql
 sum by (minecraft_trampoline_size) (increase({otel_metric_name="dash0.logs", event_name="minecraft.trampoline.bounce"}[1h]))
 ```
+
+## Recovering on its own
+
+A restart within a minute of someone joining used to leave the server unjoinable: it said `Server started.`, but players got "Multiplayer Connection Failed: NetherNet".
+Linux keeps each closed connection on port 19132 in TCP `TIME_WAIT` for 60 seconds, and the server can't open the port while one does, without saying so.
+
+Three things now handle it:
+
+- **Before starting**, [`wait-for-join-port.sh`](wait-for-join-port.sh) waits until no old connection holds the port. A restart takes up to a minute longer, then joining works.
+- **The health check** looks for the server listening on port 19132, every 15 seconds. It reads the socket table instead of connecting, because connecting would hold the port for another minute. `docker ps` shows `(unhealthy)` after 3 failed checks.
+- **The `family-autoheal` container** restarts the server when it's unhealthy, for anything else that goes wrong. `docker logs family-autoheal` lists every restart. With telemetry on, each one is a `minecraft.server.healed` event in Dash0. It only restarts containers labelled `autoheal=true`, so other containers on the computer are never touched.
 
 ## When something goes wrong
 
@@ -215,6 +232,7 @@ sum by (minecraft_trampoline_size) (increase({otel_metric_name="dash0.logs", eve
 | The cookie shows as a purple-and-black box | The resource pack didn't load. Check `TEXTUREPACK_REQUIRED` is `"true"` and rerun `npm run deploy`. |
 | A script mod does nothing | Run `docker logs family-bedrock` and look for `[Scripting]` errors, or use `npm run watch`, which shows them. |
 | Nothing arrives in Dash0 | Run `docker logs family-otelcol` and look for `error`. Check the endpoint (port `4317`) and token in `server/.env`. |
+| "Multiplayer Connection Failed: NetherNet" right after a restart | The server waits up to a minute for its join port after a restart. Wait until `docker ps` shows `(healthy)` and join again. See [Recovering on its own](#recovering-on-its-own). |
 | "Unknown command" for `/function party` | Put that player's gamertag in `OPS` and run `./server/start.sh` again, or check that `ALLOW_CHEATS` is on. |
 
 ## Server console

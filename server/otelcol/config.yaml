@@ -51,6 +51,10 @@ processors:
           - 'set(log.attributes["event.name"], Concat(["minecraft.player.", ToLowerCase(log.cache["player"]["action"])], "")) where log.cache["player"]["action"] != nil'
           - 'set(log.attributes["minecraft.player.name"], log.cache["player"]["name"]) where log.cache["player"]["name"] != nil'
           - 'set(log.attributes["event.name"], "minecraft.server.started") where log.body == "Server started."'
+          # From the autoheal container: "... Container /family-bedrock (1a2b3c) found to be unhealthy - Restarting container now ..."
+          - 'set(log.attributes["event.name"], "minecraft.server.healed") where IsMatch(log.body, "found to be unhealthy - Restarting")'
+          - 'set(log.severity_text, "WARN") where log.attributes["event.name"] == "minecraft.server.healed"'
+          - 'set(log.severity_number, SEVERITY_NUMBER_WARN) where log.attributes["event.name"] == "minecraft.server.healed"'
 
           - 'set(log.event_name, log.attributes["event.name"]) where log.attributes["event.name"] != nil'
 

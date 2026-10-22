@@ -162,10 +162,19 @@
             {
               "x": 0,
               "y": 35,
-              "width": 18,
+              "width": 12,
               "height": 7,
               "content": {
                 "$ref": "#/spec/panels/cpu"
+              }
+            },
+            {
+              "x": 12,
+              "y": 35,
+              "width": 6,
+              "height": 7,
+              "content": {
+                "$ref": "#/spec/panels/healed"
               }
             },
             {
@@ -706,6 +715,37 @@
                   "spec": {
                     "query": "avg({otel_metric_name=\"container.cpu.utilization\", service_name=\"bedrock-server\"})",
                     "seriesNameFormat": "server"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "healed": {
+        "kind": "Panel",
+        "spec": {
+          "display": {
+            "name": "🩹 Times the server fixed itself"
+          },
+          "plugin": {
+            "kind": "StatChart",
+            "spec": {
+              "calculation": "last",
+              "format": {
+                "unit": "decimal",
+                "decimalPlaces": 0
+              }
+            }
+          },
+          "queries": [
+            {
+              "kind": "TimeSeriesQuery",
+              "spec": {
+                "plugin": {
+                  "kind": "PrometheusTimeSeriesQuery",
+                  "spec": {
+                    "query": "sum(increase({otel_metric_name=\"dash0.logs\", event_name=\"minecraft.server.healed\"}[$__range])) or vector(0)"
                   }
                 }
               }

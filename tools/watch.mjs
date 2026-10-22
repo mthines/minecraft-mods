@@ -51,12 +51,14 @@ async function apply() {
       console.log(`\n[${time}] ↻ Reloaded ${describe(files)}. Try it in the game now.`);
     } else {
       await run("docker", ["restart", CONTAINER]);
-      console.log(`\n[${time}] ⟳ Restarted the server for ${describe(files)}. Rejoin the world in about 20 seconds.`);
+      console.log(`\n[${time}] ⟳ Restarted the server for ${describe(files)}. Wait for it to come back up.`);
       if (files.some((f) => f.includes("/resource_pack/"))) {
         console.log("  Changed a picture? Raise the resource pack's version in manifest.json, or devices keep the old one.");
       }
     }
-    await showScriptErrors(since, files.every((f) => RELOADABLE.test(f)) ? "reloaded" : "Server started");
+    const reloaded = files.every((f) => RELOADABLE.test(f));
+    await showScriptErrors(since, reloaded ? "reloaded" : "Server started");
+    if (!reloaded) await reportJoinable();
   } catch (e) {
     console.log(`\n[${time}] ✗ ${e instanceof Error ? e.message.split("\n")[0] : e}`);
     console.log(`  Is the server running? Start it with ./server/start.sh`);
@@ -73,18 +75,30 @@ function describe(files) {
 
 /**
  * Shows script errors the server printed after `since`, so mistakes don't go unnoticed.
- * Waits for the line that says the server is done (a restart takes a while), or a minute at most.
+ * Waits for the line that says the server is done (a restart can take over a minute), or two minutes at most.
  * @param {string} since
  * @param {string} doneLine
  */
 async function showScriptErrors(since, doneLine) {
   let output = "";
-  for (let waited = 0; waited < 60_000 && !output.includes(doneLine); waited += 1000) {
+  for (let waited = 0; waited < 120_000 && !output.includes(doneLine); waited += 1000) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     const { stdout, stderr } = await run("docker", ["logs", "--since", since, CONTAINER]);
     output = `${stdout}\n${stderr}`;
   }
-  if (doneLine === "Server started" && output.includes(doneLine)) console.log("  Server is back up.");
   const problems = output.split("\n").filter((line) => /\b(ERROR|WARN)\]/.test(line));
   for (const line of problems) console.log(`  ⚠ ${line.trim()}`);
+}
+
+// "Server started" isn't enough: the server has said it while nobody could join (see server/README.md).
+// Its health check knows whether joins work (docker-compose.yml), so wait for that instead.
+async function reportJoinable() {
+  for (let waited = 0; waited < 120_000; waited += 2000) {
+    const { stdout } = await run("docker", ["inspect", "-f", "{{if .State.Health}}{{.State.Health.Status}}{{end}}", CONTAINER]);
+    const status = stdout.trim();
+    if (status === "healthy" || status === "") return void console.log("  Server is back up. Rejoin now.");
+    if (status === "unhealthy") break;
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+  console.log("  ⚠ The server is running but not accepting joins yet. The autoheal service restarts it if this lasts.");
 }
