@@ -27,6 +27,8 @@ processors:
     log_statements:
       - context: log
         statements:
+          # The console is a terminal (tty: true), so every line ends in "\r".
+          - 'replace_pattern(log.body, "\\r+$", "")'
           # "[2026-10-22 10:00:00:123 INFO] Server started." → severity INFO, body "Server started."
           - 'set(log.severity_text, "INFO") where IsMatch(log.body, "^\\[[^\\]]* INFO\\]")'
           - 'set(log.severity_number, SEVERITY_NUMBER_INFO) where log.severity_text == "INFO"'
@@ -56,6 +58,12 @@ processors:
           - 'set(log.attributes["container.id"], log.attributes["container_id"]) where log.attributes["container_id"] != nil'
           - 'set(log.attributes["log.iostream"], log.attributes["source"]) where log.attributes["source"] != nil'
           - 'delete_matching_keys(log.attributes, "^(container_name|container_id|source|fluent\\.tag)$")'
+  # docker_stats sees every container on this computer; keep only the family server's.
+  filter/family_containers:
+    error_mode: ignore
+    metrics:
+      metric:
+        - 'not IsMatch(resource.attributes["container.name"], "^family-")'
   transform/container_metrics:
     error_mode: ignore
     metric_statements:
@@ -91,5 +99,5 @@ service:
       exporters: [otlp_grpc/dash0]
     metrics/containers:
       receivers: [docker_stats]
-      processors: [memory_limiter, transform/container_metrics, resource/minecraft, batch]
+      processors: [memory_limiter, filter/family_containers, transform/container_metrics, resource/minecraft, batch]
       exporters: [otlp_grpc/dash0]
