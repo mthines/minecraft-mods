@@ -38,6 +38,9 @@ addons/rainbow-cookie/
 
 `npm run build` checks every add-on for mistakes and writes one `.mcaddon` file per add-on into `dist/`.
 
+To let Claude Code read the server's telemetry in Dash0, copy `.mcp.example.json` to `.mcp.json` and replace `auth_REPLACE_ME` with a Dash0 auth token.
+Git ignores `.mcp.json`, so the token isn't committed.
+
 ## Play the mods
 
 **Together on the server (any device, including Switch):** follow [`server/README.md`](./server/README.md).
