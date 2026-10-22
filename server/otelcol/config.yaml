@@ -1,0 +1,103 @@
+# OpenTelemetry Collector: sends the Bedrock server's logs, game events, and CPU/memory to Dash0.
+# Started by ./start.sh when server/.env has a DASH0_AUTH_TOKEN (see server/.env.example).
+
+extensions:
+  health_check:
+  bearertokenauth/dash0:
+    scheme: Bearer
+    token: ${env:DASH0_AUTH_TOKEN}
+
+receivers:
+  # Docker's fluentd log driver sends every console line of the server here (docker-compose.telemetry.yml).
+  fluent_forward:
+    endpoint: 0.0.0.0:24224
+  # CPU, memory, and network of the containers.
+  docker_stats:
+    endpoint: unix:///var/run/docker.sock
+    collection_interval: 30s
+    api_version: "1.44"
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 200
+  batch:
+  transform/bedrock_logs:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        statements:
+          # The console is a terminal (tty: true), so every line ends in "\r".
+          - 'replace_pattern(log.body, "\\r+$", "")'
+          # "[2026-10-22 10:00:00:123 INFO] Server started." → severity INFO, body "Server started."
+          - 'set(log.severity_text, "INFO") where IsMatch(log.body, "^\\[[^\\]]* INFO\\]")'
+          - 'set(log.severity_number, SEVERITY_NUMBER_INFO) where log.severity_text == "INFO"'
+          - 'set(log.severity_text, "WARN") where IsMatch(log.body, "^\\[[^\\]]* WARN\\]")'
+          - 'set(log.severity_number, SEVERITY_NUMBER_WARN) where log.severity_text == "WARN"'
+          - 'set(log.severity_text, "ERROR") where IsMatch(log.body, "^\\[[^\\]]* ERROR\\]")'
+          - 'set(log.severity_number, SEVERITY_NUMBER_ERROR) where log.severity_text == "ERROR"'
+          - 'replace_pattern(log.body, "^\\[[^\\]]*\\] ", "")'
+
+          # Mods print events as JSON: [Scripting] {"event.name":"minecraft.trampoline.bounce", ...}
+          - 'set(log.cache["event"], ExtractPatterns(log.body, "(?P<json>\\{\"event\\.name\".*\\})\\s*$")) where IsMatch(log.body, "\\{\"event\\.name\"")'
+          - 'merge_maps(log.attributes, ParseJSON(log.cache["event"]["json"]), "upsert") where log.cache["event"]["json"] != nil'
+          # JSON numbers arrive as decimals; sizes and heights are whole blocks.
+          - 'set(log.attributes["minecraft.trampoline.size"], Int(log.attributes["minecraft.trampoline.size"])) where log.attributes["minecraft.trampoline.size"] != nil'
+          - 'set(log.attributes["minecraft.trampoline.height_blocks"], Int(log.attributes["minecraft.trampoline.height_blocks"])) where log.attributes["minecraft.trampoline.height_blocks"] != nil'
+
+          # The server's own player lines: "Player connected: Steve, xuid: 2535..."
+          - 'set(log.cache["player"], ExtractPatterns(log.body, "^Player (?P<action>connected|disconnected|Spawned): (?P<name>[^,]+)")) where IsMatch(log.body, "^Player (connected|disconnected|Spawned): ")'
+          - 'set(log.attributes["event.name"], Concat(["minecraft.player.", ToLowerCase(log.cache["player"]["action"])], "")) where log.cache["player"]["action"] != nil'
+          - 'set(log.attributes["minecraft.player.name"], log.cache["player"]["name"]) where log.cache["player"]["name"] != nil'
+          - 'set(log.attributes["event.name"], "minecraft.server.started") where log.body == "Server started."'
+
+          - 'set(log.event_name, log.attributes["event.name"]) where log.attributes["event.name"] != nil'
+
+          # Docker's fields, renamed to OpenTelemetry's names.
+          - 'set(log.attributes["container.name"], Substring(log.attributes["container_name"], 1, Len(log.attributes["container_name"]) - 1)) where log.attributes["container_name"] != nil'
+          - 'set(log.attributes["container.id"], log.attributes["container_id"]) where log.attributes["container_id"] != nil'
+          - 'set(log.attributes["log.iostream"], log.attributes["source"]) where log.attributes["source"] != nil'
+          - 'delete_matching_keys(log.attributes, "^(container_name|container_id|source|fluent\\.tag)$")'
+  # docker_stats sees every container on this computer; keep only the family server's.
+  filter/family_containers:
+    error_mode: ignore
+    metrics:
+      metric:
+        - 'not IsMatch(resource.attributes["container.name"], "^family-")'
+  transform/container_metrics:
+    error_mode: ignore
+    metric_statements:
+      - context: resource
+        statements:
+          - 'set(resource.attributes["service.name"], "bedrock-server") where resource.attributes["container.name"] == "family-bedrock"'
+          - 'set(resource.attributes["service.name"], "otelcol") where resource.attributes["container.name"] == "family-otelcol"'
+  resource/bedrock:
+    attributes:
+      - key: service.name
+        value: bedrock-server
+        action: upsert
+  resource/minecraft:
+    attributes:
+      - key: service.namespace
+        value: minecraft
+        action: upsert
+
+exporters:
+  otlp_grpc/dash0:
+    endpoint: ${env:DASH0_OTLP_ENDPOINT}
+    auth:
+      authenticator: bearertokenauth/dash0
+    headers:
+      Dash0-Dataset: ${env:DASH0_DATASET:-default}
+
+service:
+  extensions: [health_check, bearertokenauth/dash0]
+  pipelines:
+    logs/bedrock:
+      receivers: [fluent_forward]
+      processors: [memory_limiter, transform/bedrock_logs, resource/bedrock, resource/minecraft, batch]
+      exporters: [otlp_grpc/dash0]
+    metrics/containers:
+      receivers: [docker_stats]
+      processors: [memory_limiter, filter/family_containers, transform/container_metrics, resource/minecraft, batch]
+      exporters: [otlp_grpc/dash0]

@@ -41,6 +41,7 @@ addons/rainbow-cookie/
 ## Play the mods
 
 **Together on the server (any device, including Switch):** follow [`server/README.md`](./server/README.md).
+Host it on Linux (like Omarchy) if anyone plays on a console; a Mac works for tablets, phones, and PCs.
 The server sends the mods to every device that joins.
 
 **On one tablet, phone, or Windows PC:** open `dist/rainbow-cookie.mcaddon` on the device and Minecraft imports it.
@@ -101,3 +102,4 @@ After a change, type `/reload` in the world to reload scripts and functions with
 | `npm run build` | Check, then write `dist/<name>.mcaddon` files |
 | `npm run build -- <name>` | Build only one add-on |
 | `npm run deploy` | Copy every add-on to the server in `server/data` and turn them on |
+| `npm run watch` | Send each change to the running server as you save; code reloads in about a second |

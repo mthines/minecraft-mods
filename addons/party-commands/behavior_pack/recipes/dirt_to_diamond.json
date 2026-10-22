@@ -3,6 +3,7 @@
   "minecraft:recipe_shaped": {
     "description": { "identifier": "family:dirt_to_diamond" },
     "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:dirt" }],
     "pattern": ["###", "###", "###"],
     "key": { "#": { "item": "minecraft:dirt" } },
     "result": { "item": "minecraft:diamond", "count": 1 }

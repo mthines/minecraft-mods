@@ -7,7 +7,8 @@
     "validate": "node tools/validate.mjs",
     "test": "node --test \"addons/**/*.test.mjs\"",
     "build": "node tools/validate.mjs && node tools/build.mjs",
-    "deploy": "node tools/validate.mjs && node tools/deploy.mjs"
+    "deploy": "node tools/validate.mjs && node tools/deploy.mjs",
+    "watch": "node tools/watch.mjs"
   },
   "devDependencies": {
     "@minecraft/server": "2.8.0"
