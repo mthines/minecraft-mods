@@ -3,3 +3,5 @@ entity.family:tree_cutter.name=Tree Cutter
 item.spawn_egg.entity.family:drill_rig.name=Drill Rig Spawn Egg
 item.spawn_egg.entity.family:tree_cutter.name=Tree Cutter Spawn Egg
 action.interact.family_fit_drill_head=Fit drill head
+action.hint.exit.family:drill_rig=Sneak to get off
+action.hint.exit.family:tree_cutter=Sneak to get off
