@@ -202,7 +202,7 @@ function saveSegments() {
 /** The key hints at the bottom, wrapped into as many rows as they need. */
 function hintRows(width) {
   if (input) return [fit([[` ${input.prompt} `, S.key], [` ${input.text}`], ["▌", S.dim], ["   enter run · esc cancel", S.dim]], width)];
-  if (confirm) return [fit([[` ${confirm.question} `, S.key], ["  y yes · any other key no", S.dim]], width)];
+  if (confirm) return [fit([[` ${confirm.question} `, S.key], ["  enter/y yes · any other key no", S.dim]], width)];
   /** @type {[string, string][]} */
   const keys = picker
     ? [
@@ -748,11 +748,11 @@ function onKey(key) {
   } else if (confirm) {
     const { then, question } = confirm;
     confirm = null;
-    if (key === "y" || key === "Y") {
+    if (key === "y" || key === "Y" || key === "\r") {
       confirmed = question;
       then();
       confirmed = undefined;
-    } else tell("Cancelled: only y says yes.", S.yellow);
+    } else tell("Cancelled: only Enter or y says yes.", S.yellow);
   } else if (picker) {
     const choices = shownChoices();
     if (/^[0-9]$/.test(key)) {
