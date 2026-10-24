@@ -1,0 +1,34 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": {
+      "identifier": "family:pirate_boots",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:icon": "family_pirate_boots",
+      "minecraft:display_name": {
+        "value": "Pirate Boots"
+      },
+      "minecraft:max_stack_size": 1,
+      "minecraft:wearable": {
+        "slot": "slot.armor.feet",
+        "protection": 2
+      },
+      "minecraft:durability": {
+        "max_durability": 195
+      },
+      "minecraft:enchantable": {
+        "slot": "armor_feet",
+        "value": 10
+      },
+      "minecraft:tags": {
+        "tags": [
+          "minecraft:is_armor"
+        ]
+      }
+    }
+  }
+}

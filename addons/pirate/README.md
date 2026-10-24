@@ -1,12 +1,22 @@
 # Pirate
 
-Be a pirate: a saber that sets mobs on fire, a ship to sail, and pirate friends who join your crew.
+Be a pirate: a saber that sets mobs on fire, a pirate outfit to wear, a ship to sail, and pirate friends who join your crew.
 
-Get everything with `./mc kit pirate`: the saber, a ship, and 3 pirate friends. More pirates: `./mc kit pirate-crew`. Another ship: `./mc kit pirate-ship`.
+`./mc kit pirate` gives the saber and the outfit. A ship: `./mc kit pirate-ship`. 3 pirate friends: `./mc kit pirate-crew`.
 
 ## The pirate saber
 
 Hit a mob with it and the mob catches fire. Craft it from 2 iron ingots, a gold ingot, a stick, and blaze powder.
+
+## The pirate outfit
+
+A pirate hat with a skull on the front, a red coat with gold buttons, striped trousers, and black boots. Wear them like armor: together they protect as well as iron armor.
+Craft them on a crafting table, in the same shapes as armor:
+
+- hat: 4 black wool and a gold ingot in the middle of the top row
+- coat: 7 red wool and a gold ingot in the middle
+- trousers: 7 blue wool
+- boots: 4 black wool
 
 ## The pirate ship
 
@@ -30,5 +40,5 @@ Use a Pirate Friend to bring a pirate. They get a pirate name and join the crew 
 A pirate who isn't in anyone's crew joins yours for a gold ingot.
 Craft a Pirate Friend from an emerald, a gold ingot, and leather.
 
-Some things only a person can check: how the ship and the pirates look, and whether steering feels right.
+Some things only a person can check: how the ship, the pirates, and the outfit look, and whether steering feels right.
 The tests (`./mc test pirate`) check the rest.

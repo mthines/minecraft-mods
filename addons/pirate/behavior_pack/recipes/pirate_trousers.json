@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "family:pirate_trousers"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "NNN",
+      "N N",
+      "N N"
+    ],
+    "key": {
+      "N": "minecraft:blue_wool"
+    },
+    "unlock": [
+      {
+        "item": "minecraft:blue_wool"
+      }
+    ],
+    "result": {
+      "item": "family:pirate_trousers"
+    }
+  }
+}

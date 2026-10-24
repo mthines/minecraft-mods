@@ -4,6 +4,10 @@
   "texture_data": {
     "family_pirate_saber": { "textures": "textures/items/pirate_saber" },
     "family_pirate_ship": { "textures": "textures/items/pirate_ship" },
-    "family_pirate_friend": { "textures": "textures/items/pirate_friend" }
+    "family_pirate_friend": { "textures": "textures/items/pirate_friend" },
+    "family_pirate_hat": { "textures": "textures/items/pirate_hat" },
+    "family_pirate_coat": { "textures": "textures/items/pirate_coat" },
+    "family_pirate_trousers": { "textures": "textures/items/pirate_trousers" },
+    "family_pirate_boots": { "textures": "textures/items/pirate_boots" }
   }
 }

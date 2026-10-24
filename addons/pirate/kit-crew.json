@@ -1,6 +1,12 @@
 {
-  "about": "What mc kit pirate-crew gives you: 3 more pirate friends. Use one to bring a pirate; they join your crew.",
+  "about": "What mc kit pirate-crew gives you: 3 pirate friends. Use one to bring a pirate; they join your crew. With --craft, also what crafts another.",
   "emoji": "👥",
   "label": "3 pirate friends",
-  "items": [["family:pirate_friend", 3]]
+  "items": [["family:pirate_friend", 3]],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:emerald", 1],
+    ["minecraft:gold_ingot", 1],
+    ["minecraft:leather", 1]
+  ]
 }

@@ -2,7 +2,7 @@
   "format_version": 2,
   "header": {
     "name": "Pirate",
-    "description": "A pirate saber that sets mobs on fire, a pirate ship to sail, and pirate friends who join your crew.",
+    "description": "A pirate saber that sets mobs on fire, a pirate outfit, a pirate ship to sail, and pirate friends who join your crew.",
     "uuid": "690d51e7-bb0c-4a3f-a9fa-7af4baf2ef3e",
     "version": [
       1,
@@ -40,7 +40,7 @@
   "dependencies": [
     {
       "uuid": "ac633382-5a8c-4e73-bb04-977934e9e557",
-      "version": [1, 1, 1]
+      "version": [1, 2, 0]
     },
     {
       "module_name": "@minecraft/server",

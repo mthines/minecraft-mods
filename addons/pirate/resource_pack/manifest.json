@@ -4,7 +4,7 @@
     "name": "Pirate Resources",
     "description": "The saber, the pirate ship, and the pirates: pictures and models.",
     "uuid": "ac633382-5a8c-4e73-bb04-977934e9e557",
-    "version": [1, 1, 1],
+    "version": [1, 2, 0],
     "min_engine_version": [
       1,
       21,
@@ -15,7 +15,7 @@
     {
       "type": "resources",
       "uuid": "d15b68fb-26cd-4f5b-b893-59e06b876ec5",
-      "version": [1, 1, 1]
+      "version": [1, 2, 0]
     }
   ]
 }

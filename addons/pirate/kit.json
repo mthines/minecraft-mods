@@ -1,20 +1,22 @@
 {
-  "about": "What mc kit pirate gives you: a pirate saber (sets mobs on fire), a pirate ship to sail on water, and 3 pirate friends who join your crew. With --craft, also what crafts more.",
+  "about": "What mc kit pirate gives you: a pirate saber (sets mobs on fire) and a pirate outfit to wear: hat, coat, trousers, and boots. The ship is mc kit pirate-ship, pirate friends mc kit pirate-crew. With --craft, also what crafts more.",
   "emoji": "🦜",
+  "label": "saber and pirate outfit",
   "items": [
     ["family:pirate_saber", 1],
-    ["family:pirate_ship", 1],
-    ["family:pirate_friend", 3]
+    ["family:pirate_hat", 1],
+    ["family:pirate_coat", 1],
+    ["family:pirate_trousers", 1],
+    ["family:pirate_boots", 1]
   ],
   "craft": [
     ["minecraft:crafting_table", 1],
-    ["minecraft:stick", 2],
+    ["minecraft:stick", 1],
     ["minecraft:iron_ingot", 2],
-    ["minecraft:gold_ingot", 2],
+    ["minecraft:gold_ingot", 3],
     ["minecraft:blaze_powder", 1],
-    ["minecraft:white_wool", 3],
-    ["minecraft:oak_planks", 3],
-    ["minecraft:emerald", 1],
-    ["minecraft:leather", 1]
+    ["minecraft:black_wool", 9],
+    ["minecraft:red_wool", 7],
+    ["minecraft:blue_wool", 7]
   ]
 }

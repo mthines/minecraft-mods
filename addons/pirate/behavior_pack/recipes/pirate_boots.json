@@ -1,0 +1,26 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "family:pirate_boots"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "L L",
+      "L L"
+    ],
+    "key": {
+      "L": "minecraft:black_wool"
+    },
+    "unlock": [
+      {
+        "item": "minecraft:black_wool"
+      }
+    ],
+    "result": {
+      "item": "family:pirate_boots"
+    }
+  }
+}

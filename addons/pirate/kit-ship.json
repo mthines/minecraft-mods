@@ -1,6 +1,12 @@
 {
-  "about": "What mc kit pirate-ship gives you: a pirate ship. Look at water and use it to put it there.",
+  "about": "What mc kit pirate-ship gives you: a pirate ship. Look at water and use it to put it there. With --craft, also what crafts another.",
   "emoji": "⛵",
   "label": "a ship to sail",
-  "items": [["family:pirate_ship", 1]]
+  "items": [["family:pirate_ship", 1]],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:white_wool", 3],
+    ["minecraft:stick", 1],
+    ["minecraft:oak_planks", 3]
+  ]
 }

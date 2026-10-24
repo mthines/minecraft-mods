@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "family:pirate_hat"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "BGB",
+      "B B"
+    ],
+    "key": {
+      "B": "minecraft:black_wool",
+      "G": "minecraft:gold_ingot"
+    },
+    "unlock": [
+      {
+        "item": "minecraft:black_wool"
+      }
+    ],
+    "result": {
+      "item": "family:pirate_hat"
+    }
+  }
+}

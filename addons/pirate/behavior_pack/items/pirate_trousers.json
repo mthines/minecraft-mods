@@ -1,0 +1,34 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": {
+      "identifier": "family:pirate_trousers",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:icon": "family_pirate_trousers",
+      "minecraft:display_name": {
+        "value": "Pirate Trousers"
+      },
+      "minecraft:max_stack_size": 1,
+      "minecraft:wearable": {
+        "slot": "slot.armor.legs",
+        "protection": 5
+      },
+      "minecraft:durability": {
+        "max_durability": 225
+      },
+      "minecraft:enchantable": {
+        "slot": "armor_legs",
+        "value": 10
+      },
+      "minecraft:tags": {
+        "tags": [
+          "minecraft:is_armor"
+        ]
+      }
+    }
+  }
+}

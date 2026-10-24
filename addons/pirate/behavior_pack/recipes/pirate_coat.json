@@ -1,0 +1,28 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "family:pirate_coat"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "R R",
+      "RGR",
+      "RRR"
+    ],
+    "key": {
+      "R": "minecraft:red_wool",
+      "G": "minecraft:gold_ingot"
+    },
+    "unlock": [
+      {
+        "item": "minecraft:red_wool"
+      }
+    ],
+    "result": {
+      "item": "family:pirate_coat"
+    }
+  }
+}

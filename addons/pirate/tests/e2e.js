@@ -1,5 +1,5 @@
 // Played by simulated players on the test server: mc test pirate
-import { ItemStack } from "@minecraft/server";
+import { EntityDamageCause, EquipmentSlot, ItemStack } from "@minecraft/server";
 
 // Husks are zombies that don't burn in daylight, so only the saber sets them on fire.
 const TARGET = "minecraft:husk";
@@ -29,6 +29,37 @@ export async function aPunchDoesNotSetAMobOnFire(t) {
   t.assert(player.attackEntity(mob), "The pirate couldn't hit the husk");
   await t.wait(10);
   t.assert(!burning(mob), "A plain punch set the husk on fire");
+}
+
+// ── The outfit ───────────────────────────────────────────────────────────────
+
+const OUTFIT = [
+  ["family:pirate_hat", EquipmentSlot.Head],
+  ["family:pirate_coat", EquipmentSlot.Chest],
+  ["family:pirate_trousers", EquipmentSlot.Legs],
+  ["family:pirate_boots", EquipmentSlot.Feet],
+];
+const worn = (player, slot) => player.getComponent("minecraft:equippable")?.getEquipment(slot)?.typeId;
+
+export async function usingAPieceOfTheOutfitPutsItOn(t) {
+  const player = t.player("Pirate");
+  await t.wait(10);
+  for (const [item, slot] of OUTFIT) {
+    t.hold(player, item);
+    // A simulated player's use can be refused right after the one before, like a player clicking too fast: try again.
+    await t.until(() => { if (worn(player, slot) !== item) player.useItemInSlot(0); return worn(player, slot) === item; }, () => `Using the ${item} didn't put it on (${slot} has ${worn(player, slot)})`, 40);
+  }
+}
+
+export async function theOutfitProtectsLikeArmor(t) {
+  const dressed = t.player("Dressed", -2);
+  const plain = t.player("Plain", 2);
+  await t.wait(10);
+  const equippable = dressed.getComponent("minecraft:equippable");
+  for (const [item, slot] of OUTFIT) t.assert(equippable?.setEquipment(slot, new ItemStack(item, 1)), `Couldn't put ${item} on`);
+  for (const player of [dressed, plain]) player.applyDamage(10, { cause: EntityDamageCause.entityAttack });
+  await t.wait(5);
+  t.assert(health(dressed) >= health(plain) + 3, `The outfit didn't protect: dressed has ${health(dressed)} health left, without it ${health(plain)}`);
 }
 
 // ── The ship ─────────────────────────────────────────────────────────────────
