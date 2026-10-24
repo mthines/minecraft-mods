@@ -13,9 +13,15 @@ The first time you join a world with this mod, a chest appears next to you with:
 - 40 planks: oak, birch, spruce, and dark oak
 - an iron shovel to dig the hole
 
+And to try the other mods right away (the same as their kits):
+
+- power tools: a drill, a chainsaw, and a power shovel
+- 10 golden feathers to fly
+- weapons: a pistol, a rifle, and a machine gun, with 320 bullets and 64 grenades
+
 That's enough for the biggest 10×10 trampoline, or lots of small ones.
 Everyone gets their own chest, once per world.
-If there's no flat spot next to you, the blocks go straight into your inventory.
+If there's no flat spot next to you, everything goes straight into your inventory. A mod that isn't installed just leaves its things out.
 
 ## How to build one
 

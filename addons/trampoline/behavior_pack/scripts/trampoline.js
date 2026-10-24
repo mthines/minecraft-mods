@@ -146,6 +146,25 @@ export function starterKit() {
 }
 
 /**
+ * The rest of the starter chest: the same as the kits of power-tools, double-jump, weapons, and weapons-ammo
+ * (trampoline.test.mjs checks they stay the same), so a new player can try those mods right away.
+ */
+export const OTHER_MODS_KIT = [
+  ["family:drill", 1],
+  ["family:chainsaw", 1],
+  ["family:power_shovel", 1],
+  ["family:golden_feather", 10],
+  ["family:pistol", 1],
+  ["family:rifle", 1],
+  ["family:machine_gun", 1],
+  ["family:bullet", 64 + 256],
+  ["family:grenade", 32 + 32],
+];
+
+/** Everything in the starter chest, in stacks. */
+export const starterChest = () => [...starterKit(), ...OTHER_MODS_KIT.flatMap(([item, amount]) => stacks(item, amount))];
+
+/**
  * A chest slot holds at most 64 blocks, so split big amounts into full stacks.
  * @param {string} item
  * @param {number} amount

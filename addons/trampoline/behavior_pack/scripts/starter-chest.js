@@ -1,6 +1,6 @@
 import { ItemStack, world } from "@minecraft/server";
 import { emit } from "./telemetry.js";
-import { starterKit } from "./trampoline.js";
+import { starterChest } from "./trampoline.js";
 
 const GOT_KIT = "family:got_trampoline_kit";
 
@@ -26,23 +26,29 @@ function findChestSpot(player) {
   return undefined;
 }
 
-// The first time each player joins, put a chest with trampoline materials next to them.
+// The first time each player joins, put a chest with trampoline materials, power tools, golden feathers, and weapons next to them.
 world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
   if (!initialSpawn || !player?.isValid || player.getDynamicProperty(GOT_KIT)) return; // isValid: they may have left already
   if (player.hasTag("family:npc")) return; // NPCs (the npc mod) don't need one
 
-  const items = starterKit().map(({ item, amount }) => new ItemStack(item, amount));
+  const items = starterChest().flatMap(({ item, amount }) => {
+    try {
+      return [new ItemStack(item, amount)];
+    } catch {
+      return []; // that item's mod isn't installed
+    }
+  });
   const spot = findChestSpot(player);
   if (spot) {
     spot.dimension.setBlockType(spot.location, "minecraft:chest");
     const chest = spot.getComponent("minecraft:inventory")?.container;
     for (const item of items) chest?.addItem(item);
-    player.sendMessage("§aA chest with §etrampoline blocks§a appeared next to you! Build slime with a wooden edge.");
+    player.sendMessage("§aA starter chest appeared next to you: §etrampoline blocks, power tools, golden feathers, weapons and ammo§a! Build slime with a wooden edge for a trampoline.");
   } else {
     // Nowhere flat to put a chest (in water, say): straight into their pockets instead.
     const inventory = player.getComponent("minecraft:inventory")?.container;
     for (const item of items) inventory?.addItem(item);
-    player.sendMessage("§aYou got §etrampoline blocks§a! Build slime with a wooden edge.");
+    player.sendMessage("§aYou got §etrampoline blocks, power tools, golden feathers, weapons and ammo§a! Build slime with a wooden edge for a trampoline.");
   }
   player.setDynamicProperty(GOT_KIT, true);
   emit("starter_chest.given", { "minecraft.player.name": player.name, "minecraft.starter_chest.placed": Boolean(spot) });

@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { FINISHED_EDGE, SIZES, covers, edgeBlocks, findTrampoline, starterKit } from "../behavior_pack/scripts/trampoline.js";
+import { readFileSync } from "node:fs";
+import { FINISHED_EDGE, OTHER_MODS_KIT, SIZES, covers, edgeBlocks, findTrampoline, starterChest, starterKit } from "../behavior_pack/scripts/trampoline.js";
 
 /** A pretend world: a map from "x,y,z" to block type. */
 function world() {
@@ -125,4 +126,18 @@ test("the starter chest holds enough to build the biggest trampoline", () => {
   assert.ok(count((item) => item.endsWith("_planks")) >= 4 * biggest);
   assert.ok(kit.every(({ amount }) => amount <= 64), "each slot holds at most one stack");
   assert.ok(kit.length <= 27, "everything fits in one chest");
+});
+
+test("the starter chest also has the power-tools, double-jump, weapons and weapons-ammo kits, and it all fits", () => {
+  const kits = ["power-tools/kit.json", "double-jump/kit.json", "weapons/kit.json", "weapons/kit-ammo.json"];
+  const total = (/** @type {[string, number][]} */ items) => {
+    const sums = new Map();
+    for (const [item, amount] of items) sums.set(item, (sums.get(item) ?? 0) + amount);
+    return Object.fromEntries([...sums].sort());
+  };
+  const fromKits = kits.flatMap((kit) => JSON.parse(readFileSync(new URL(`../../${kit}`, import.meta.url), "utf8")).items);
+  assert.deepEqual(total(OTHER_MODS_KIT), total(fromKits));
+  const chest = starterChest();
+  assert.ok(chest.every(({ amount }) => amount <= 64), "each slot holds at most one stack");
+  assert.ok(chest.length <= 27, `everything fits in one chest (${chest.length} slots)`);
 });

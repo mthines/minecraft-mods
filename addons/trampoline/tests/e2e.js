@@ -34,3 +34,23 @@ export async function theBlackTrampolineStillBounces(t) {
   const startY = player.location.y;
   await t.until(() => player.location.y > startY + 2, "The player didn't bounce on the black trampoline");
 }
+
+export async function aNewPlayerGetsAStarterChestWithTheOtherModsToo(t) {
+  const player = t.player("Newcomer", -4, -4);
+  const chest = () => {
+    const { x, y, z } = player.location;
+    for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) {
+      const block = t.dimension.getBlock({ x: Math.floor(x) + dx, y: Math.floor(y), z: Math.floor(z) + dz });
+      if (block?.typeId === "minecraft:chest") return block.getComponent("minecraft:inventory")?.container;
+    }
+  };
+  await t.until(() => chest(), "No starter chest appeared next to the new player", 100);
+  const container = chest();
+  const inside = new Set();
+  for (let slot = 0; slot < (container?.size ?? 0); slot++) {
+    const item = container?.getItem(slot);
+    if (item) inside.add(item.typeId);
+  }
+  const missing = ["minecraft:slime", "family:drill", "family:golden_feather", "family:pistol", "family:bullet", "family:grenade"].filter((item) => !inside.has(item));
+  t.assert(missing.length === 0, `The starter chest is missing ${missing.join(", ")}`);
+}
