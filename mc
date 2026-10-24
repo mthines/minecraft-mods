@@ -50,6 +50,10 @@ In the game
   peace [on|off]         Peaceful mode: no monsters, and health refills. No argument: show which it is
   fall-damage [on|off]   Turn fall damage on or off. No argument: show which it is
   keep-inventory [on|off]  Whether players keep their things when they die. No argument: show which it is
+  show-coordinates [on|off]  Show everyone's position (x, y, z) at the top left of the screen. No argument: show which it is
+  locate <place> [player]  Tell each player online (or one) where the nearest place is from where they stand, like
+                         stronghold (the End portal), fortress (blazes), bastion_remnant, village, ancient_city,
+                         monument, mansion, end_city, trial_chambers, ruined_portal, shipwreck, buried_treasure, mineshaft
   npc [instruction]      An NPC joins next to you; with an instruction ("dig a hole next to me"), Claude plans it and an NPC does it.
   npc --remove [name]    Send an NPC away, or all of them
                          An instruction given before reuses its plan without asking Claude; --fresh asks again;
@@ -447,6 +451,46 @@ case "${1:-help}" in
     sleep 1
     docker logs --since "$since" "$SERVER" 2>&1 | grep -qE "No targets matched" && echo "No enemies around." \
       || docker logs --since "$since" "$SERVER" 2>&1 | sed -n 's/.*INFO\] //p' | tr -d '\r'
+    ;;
+  show-coordinates) switch_rule showcoordinates show-coordinates "${2:-}" "Show coordinates" "Show coordinates on: everyone sees where they are at the top left." "Show coordinates off: the position is hidden again." ;;
+  locate)
+    # /locate from the console searches from 0,0 in the Overworld, so it runs as each player, where they stand.
+    # The answer only shows in the server log, so each player gets it told in the chat too.
+    place="${2:-}"
+    if [[ -z "$place" || "$place" == *[^a-z_]* ]]; then echo "Usage: mc locate <place> [player], e.g. mc locate stronghold" >&2; exit 1; fi
+    name="${place//_/ }"
+    if [[ -n "${3:-}" ]]; then
+      players=("$3")
+    else
+      since="$(date -u +%Y-%m-%dT%H:%M:%S.000000000Z)"
+      docker exec "$SERVER" send-command "list"
+      sleep 1
+      # The names come on the line after "There are 1/10 players online:", like "Ann, Bo".
+      online="$(docker logs --since "$since" "$SERVER" 2>&1 | grep -A1 "players online:" | tail -1 | tr -d '\r' | grep -v '^\[' || true)"
+      players=()
+      while read -r player; do [[ -n "$player" ]] && players+=("$player"); done <<<"${online//, /$'\n'}"
+    fi
+    [[ ${#players[@]} -gt 0 ]] || { echo "Nobody online to look for a $name for." >&2; exit 1; }
+    for player in "${players[@]}"; do
+      since="$(date -u +%Y-%m-%dT%H:%M:%S.000000000Z)"
+      docker exec "$SERVER" send-command "execute as \"$player\" at @s run locate structure $place"
+      sleep 1
+      answer="$(docker logs --since "$since" "$SERVER" 2>&1 | tr -d '\r')"
+      where="$(echo "$answer" | sed -nE 's/.*is at block (-?[0-9]+), \(y\?\), (-?[0-9]+) \(([0-9]+) blocks away\).*/x \1, z \2 (\3 blocks away)/p' | tail -1)"
+      if [[ -n "$where" ]]; then
+        said="The nearest $name: $where"
+        tell="§eThe nearest $name: §fx ${where#x }"
+      elif echo "$answer" | grep -q "No valid structure"; then
+        said="No $name near $player. Fortresses and bastions are in the Nether, end cities in the End, the rest in the Overworld"
+        tell="§eNo $name near you. §7Fortresses and bastions are in the Nether, end cities in the End, the rest in the Overworld."
+      elif echo "$answer" | grep -q "No targets matched"; then
+        echo "$player isn't online." >&2; continue
+      else
+        echo "The server didn't answer for $player: is \"$place\" a place /locate knows? See: mc logs" >&2; continue
+      fi
+      echo "$player: $said"
+      docker exec "$SERVER" send-command "tellraw \"$player\" {\"rawtext\":[{\"text\":\"$tell\"}]}"
+    done
     ;;
   clear-inventory)
     # The backpack is slot.inventory 0-26 and the item bar slot.hotbar 0-8, so armor and the off hand stay

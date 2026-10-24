@@ -59,7 +59,7 @@ let kitCraft = false; // whether the k key's kits come with their crafting table
 let last = null;
 /** @type {string | undefined} the question just answered with y, while its command starts */
 let confirmed;
-const server = { running: false, health: "", startedAt: "", players: new Set(), peace: false, fallDamage: /** @type {boolean | undefined} */ (undefined), keepInventory: /** @type {boolean | undefined} */ (undefined), world: currentWorld() };
+const server = { running: false, health: "", startedAt: "", players: new Set(), peace: false, fallDamage: /** @type {boolean | undefined} */ (undefined), keepInventory: /** @type {boolean | undefined} */ (undefined), showCoordinates: /** @type {boolean | undefined} */ (undefined), world: currentWorld() };
 /** @type {import("node:child_process").ChildProcess | undefined} */
 let follower;
 
@@ -184,6 +184,8 @@ function statusSegments() {
     [server.fallDamage === undefined ? "?" : server.fallDamage ? "on" : "off", S.bold],
     ["   Keep inventory ", S.dim],
     [server.keepInventory === undefined ? "?" : server.keepInventory ? "on" : "off", S.bold],
+    ["   Coordinates ", S.dim],
+    [server.showCoordinates === undefined ? "?" : server.showCoordinates ? "on" : "off", S.bold],
     ["   Kit crafting ", S.dim],
     [kitCraft ? "on" : "off", S.bold],
     ["   Saves ", S.dim],
@@ -222,6 +224,7 @@ function hintRows(width) {
         ["n", "🤖 NPC"],
         ["d", "🌞 day"],
         ["e", "💀 kill enemies"],
+        ["j", "🧭 find a place"],
         ["x", "🧹 clear inventory"],
         ["o", "🔧 options"],
         ["a", "🔄 reload (no kick)"],
@@ -364,6 +367,8 @@ function followLog(startedAt) {
     if (fall) server.fallDamage = fall[1] === "true";
     const keep = line.match(/keepinventory(?: =| has been updated to) (true|false)/);
     if (keep) server.keepInventory = keep[1] === "true";
+    const coordinates = line.match(/showcoordinates(?: =| has been updated to) (true|false)/);
+    if (coordinates) server.showCoordinates = coordinates[1] === "true";
   };
   follower.stdout?.on("data", feed(serverLog, "", onLine));
   follower.stderr?.on("data", feed(serverLog, "", onLine));
@@ -615,13 +620,41 @@ function giveKit(kit) {
   pick(`Give ${kit} to`, [everyone, ...[...server.players].map((p) => ({ label: p, value: p }))], (who) => mc(["kit", kit, who, ...craft]));
 }
 
+/** What the j key finds with /locate, as each player's way there. */
+const PLACES = [
+  ["🟢 stronghold (the End portal)", "stronghold"],
+  ["🔥 fortress (Nether: blazes for blaze rods)", "fortress"],
+  ["🐷 bastion (Nether: piglins and gold)", "bastion_remnant"],
+  ["🏘️ village", "village"],
+  ["🗝️ trial chambers", "trial_chambers"],
+  ["🌀 ruined portal", "ruined_portal"],
+  ["⛏️ mineshaft", "mineshaft"],
+  ["🚢 shipwreck", "shipwreck"],
+  ["💰 buried treasure", "buried_treasure"],
+  ["🌊 ocean monument", "monument"],
+  ["🏰 woodland mansion", "mansion"],
+  ["🏹 pillager outpost", "pillager_outpost"],
+  ["🏺 trail ruins", "trail_ruins"],
+  ["💀 ancient city", "ancient_city"],
+  ["🌌 end city (the End)", "end_city"],
+];
+
+/** The j key: tells players where the nearest place is from where each one stands. */
+function placeMenu() {
+  pick("Find which place? Each player is told the way from where they stand.", PLACES.map(([label, value]) => ({ label, value })), (place) => {
+    if (server.players.size < 2) return mc(["locate", place]);
+    const everyone = { label: "everyone online", value: "" };
+    pick("Tell whom?", [everyone, ...[...server.players].map((p) => ({ label: p, value: p }))], (who) => mc(["locate", place, ...(who ? [who] : [])]));
+  });
+}
+
 /** @returns {[string, (s: string) => string]} */
 const onOff = (/** @type {boolean | undefined} */ on) => (on === undefined ? ["?", S.dim] : on ? ["● on", S.green] : ["○ off", S.dim]);
 
 /**
  * The o key: switches and the less used commands. A switch that only mc dev keeps (like sending saves)
  * flips right away and opens the menu again, on the same row, so several can be flipped in a row.
- * Each also has a key of its own outside the menu (s, h, i, p, f, v, c, m).
+ * Each also has a key of its own outside the menu (s, h, i, p, f, v, z, j, c, m).
  * @param {number} [index]
  */
 function optionsMenu(index = 0) {
@@ -633,6 +666,8 @@ function optionsMenu(index = 0) {
     ["Peace", onOff(server.peace), () => commands.p()],
     ["Fall damage", onOff(server.fallDamage), () => commands.f()],
     ["Keep inventory on death", onOff(server.keepInventory), () => commands.v()],
+    ["Show coordinates", onOff(server.showCoordinates), () => commands.z()],
+    ["Find a place… (stronghold, fortress, …)", undefined, () => commands.j()],
     ["Server command…", undefined, () => commands.c()],
     ["Mods", undefined, () => commands.m()],
   ];
@@ -675,6 +710,8 @@ const commands = {
   p: () => mc(["peace", server.peace ? "off" : "on"]),
   f: () => mc(["fall-damage", server.fallDamage === false ? "on" : "off"]),
   v: () => mc(["keep-inventory", server.keepInventory ? "off" : "on"]),
+  z: () => mc(["show-coordinates", server.showCoordinates ? "off" : "on"]),
+  j: () => placeMenu(),
   e: () => mc(["kill-enemies"]),
   x: () =>
     pick(
@@ -830,6 +867,6 @@ mc(["start"], (ok) => {
   if (!ok) return note("✗ The server didn't start. Fix what it says above, then run mc dev again.");
   watchAddons((message) => message.split("\n").filter(Boolean).forEach((line) => push(activity, line)));
   watching = true;
-  mc(["fall-damage"], () => mc(["keep-inventory"]));
+  mc(["fall-damage"], () => mc(["keep-inventory"], () => mc(["show-coordinates"])));
   note("✓ Watching addons/: save a file and it reaches the server. Scripts reload without kicking anyone.");
 });
