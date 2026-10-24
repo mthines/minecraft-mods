@@ -45,8 +45,9 @@ function sendAway(who) {
       console.warn(`[NPC] Couldn't send ${player.name} away. A restart clears every NPC: mc restart`);
       continue;
     }
+    const { name } = player; // a player that left has no name to read
     player.disconnect();
-    gone.push(player.name);
+    gone.push(name);
   }
   return gone;
 }
@@ -139,9 +140,14 @@ async function doActions(npc, near, actions, isCurrent) {
         break;
       case "attack": {
         const until = system.currentTick + action.seconds * 20;
+        // A player to fight is always the one who asked: the nearest player was the NPC itself, or another NPC.
         const query = action.mob === "hostile" ? { families: ["monster"] } : { type: action.mob };
+        const nearest = () =>
+          action.mob === "minecraft:player"
+            ? near.isValid && distance(npc.player.location, near.location) <= 24 ? near : undefined
+            : dimension.getEntities({ ...query, excludeTags: [NPC_TAG], location: npc.player.location, maxDistance: 24, closest: 1 })[0];
         while (isCurrent() && system.currentTick < until) {
-          const [target] = dimension.getEntities({ ...query, location: npc.player.location, maxDistance: 24, closest: 1 });
+          const target = nearest();
           if (!target) break;
           if (distance(npc.player.location, target.location) > 2.5) npc.player.navigateToEntity(target, 1);
           else {
@@ -185,8 +191,10 @@ system.afterEvents.scriptEventReceive.subscribe(({ id, message }) => {
   if (!checked.ok) return console.warn(`[NPC] Can't do that plan: ${checked.errors.join("; ")}`);
   const { npc: name, actions } = checked.plan;
   const npc = (name !== "new" && npcs.get(name)) || spawn(near, name !== "new" && !world.getPlayers({ name }).length ? name : undefined);
-  emit("npc.told", { "minecraft.npc.name": npc.player.name, "minecraft.player.name": near.name, "minecraft.npc.actions": actions.map((a) => a.do).join(",") });
-  run(npc, near, actions).catch((e) => console.warn(`[NPC] ${npc.player.name} got stuck: ${e}`));
+  const npcName = npc.player.name; // read now: it can't be read once the NPC has left
+  emit("npc.told", { "minecraft.npc.name": npcName, "minecraft.player.name": near.name, "minecraft.npc.actions": actions.map((a) => a.do).join(",") });
+  // An NPC sent away in the middle of a job isn't stuck: it's gone.
+  run(npc, near, actions).catch((e) => npc.player.isValid && console.warn(`[NPC] ${npcName} got stuck: ${e}`));
 });
 
 // Between jobs, NPCs look at the nearest player, like they're paying attention.

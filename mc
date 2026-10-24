@@ -53,6 +53,7 @@ In the game
   npc [instruction]      An NPC joins next to you; with an instruction ("dig a hole next to me"), Claude plans it and an NPC does it.
   npc --remove [name]    Send an NPC away, or all of them
                          An instruction given before reuses its plan without asking Claude; --fresh asks again;
+                         --feedback <text> asks again, telling Claude what to do better;
                          --count <n>: n new NPCs come, and each does it (up to 8)
   kill-enemies           Remove every hostile mob (zombies, creepers, skeletons...) in loaded areas
   clear-inventory [backpack|all] [player]  Empty everyone's backpack (or one player's); all empties the item bar too.

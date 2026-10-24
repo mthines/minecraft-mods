@@ -74,6 +74,25 @@ export async function anNpcFightsMonsters(t) {
   await sendAway(t);
 }
 
+export async function npcsFightTheAskerNotThemselves(t) {
+  const me = await asker(t);
+  const hurt = new Set(); // entity ids: the test player's name tag isn't just its name
+  const listen = world.afterEvents.entityHurt.subscribe(({ hurtEntity }) => hurtEntity?.typeId === "minecraft:player" && hurt.add(hurtEntity.id));
+  try {
+    // Two NPCs, so the nearest other player to each is an NPC: they used to fight themselves and each other.
+    const plan = { near: "Asker", npc: "new", actions: [{ do: "attack", mob: "minecraft:player", seconds: 8 }] };
+    send(t, plan);
+    send(t, plan);
+    await t.until(() => hurt.has(me.id), "The NPCs never hit the player who asked", 200);
+    await t.wait(40);
+    const hurtNpcs = npcs().filter((npc) => hurt.has(npc.id));
+    t.assert(hurtNpcs.length === 0, `NPCs hit NPCs: ${hurtNpcs.map((npc) => npc.name).join(", ")} got hurt`);
+  } finally {
+    world.afterEvents.entityHurt.unsubscribe(listen);
+    await sendAway(t);
+  }
+}
+
 export async function aBadPlanIsRefused(t) {
   await asker(t);
   send(t, { near: "Asker", actions: [{ do: "explode" }] });

@@ -42,7 +42,8 @@ world.afterEvents.entityDie.subscribe(({ deadEntity, damageSource }) => {
       "minecraft.death.cause": damageSource.cause,
       "minecraft.mob.type": attacker ? shortName(attacker.typeId) : "none",
     });
-  } else if (attacker?.typeId === "minecraft:player") {
+  } else if (attacker?.typeId === "minecraft:player" && attacker.isValid) {
+    // isValid: an NPC that left before its kill counted has no name to read
     const player = /** @type {import("@minecraft/server").Player} */ (attacker);
     emit("mob.killed", {
       "minecraft.player.name": player.name,

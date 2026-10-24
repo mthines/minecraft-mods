@@ -11,7 +11,7 @@ export const ACTIONS = `
                                                   dig a hole: width (left-right) x length (forward) blocks centered on "at", depth blocks down into the ground under "at"
 {"do":"build","block":"minecraft:cobblestone","at":{"forward":3,"right":0,"up":0},"width":5,"length":1,"height":3,"hollow":false}
                                                   build a box of blocks centered on "at", going up from "at" ("hollow": only the outside walls)
-{"do":"attack","mob":"minecraft:zombie","seconds":30}   fight the nearest mob of that type ("hostile" = any monster)
+{"do":"attack","mob":"minecraft:zombie","seconds":30}   fight the nearest mob of that type ("hostile" = any monster, "minecraft:player" = the player asking; NPCs never fight each other)
 {"do":"jump"}                                     jump
 {"do":"wait","seconds":3}                         wait
 {"do":"leave"}                                    leave the game

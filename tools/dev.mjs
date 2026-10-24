@@ -590,7 +590,14 @@ function npcMore(instruction) {
       { label: "how many NPCs…", value: "count" },
       { label: "ask Claude for a new plan", value: "fresh" },
     ],
-    (value) => (value === "count" ? howMany() : mc(["npc", "--fresh", instruction])),
+    (value) => {
+      if (value === "count") return howMany();
+      input = {
+        prompt: "What should be better? (Enter: just ask again)",
+        text: "",
+        then: (feedback) => mc(["npc", ...(feedback ? ["--feedback", feedback] : ["--fresh"]), instruction]),
+      };
+    },
     { back: npcMenu },
   );
 }

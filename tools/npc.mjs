@@ -1,8 +1,9 @@
-// mc npc [--near <player>] [--dry-run] [--fresh] [--count <n>] [instruction]
+// mc npc [--near <player>] [--dry-run] [--fresh] [--feedback <text>] [--count <n>] [instruction]
 // mc npc --remove [name]: sends that NPC away, or every NPC without a name.
 // No instruction: an NPC joins next to you. An instruction ("dig a hole next to me"): Claude turns it into a plan
 // (addons/npc/behavior_pack/scripts/plan.js), and an NPC carries it out, a new one if there's none yet.
 // An instruction given before reuses its saved plan (tools/lib/npc-history.mjs) without asking Claude; --fresh asks again.
+// --feedback asks again too, telling Claude what went wrong with the last plan ("they shot each other").
 // --count: that many new NPCs join, and each does the instruction.
 import { execFileSync, spawnSync } from "node:child_process";
 import { ACTIONS, checkPlan } from "../addons/npc/behavior_pack/scripts/plan.js";
@@ -16,6 +17,8 @@ const dryRunAt = args.indexOf("--dry-run");
 const dryRun = dryRunAt >= 0 && Boolean(args.splice(dryRunAt, 1)); // only show Claude's plan
 const freshAt = args.indexOf("--fresh");
 const fresh = freshAt >= 0 && Boolean(args.splice(freshAt, 1)); // ask Claude even when a plan is saved
+const feedbackAt = args.indexOf("--feedback");
+const feedback = feedbackAt >= 0 ? (args.splice(feedbackAt, 2)[1] ?? "").trim() : ""; // what was wrong with the last plan
 const countAt = args.indexOf("--count");
 const count = countAt >= 0 ? Number(args.splice(countAt, 2)[1]) : 1;
 const MAX_COUNT = 8; // NPCs take player slots, and the server has 10 (MAX_PLAYERS)
@@ -72,8 +75,8 @@ try {
   }
 
   // Given before: its saved plan, if it still makes sense, for whichever NPC is around now.
-  const saved = fresh ? undefined : savedFor(instruction);
-  let result = saved && checkPlan({ ...saved.plan, npc: npcFor(saved.plan.npc, npcs) });
+  const saved = savedFor(instruction);
+  let result = !fresh && !feedback && saved && checkPlan({ ...saved.plan, npc: npcFor(saved.plan.npc, npcs) });
   if (result?.ok) console.log(`"${instruction}" again, with the plan from before (no need to ask Claude).`);
   else {
     result = undefined;
@@ -81,7 +84,7 @@ try {
   }
   let problems = "";
   for (let attempt = 0; attempt < 2 && !result?.ok; attempt++) {
-    const reply = claude(prompt({ instruction, near, npcs, problems }));
+    const reply = claude(prompt({ instruction, near, npcs, problems, feedback, before: saved?.plan }));
     let plan;
     try {
       plan = JSON.parse(reply.slice(reply.indexOf("{"), reply.lastIndexOf("}") + 1));
@@ -118,7 +121,7 @@ try {
   fail(e instanceof Error ? e.message : String(e));
 }
 
-function prompt({ instruction, near, npcs, problems }) {
+function prompt({ instruction, near, npcs, problems, feedback, before }) {
   return `You control helper NPCs on a family Minecraft (Bedrock) server. Turn the player's instruction into a plan.
 Reply with only one JSON object and nothing else: {"npc": "<name of an NPC in the game, or new>", "actions": [ ... ]}
 
@@ -130,6 +133,7 @@ Player asking: ${near}.
 Pick the NPC the instruction names; if it names none and there is exactly one NPC, use that one; otherwise "new".
 Keep things a sensible size for a game (holes and walls up to about 9 blocks). The instruction can be in any language; any "say" text is in the same language.
 ${problems}
+${feedback ? `Last time this instruction got this plan: ${JSON.stringify(before ?? "none saved")}. The player says what should be better: ${JSON.stringify(feedback)}` : ""}
 Instruction: ${JSON.stringify(instruction)}`;
 }
 
@@ -167,7 +171,7 @@ function describe(action) {
     case "build":
       return `build ${action.hollow ? "hollow " : ""}${action.block.replace("minecraft:", "")} ${action.width}×${action.length}, ${action.height} high (${where(action.at)})`;
     case "attack":
-      return `fight ${action.mob === "hostile" ? "monsters" : action.mob.replace("minecraft:", "")} for up to ${action.seconds} s`;
+      return `fight ${action.mob === "hostile" ? "monsters" : action.mob === "minecraft:player" ? "you" : action.mob.replace("minecraft:", "")} for up to ${action.seconds} s`;
     case "wait":
       return `wait ${action.seconds} s`;
     default:
