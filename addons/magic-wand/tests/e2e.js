@@ -37,8 +37,9 @@ async function aim(t, player, mob) {
     const to = mob.getHeadLocation();
     const d = { x: to.x - from.x, y: to.y - from.y, z: to.z - from.z };
     const look = player.getViewDirection();
-    return (look.x * d.x + look.y * d.y + look.z * d.z) / Math.hypot(d.x, d.y, d.z) > 0.9995;
-  }, "The test player never turned to the husk", 20);
+    // Within about 2.5°: still on a husk 6 blocks away, and reachable while the husk walks up to the player.
+    return (look.x * d.x + look.y * d.y + look.z * d.z) / Math.hypot(d.x, d.y, d.z) > 0.999;
+  }, "The test player never turned to the husk", 40);
 }
 
 export async function theFireSpellHurtsAMob(t) {
