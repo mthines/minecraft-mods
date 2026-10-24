@@ -50,6 +50,15 @@
       "panel": "./mc dev"
     },
     {
+      "id": "other",
+      "emoji": "💬",
+      "label": {
+        "en": "Something else",
+        "da": "Noget andet"
+      },
+      "prompt": "The kid wants something that isn't a new mod or a change to one mod: say a new kit (like more building materials, in kits/, see CLAUDE.md), a change to several mods, or to mc and mc dev. Do what they ask, keep it small, and check it with npm run validate and npm test (and ./mc test <mod> for a mod you changed). New kits show up in the server screen's kit menu (the k key) after the server screen restarts."
+    },
+    {
       "id": "ask",
       "emoji": "❓",
       "label": {
