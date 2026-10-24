@@ -1,0 +1,15 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:drill_rig",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/drill_rig" },
+      "geometry": { "default": "geometry.family_drill_rig" },
+      "animations": { "drill": "animation.family_drill_rig.drill" },
+      "scripts": { "animate": ["drill"] },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#f2b816", "overlay_color": "#262626" }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Heavy Machines Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "f2760bfd-b0c5-4e7e-a2c2-bea28f42cb45",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "20fa95f1-fc84-428b-a73e-53f1ecd9d130",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

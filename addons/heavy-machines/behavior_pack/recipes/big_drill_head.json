@@ -1,0 +1,11 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:big_drill_head" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "family:drill_head" }],
+    "pattern": [" D ", "DHD", " D "],
+    "key": { "D": { "item": "minecraft:diamond" }, "H": { "item": "family:drill_head" } },
+    "result": { "item": "family:big_drill_head" }
+  }
+}

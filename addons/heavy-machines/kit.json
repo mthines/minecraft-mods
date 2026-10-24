@@ -1,0 +1,18 @@
+{
+  "about": "What mc kit heavy-machines gives you: a drill rig, a tree cutter, and the big and giant drill heads. With --craft, also what crafts more.",
+  "emoji": "🚜",
+  "items": [
+    ["family:drill_rig", 1],
+    ["family:tree_cutter", 1],
+    ["family:big_drill_head", 1],
+    ["family:giant_drill_head", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 21],
+    ["minecraft:iron_block", 12],
+    ["minecraft:diamond", 15],
+    ["minecraft:furnace", 2],
+    ["minecraft:diamond_axe", 1]
+  ]
+}

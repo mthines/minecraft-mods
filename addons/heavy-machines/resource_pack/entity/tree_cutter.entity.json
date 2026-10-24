@@ -1,0 +1,15 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:tree_cutter",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/tree_cutter" },
+      "geometry": { "default": "geometry.family_tree_cutter" },
+      "animations": { "saw": "animation.family_tree_cutter.saw" },
+      "scripts": { "animate": ["saw"] },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#3e843a", "overlay_color": "#c4c8cd" }
+    }
+  }
+}

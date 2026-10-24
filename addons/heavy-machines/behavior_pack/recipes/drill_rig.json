@@ -1,0 +1,11 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:drill_rig" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "family:drill_head" }],
+    "pattern": ["BHB", "BFB", "III"],
+    "key": { "B": { "item": "minecraft:iron_block" }, "H": { "item": "family:drill_head" }, "F": { "item": "minecraft:furnace" }, "I": { "item": "minecraft:iron_ingot" } },
+    "result": { "item": "family:drill_rig" }
+  }
+}

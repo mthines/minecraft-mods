@@ -1,0 +1,69 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "family:drill_rig",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "family:drill_size": { "type": "int", "range": [3, 7], "default": 3, "client_sync": true },
+        "family:aim": { "type": "int", "range": [0, 2], "default": 0, "client_sync": true },
+        "family:working": { "type": "bool", "default": false, "client_sync": true }
+      }
+    },
+    "component_groups": {
+      "family:on_ground": { "minecraft:physics": {} },
+      "family:climbing": { "minecraft:physics": { "has_gravity": false } }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["drill_rig", "heavy_machine", "inanimate"] },
+      "minecraft:collision_box": { "width": 2.0, "height": 2.0 },
+      "minecraft:health": { "value": 100, "max": 100 },
+      "minecraft:damage_sensor": { "triggers": [{ "cause": "all", "deals_damage": "no" }] },
+      "minecraft:knockback_resistance": { "value": 1.0 },
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+      "minecraft:persistent": {},
+      "minecraft:fire_immune": {},
+      "minecraft:movement": { "value": 0.12 },
+      "minecraft:movement.basic": {},
+      "minecraft:variable_max_auto_step": { "base_value": 1.0625, "controlled_value": 1.0625, "jump_prevented_value": 1.0625 },
+      "minecraft:input_ground_controlled": {},
+      "minecraft:interact": {
+        "interactions": [
+          {
+            "on_interact": { "filters": { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "family:drill_head" }, "event": "family:fit_drill_head", "target": "self" },
+            "use_item": true,
+            "swing": true,
+            "interact_text": "action.interact.family_fit_drill_head"
+          },
+          {
+            "on_interact": { "filters": { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "family:big_drill_head" }, "event": "family:fit_big_drill_head", "target": "self" },
+            "use_item": true,
+            "swing": true,
+            "interact_text": "action.interact.family_fit_drill_head"
+          },
+          {
+            "on_interact": { "filters": { "test": "has_equipment", "subject": "other", "domain": "hand", "value": "family:giant_drill_head" }, "event": "family:fit_giant_drill_head", "target": "self" },
+            "use_item": true,
+            "swing": true,
+            "interact_text": "action.interact.family_fit_drill_head"
+          }
+        ]
+      },
+      "minecraft:rideable": {
+        "seat_count": 1,
+        "family_types": ["player"],
+        "interact_text": "action.interact.ride.horse",
+        "seats": [{ "position": [0.0, 1.0, -0.4] }]
+      }
+    },
+    "events": {
+      "minecraft:entity_spawned": { "add": { "component_groups": ["family:on_ground"] } },
+      "family:climb": { "remove": { "component_groups": ["family:on_ground"] }, "add": { "component_groups": ["family:climbing"] } },
+      "family:land": { "remove": { "component_groups": ["family:climbing"] }, "add": { "component_groups": ["family:on_ground"] } },
+      "family:fit_drill_head": { "set_property": { "family:drill_size": 3 } },
+      "family:fit_big_drill_head": { "set_property": { "family:drill_size": 5 } },
+      "family:fit_giant_drill_head": { "set_property": { "family:drill_size": 7 } }
+    }
+  }
+}

@@ -113,6 +113,7 @@ flowchart LR
 | [`laser-gun`](./addons/laser-gun) | A blue laser gun. Right-click shoots a glowing blue beam that hurts mobs up to 40 blocks away. Craft it from 2 iron ingots and a diamond. | Item + picture + recipe + code, with tests |
 | [`npc`](./addons/npc) | NPCs that join like players and do what they're told: `./mc npc "dig a hole next to me"`. They walk, follow, dig, build, fight, and talk. | Code, with tests; uses Beta APIs |
 | [`pirate`](./addons/pirate) | A pirate saber that sets mobs on fire, a pirate outfit to wear (hat, coat, trousers, boots), a pirate ship you sail on water (8 seats; whoever is at the wheel steers), and pirate friends with pirate names who join your crew: they follow you, fight monsters, and sail with you. | Items + entities + models + pictures + recipes + code, with tests |
+| [`heavy-machines`](./addons/heavy-machines) | Big machines you drive: a drill rig that cuts 3×3 tunnels ahead, up, or down (5×5 and 7×7 with bigger drill heads, never in water or lava), and a tree cutter that takes down a whole tree, branches and all | Items + entities + models + pictures + recipes + code, with tests |
 
 Each add-on is a folder in `addons/` with up to two packs:
 

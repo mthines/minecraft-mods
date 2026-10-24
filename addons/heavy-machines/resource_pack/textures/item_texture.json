@@ -1,0 +1,11 @@
+{
+  "resource_pack_name": "heavy-machines",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_drill_rig": { "textures": "textures/items/drill_rig" },
+    "family_tree_cutter": { "textures": "textures/items/tree_cutter" },
+    "family_drill_head": { "textures": "textures/items/drill_head" },
+    "family_big_drill_head": { "textures": "textures/items/big_drill_head" },
+    "family_giant_drill_head": { "textures": "textures/items/giant_drill_head" }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:giant_drill_head", "menu_category": { "category": "items" } },
+    "components": {
+      "minecraft:icon": "family_giant_drill_head",
+      "minecraft:display_name": { "value": "Giant Drill Head (7×7)" },
+      "minecraft:max_stack_size": 1
+    }
+  }
+}

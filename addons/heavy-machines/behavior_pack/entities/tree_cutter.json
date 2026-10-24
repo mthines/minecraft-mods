@@ -1,0 +1,78 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "family:tree_cutter",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "family:working": {
+          "type": "bool",
+          "default": false,
+          "client_sync": true
+        }
+      }
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [
+          "tree_cutter",
+          "heavy_machine",
+          "inanimate"
+        ]
+      },
+      "minecraft:collision_box": {
+        "width": 2.0,
+        "height": 2.0
+      },
+      "minecraft:health": {
+        "value": 100,
+        "max": 100
+      },
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "cause": "all",
+            "deals_damage": "no"
+          }
+        ]
+      },
+      "minecraft:knockback_resistance": {
+        "value": 1.0
+      },
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:persistent": {},
+      "minecraft:fire_immune": {},
+      "minecraft:movement": {
+        "value": 0.12
+      },
+      "minecraft:movement.basic": {},
+      "minecraft:variable_max_auto_step": {
+        "base_value": 1.0625,
+        "controlled_value": 1.0625,
+        "jump_prevented_value": 1.0625
+      },
+      "minecraft:input_ground_controlled": {},
+      "minecraft:rideable": {
+        "seat_count": 1,
+        "family_types": [
+          "player"
+        ],
+        "interact_text": "action.interact.ride.horse",
+        "seats": [
+          {
+            "position": [
+              0.0,
+              1.0,
+              -0.4
+            ]
+          }
+        ]
+      },
+      "minecraft:physics": {}
+    }
+  }
+}
