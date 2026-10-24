@@ -6,8 +6,7 @@
       "bones": {
         "drill": {
           "rotation": ["q.property('family:aim') == 1 ? -90 : (q.property('family:aim') == 2 ? 90 : 0)", 0, 0],
-          "position": [0, "q.property('family:aim') == 0 ? (3 - q.property('family:drill_size')) * 2 : 0", 0],
-          "scale": ["1 + (q.property('family:drill_size') - 3) * 0.15", "1 + (q.property('family:drill_size') - 3) * 0.15", 1]
+          "scale": [1, 1, "1 + (q.property('family:drill_size') - 3) * 0.2"]
         },
         "arm": { "scale": "q.property('family:aim') == 0 ? 1 : 0" },
         "bit": { "rotation": [0, 0, "q.property('family:working') ? q.life_time * 720 : 0"] }
