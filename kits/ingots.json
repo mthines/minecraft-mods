@@ -1,0 +1,19 @@
+{
+  "about": "Crafting materials, 64 of one kind: iron ingots (for buckets, tools, rails, …), gold, copper, netherite, and diamonds, emeralds, redstone, lapis, coal, and more.",
+  "emoji": "🔩",
+  "label": "iron, gold, diamonds…",
+  "types": {
+    "iron": [["minecraft:iron_ingot", 64]],
+    "gold": [["minecraft:gold_ingot", 64]],
+    "copper": [["minecraft:copper_ingot", 64]],
+    "netherite": [["minecraft:netherite_ingot", 64]],
+    "diamond": [["minecraft:diamond", 64]],
+    "emerald": [["minecraft:emerald", 64]],
+    "redstone": [["minecraft:redstone", 64]],
+    "lapis": [["minecraft:lapis_lazuli", 64]],
+    "coal": [["minecraft:coal", 64]],
+    "quartz": [["minecraft:quartz", 64]],
+    "iron-nugget": [["minecraft:iron_nugget", 64]],
+    "gold-nugget": [["minecraft:gold_nugget", 64]]
+  }
+}
