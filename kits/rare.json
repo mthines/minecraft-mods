@@ -1,0 +1,18 @@
+{
+  "about": "Rare blocks to build with, 64 blocks: obsidian, crying obsidian, and blocks of diamond, gold, and more. nether-portal: obsidian for a portal and a flint and steel to light it.",
+  "emoji": "💠",
+  "types": {
+    "obsidian": [["minecraft:obsidian", 64]],
+    "crying-obsidian": [["minecraft:crying_obsidian", 64]],
+    "nether-portal": [["minecraft:obsidian", 14], ["minecraft:flint_and_steel", 1]],
+    "diamond-block": [["minecraft:diamond_block", 64]],
+    "gold-block": [["minecraft:gold_block", 64]],
+    "iron-block": [["minecraft:iron_block", 64]],
+    "emerald-block": [["minecraft:emerald_block", 64]],
+    "lapis-block": [["minecraft:lapis_block", 64]],
+    "redstone-block": [["minecraft:redstone_block", 64]],
+    "netherite-block": [["minecraft:netherite_block", 64]],
+    "amethyst": [["minecraft:amethyst_block", 64]],
+    "copper-block": [["minecraft:copper_block", 64]]
+  }
+}
