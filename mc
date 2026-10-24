@@ -55,6 +55,8 @@ In the game
                          An instruction given before reuses its plan without asking Claude; --fresh asks again;
                          --count <n>: n new NPCs come, and each does it (up to 8)
   kill-enemies           Remove every hostile mob (zombies, creepers, skeletons...) in loaded areas
+  clear-inventory [backpack|all] [player]  Empty everyone's backpack (or one player's); all empties the item bar too.
+                         Armor and the off hand stay
   cmd <command>          Run one server command, e.g. mc cmd time set day
   console                Type server commands; leave with Ctrl+P then Ctrl+Q
 EOF
@@ -444,6 +446,29 @@ case "${1:-help}" in
     sleep 1
     docker logs --since "$since" "$SERVER" 2>&1 | grep -qE "No targets matched" && echo "No enemies around." \
       || docker logs --since "$since" "$SERVER" 2>&1 | sed -n 's/.*INFO\] //p' | tr -d '\r'
+    ;;
+  clear-inventory)
+    # The backpack is slot.inventory 0-26 and the item bar slot.hotbar 0-8, so armor and the off hand stay
+    # (/clear would take those too). The server reads one command a line, so all of them go in one send-command.
+    case "${2:-backpack}" in
+      backpack) slots=(inventory:26) what="backpack" ;;
+      all) slots=(inventory:26 hotbar:8) what="backpack and item bar" ;;
+      *) echo "Usage: mc clear-inventory [backpack|all] [player]" >&2; exit 1 ;;
+    esac
+    who="${3:-@a}"
+    [[ "$who" == @* || "$who" != *" "* ]] || who="\"$who\""
+    commands=""
+    for slot in "${slots[@]}"; do
+      for i in $(seq 0 "${slot#*:}"); do commands+="replaceitem entity $who slot.${slot%:*} $i air"$'\n'; done
+    done
+    since="$(date -u +%Y-%m-%dT%H:%M:%S.000000000Z)"
+    docker exec "$SERVER" send-command "${commands%$'\n'}"
+    sleep 1
+    if docker logs --since "$since" "$SERVER" 2>&1 | grep -q "No targets matched"; then
+      echo "Nobody to clear: ${who/#@a/no one is online}." >&2
+      exit 1
+    fi
+    echo "Emptied the $what of ${who/#@a/everyone online}."
     ;;
   test)
     # Simulated players play each mod's tests/e2e.js on a separate test server (tools/e2e.mjs).

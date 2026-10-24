@@ -222,6 +222,7 @@ function hintRows(width) {
         ["n", "🤖 NPC"],
         ["d", "🌞 day"],
         ["e", "💀 kill enemies"],
+        ["x", "🧹 clear inventory"],
         ["o", "🔧 options"],
         ["a", "🔄 reload (no kick)"],
         ["r", "🔁 restart"],
@@ -668,6 +669,19 @@ const commands = {
   f: () => mc(["fall-damage", server.fallDamage === false ? "on" : "off"]),
   v: () => mc(["keep-inventory", server.keepInventory ? "off" : "on"]),
   e: () => mc(["kill-enemies"]),
+  x: () =>
+    pick(
+      "Clear everyone's inventory? Armor and the off hand stay.",
+      [
+        { label: "🎒 just the backpack (keep the item bar)", value: "backpack" },
+        { label: "🧹 the backpack and the item bar", value: "all" },
+      ],
+      (what) =>
+        void (confirm = {
+          question: `Empty everyone's ${what === "all" ? "backpack and item bar" : "backpack"}? Those things are gone for good.`,
+          then: () => mc(["clear-inventory", what]),
+        }),
+    ),
   m: () => mc(["mods"]),
   a: () => mc(["reload"]), // scripts and functions, without kicking anyone (/reload all does no more here)
   r: () => void (confirm = { question: "Restart the server? Everyone playing gets kicked.", then: () => mc(["restart"]) }),
