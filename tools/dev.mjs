@@ -445,11 +445,11 @@ function worldMenu() {
     "Play which world?",
     [...choices, { label: "+ a new world", value: NEW }],
     (world) => {
-      if (world === NEW) return askWorldName("New world name:", "", newWorld);
+      if (world === NEW) return askNewWorld();
       if (world === server.world) return tell(`The server plays ${world} already.`);
       confirm = { question: `Switch to ${world}? ${KICK}`, then: () => mc(["world", "play", world]) };
     },
-    { more: (world) => (world === NEW ? askWorldName("New world name:", "", newWorld) : worldActions(world)) },
+    { more: (world) => (world === NEW ? askNewWorld() : worldActions(world)) },
   );
 }
 
@@ -484,21 +484,45 @@ function worldActions(world) {
   );
 }
 
-/** Asks for a world name, and asks again while it's one ./mc world won't take. @param {string} prompt @param {string} text @param {(name: string) => void} then */
-function askWorldName(prompt, text, then) {
+const WORLD_LOOKS = ["Haunted", "Cherry", "Sunny", "Frozen", "Secret", "Lucky", "Mossy", "Golden", "Stormy", "Sleepy", "Giant", "Hidden", "Crystal", "Wild", "Misty", "Rainbow"];
+const WORLD_PLACES = ["Castle", "Land", "Island", "Valley", "Mountains", "Forest", "Caves", "Kingdom", "Jungle", "Desert", "Lagoon", "Village", "Canyon", "Meadow", "Cliffs", "Bay"];
+
+/** A made-up world name like "Mossy Lagoon" that no saved world has yet. */
+function worldNameIdea() {
+  const taken = new Set(worlds());
+  const any = (/** @type {string[]} */ list) => list[Math.floor(Math.random() * list.length)];
+  for (let tries = 0; tries < 50; tries++) {
+    const name = `${any(WORLD_LOOKS)} ${any(WORLD_PLACES)}`;
+    if (!taken.has(name)) return name;
+  }
+  return `World ${taken.size + 1}`;
+}
+
+/** The new-world name prompt: Enter on its own takes a made-up name. */
+function askNewWorld() {
+  const idea = worldNameIdea();
+  askWorldName(`New world name (Enter: ${idea}):`, "", newWorld, idea);
+}
+
+/**
+ * Asks for a world name, and asks again while it's one ./mc world won't take.
+ * @param {string} prompt @param {string} text @param {(name: string) => void} then @param {string} [fallback] used when nothing is typed
+ */
+function askWorldName(prompt, text, then, fallback = "") {
   input = {
     prompt,
     text,
-    then: (name) => {
+    then: (typed) => {
+      const name = typed || fallback;
       if (!name) return;
       // The same rule as ./mc world, so a bad name is caught here instead of failing out of sight.
       if (!/^[A-Za-z0-9][A-Za-z0-9 _-]*$/.test(name)) {
         tell("Use letters, numbers, spaces, - and _ in a world name.", S.yellow);
-        return askWorldName(prompt, name, then);
+        return askWorldName(prompt, name, then, fallback);
       }
       if (name !== text && worlds().includes(name)) {
         tell(`There's already a world called ${name}.`, S.yellow);
-        return askWorldName(prompt, name, then);
+        return askWorldName(prompt, name, then, fallback);
       }
       then(name);
     },
