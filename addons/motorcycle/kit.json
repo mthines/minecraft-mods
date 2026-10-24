@@ -1,5 +1,6 @@
 {
   "about": "What mc kit motorcycle gives you: a ready motorcycle. With --craft, also what crafts another.",
+  "emoji": "🛵",
   "items": [
     ["family:motorcycle", 1]
   ],

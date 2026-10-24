@@ -3,6 +3,7 @@ import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { randomUUID } from "node:crypto";
 import { ADDONS_DIR } from "./lib/addons.mjs";
+import { kitEmojis, TOOLS_EMOJI } from "./lib/kits.mjs";
 
 const SCRIPT_API_VERSION = "2.8.0";
 const name = process.argv[2];
@@ -60,5 +61,8 @@ world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
 `,
 );
 // mc kit <name> gives the items to everyone online, to try the mod; mc kit <name> --craft adds what crafts them.
-write("kit.json", { about: `What mc kit ${name} gives you to try it.`, items: [], craft: [["minecraft:crafting_table", 1]] });
-console.log(`Created addons/${name}. Next: edit behavior_pack/scripts/main.js, list its items in kit.json, then npm run build.`);
+// Its emoji in the kit menus: one no other kit has yet. Change it to one that fits the mod (npm run validate says if it's taken).
+const taken = new Set([TOOLS_EMOJI, ...kitEmojis().values()]);
+const emoji = [..."🎁🚀🌟🐉🦄🍄🎈🧪🌈🐸🦖🎃🍕🧲🛸🐙🦊🌵🍩🎸"].find((e) => !taken.has(e)) ?? "🎁";
+write("kit.json", { about: `What mc kit ${name} gives you to try it.`, emoji, items: [], craft: [["minecraft:crafting_table", 1]] });
+console.log(`Created addons/${name}. Next: edit behavior_pack/scripts/main.js, list its items in kit.json (and pick its emoji), then npm run build.`);

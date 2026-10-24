@@ -9,7 +9,7 @@ import { ADDONS_DIR, ROOT } from "./addons.mjs";
 export const KITS_DIR = join(ROOT, "kits");
 
 /** @typedef {[string, number][]} Items */
-/** @typedef {{ about?: string, label?: string, items?: Items, craft?: Items, types?: Record<string, Items> }} KitFile */
+/** @typedef {{ about?: string, emoji?: string, label?: string, items?: Items, craft?: Items, types?: Record<string, Items> }} KitFile */
 
 /** @param {string} path @returns {KitFile} */
 const read = (path) => JSON.parse(readFileSync(path, "utf8"));
@@ -45,6 +45,14 @@ export function materials() {
 /** What the kit menu in mc dev says after a kit's name, in brackets: its `label`, like "golden feather fly". */
 export function kitLabels() {
   return new Map(kitFiles().flatMap(({ name, path }) => { const { label } = read(path); return label ? [[name, label]] : []; }));
+}
+
+/** The emoji in front of the diamond tools in the kit menus (they have no kit file). */
+export const TOOLS_EMOJI = "💎";
+
+/** Each kit's `emoji`, shown in front of its name in the kit menus so kids find it at a glance. */
+export function kitEmojis() {
+  return new Map(kitFiles().flatMap(({ name, path }) => { const { emoji } = read(path); return emoji ? [[name, emoji]] : []; }));
 }
 
 /** The kits' names; with `types`, also every <kit>-<type> name ./mc kit takes for kits with types. */

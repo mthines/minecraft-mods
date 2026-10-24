@@ -1,5 +1,6 @@
 {
   "about": "Wood to build with: logs and planks. Make stairs, slabs, fences, doors, and the rest yourself (mc kit crafting-tools).",
+  "emoji": "🪵",
   "types": {
     "oak": [["minecraft:oak_log", 64], ["minecraft:oak_planks", 64]],
     "spruce": [["minecraft:spruce_log", 64], ["minecraft:spruce_planks", 64]],

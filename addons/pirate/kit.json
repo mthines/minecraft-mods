@@ -1,5 +1,6 @@
 {
   "about": "What mc kit pirate gives you: a pirate saber (sets mobs on fire), a pirate ship to sail on water, and 3 pirate friends who join your crew. With --craft, also what crafts more.",
+  "emoji": "🦜",
   "items": [
     ["family:pirate_saber", 1],
     ["family:pirate_ship", 1],

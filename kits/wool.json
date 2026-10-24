@@ -1,5 +1,6 @@
 {
   "about": "Wool in every colour. Make carpet yourself (mc kit crafting-tools).",
+  "emoji": "🐑",
   "types": {
     "white": [["minecraft:white_wool", 64]],
     "orange": [["minecraft:orange_wool", 64]],

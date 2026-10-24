@@ -1,5 +1,6 @@
 {
   "about": "What mc kit magic-wand gives you: a magic wand. Right-click casts its spell; sneak and right-click to switch spell.",
+  "emoji": "🪄",
   "items": [
     ["family:magic_wand", 1]
   ],

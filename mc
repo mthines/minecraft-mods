@@ -276,10 +276,12 @@ case "${1:-help}" in
     for arg in "${@:2}"; do if [[ "$arg" == "--craft" ]]; then craft=true; else args+=("$arg"); fi; done
     set -- kit ${args[@]+"${args[@]}"}
     if [[ -z "${2:-}" && -t 0 ]]; then
-      choices=(tools $(kit_names))
+      # Each line of kits.mjs menu is "<kit> <emoji> <kit>": the list shows the emoji and name, and gives the kit.
+      names=() labels=()
+      while read -r kit label; do names+=("$kit") labels+=("$label"); done < <(node tools/kits.mjs menu)
       echo "Which kit? (tools = diamond tools)"
       PS3="Number: "
-      select choice in "${choices[@]}"; do [[ -n "$choice" ]] && break; done
+      select label in "${labels[@]}"; do [[ -n "$label" ]] && choice="${names[REPLY - 1]}" && break; done
       [[ -n "${choice:-}" ]] || exit 1
       exec "$0" kit "$choice" $([[ "$craft" == true ]] && echo --craft)
     fi

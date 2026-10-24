@@ -1,5 +1,6 @@
 {
   "about": "What mc kit trampoline gives you: enough for an 8×8 trampoline (dig a 10×10 hole, fill the middle 8×8 with slime, edge it with planks), or lots of small ones.",
+  "emoji": "🦘",
   "items": [
     ["minecraft:slime", 64],
     ["minecraft:oak_planks", 32],

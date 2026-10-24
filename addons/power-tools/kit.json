@@ -1,5 +1,6 @@
 {
   "about": "What mc kit power-tools gives you: a drill, a chainsaw, and a power shovel. With --craft, also what crafts more.",
+  "emoji": "🪛",
   "items": [
     ["family:drill", 1],
     ["family:chainsaw", 1],

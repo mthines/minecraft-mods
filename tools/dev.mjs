@@ -5,7 +5,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { ADDONS_DIR, ROOT } from "./lib/addons.mjs";
-import { kitLabels, kitNames, materials } from "./lib/kits.mjs";
+import { kitEmojis, kitLabels, kitNames, materials, TOOLS_EMOJI } from "./lib/kits.mjs";
 import { recentInstructions } from "./lib/npc-history.mjs";
 import { currentWorld } from "./lib/world.mjs";
 import { onSave, sendSaves, waiting, watchAddons } from "./watch.mjs";
@@ -118,20 +118,30 @@ function colorOf(text) {
 
 /** @typedef {[string, ((s: string) => string)?]} Segment */
 
-/** Cuts and pads styled segments to exactly `width` characters. @param {Segment[]} segments */
+const graphemes = new Intl.Segmenter();
+/** How many columns the terminal draws a character in: emoji (like the kits' 🪵) take two. @param {string} char */
+const columns = (char) => (/\p{Emoji_Presentation}|\uFE0F/u.test(char) ? 2 : 1);
+/** @param {string} text */
+const chars = (text) => [...graphemes.segment(text)].map(({ segment }) => segment);
+
+/** Cuts and pads styled segments to exactly `width` columns. @param {Segment[]} segments */
 function fit(segments, width, fill = plain) {
   let left = width;
   let row = "";
   for (const [text, style = plain] of segments) {
     if (left <= 0) break;
-    const chars = [...text].slice(0, left);
-    left -= chars.length;
-    row += style(chars.join(""));
+    let shown = "";
+    for (const char of chars(text)) {
+      if (columns(char) > left) break;
+      left -= columns(char);
+      shown += char;
+    }
+    row += style(shown);
   }
   return row + fill(" ".repeat(Math.max(0, left)));
 }
 
-const len = (/** @type {Segment[]} */ segments) => segments.reduce((n, [text]) => n + [...text].length, 0);
+const len = (/** @type {Segment[]} */ segments) => segments.reduce((n, [text]) => n + chars(text).reduce((sum, char) => sum + columns(char), 0), 0);
 
 /** Breaks a line at spaces, and indents the rows after the first. @param {string} text */
 function wrap(text, width) {
@@ -507,9 +517,11 @@ function newWorld(name) {
 function kitMenu() {
   const types = new Map(materials().map(({ name, types }) => [name, types]));
   const labels = kitLabels();
-  const label = (kit) => (types.has(kit) ? `${kit}  → ${types.get(kit)?.slice(0, 3).join(", ")}, …` : labels.has(kit) ? `${kit} (${labels.get(kit)})` : kit);
+  const emojis = kitEmojis();
+  const label = (kit) =>
+    `${emojis.get(kit) ?? "  "} ${types.has(kit) ? `${kit}  → ${types.get(kit)?.slice(0, 3).join(", ")}, …` : labels.has(kit) ? `${kit} (${labels.get(kit)})` : kit}`;
   const open = (kit) => (types.has(kit) ? materialMenu(kit, types.get(kit) ?? []) : giveKit(kit));
-  pick("Which kit?", [{ label: "tools (diamond tools)", value: "tools" }, ...kitNames().map((kit) => ({ label: label(kit), value: kit }))], open, {
+  pick("Which kit?", [{ label: `${TOOLS_EMOJI} tools (diamond tools)`, value: "tools" }, ...kitNames().map((kit) => ({ label: label(kit), value: kit }))], open, {
     more: (kit) => (types.has(kit) ? open(kit) : kitMenu()),
   });
 }

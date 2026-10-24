@@ -1,5 +1,6 @@
 {
   "about": "Glass blocks, clear or stained. Make panes yourself (mc kit crafting-tools).",
+  "emoji": "🪟",
   "types": {
     "clear": [["minecraft:glass", 64]],
     "white": [["minecraft:white_stained_glass", 64]],

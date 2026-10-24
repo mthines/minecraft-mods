@@ -1,4 +1,5 @@
 {
   "about": "What mc kit chest gives you: 2 chests, to place side by side for a double chest to keep things in.",
+  "emoji": "📦",
   "items": [["minecraft:chest", 2]]
 }
