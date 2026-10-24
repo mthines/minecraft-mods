@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:pirate_saber", "menu_category": { "category": "equipment" } },
+    "components": {
+      "minecraft:icon": "family_pirate_saber",
+      "minecraft:display_name": { "value": "Pirate Saber" },
+      "minecraft:max_stack_size": 1,
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": { "value": 7 },
+      "minecraft:can_destroy_in_creative": false,
+      "minecraft:enchantable": { "slot": "sword", "value": 14 }
+    }
+  }
+}

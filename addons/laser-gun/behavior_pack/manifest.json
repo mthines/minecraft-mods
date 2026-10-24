@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Laser Gun",
+    "description": "A blue laser gun: right-click shoots a laser beam that hurts mobs far away.",
+    "uuid": "11f0134c-ad65-4da1-8dde-1920da50c2c9",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "9bdcd4a0-7716-434f-828d-cb0ef01d7606",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "694067bc-a0e1-46d4-a093-ddf6aa1f9763",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "d1e7e71a-4132-4b66-b386-b2b937691a58",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

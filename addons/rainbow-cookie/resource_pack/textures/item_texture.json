@@ -1,0 +1,7 @@
+{
+  "resource_pack_name": "rainbow_cookie",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_rainbow_cookie": { "textures": "textures/items/rainbow_cookie" }
+  }
+}

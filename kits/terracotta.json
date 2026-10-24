@@ -1,0 +1,22 @@
+{
+  "about": "Terracotta. Make glazed terracotta for patterns yourself in a furnace (mc kit crafting-tools).",
+  "types": {
+    "plain": [["minecraft:hardened_clay", 64]],
+    "white": [["minecraft:white_terracotta", 64]],
+    "orange": [["minecraft:orange_terracotta", 64]],
+    "magenta": [["minecraft:magenta_terracotta", 64]],
+    "light-blue": [["minecraft:light_blue_terracotta", 64]],
+    "yellow": [["minecraft:yellow_terracotta", 64]],
+    "lime": [["minecraft:lime_terracotta", 64]],
+    "pink": [["minecraft:pink_terracotta", 64]],
+    "gray": [["minecraft:gray_terracotta", 64]],
+    "light-gray": [["minecraft:light_gray_terracotta", 64]],
+    "cyan": [["minecraft:cyan_terracotta", 64]],
+    "purple": [["minecraft:purple_terracotta", 64]],
+    "blue": [["minecraft:blue_terracotta", 64]],
+    "brown": [["minecraft:brown_terracotta", 64]],
+    "green": [["minecraft:green_terracotta", 64]],
+    "red": [["minecraft:red_terracotta", 64]],
+    "black": [["minecraft:black_terracotta", 64]]
+  }
+}

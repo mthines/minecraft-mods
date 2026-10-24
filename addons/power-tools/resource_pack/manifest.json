@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Power Tools Resources",
+    "description": "Pictures of the drill, the chainsaw, and the power shovel.",
+    "uuid": "b30561c2-6f82-4228-8887-311df9fdc622",
+    "version": [
+      1,
+      0,
+      3
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "9df3100b-a6bd-404b-8af9-f9ad47b5e8f2",
+      "version": [
+        1,
+        0,
+        3
+      ]
+    }
+  ]
+}

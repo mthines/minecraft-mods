@@ -1,0 +1,11 @@
+{
+  "about": "What mc kit laser-gun gives you: a blue laser gun. Right-click shoots a laser beam.",
+  "items": [
+    ["family:laser_gun", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 2],
+    ["minecraft:diamond", 1]
+  ]
+}

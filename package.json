@@ -1,0 +1,25 @@
+{
+  "name": "minecraft-mods",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "./mc start",
+    "stop": "./mc stop",
+    "dev": "./mc dev",
+    "new": "node tools/new-addon.mjs",
+    "validate": "node tools/validate.mjs",
+    "test": "node --test \"addons/**/*.test.mjs\" \"tools/**/*.test.mjs\"",
+    "build": "node tools/validate.mjs && node tools/build.mjs",
+    "deploy": "node tools/validate.mjs && node tools/deploy.mjs",
+    "watch": "node tools/watch.mjs",
+    "e2e": "node tools/e2e.mjs"
+  },
+  "devDependencies": {
+    "@minecraft/server": "2.8.0",
+    "@minecraft/server-gametest": "1.0.0-beta.1.26.52-stable",
+    "prismarine-nbt": "2.8.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

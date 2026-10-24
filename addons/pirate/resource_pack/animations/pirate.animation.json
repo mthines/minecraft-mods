@@ -1,0 +1,31 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.family_pirate.look": {
+      "loop": true,
+      "bones": { "head": { "rotation": ["query.target_x_rotation", "query.target_y_rotation", 0] } }
+    },
+    "animation.family_pirate.walk": {
+      "loop": true,
+      "bones": {
+        "rightArm": { "rotation": ["math.cos(query.modified_distance_moved * 38.17) * 40 * query.modified_move_speed - 20", 0, 0] },
+        "leftArm": { "rotation": ["math.cos(query.modified_distance_moved * 38.17) * -40 * query.modified_move_speed", 0, 0] },
+        "rightLeg": { "rotation": ["math.cos(query.modified_distance_moved * 38.17) * -45 * query.modified_move_speed", 0, 0] },
+        "leftLeg": { "rotation": ["math.cos(query.modified_distance_moved * 38.17) * 45 * query.modified_move_speed", 0, 0] }
+      }
+    },
+    "animation.family_pirate.sit": {
+      "loop": true,
+      "bones": {
+        "rightArm": { "rotation": [-30, 0, 0] },
+        "leftArm": { "rotation": [-30, 0, 0] },
+        "rightLeg": { "rotation": [-90, 10, 0] },
+        "leftLeg": { "rotation": [-90, -10, 0] }
+      }
+    },
+    "animation.family_pirate.saber": {
+      "loop": true,
+      "bones": { "rightArm": { "rotation": ["query.is_delayed_attacking ? -110 : 0", 0, 0] } }
+    }
+  }
+}

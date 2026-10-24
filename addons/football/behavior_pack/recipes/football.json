@@ -1,0 +1,14 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "family:football" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:leather" }],
+    "ingredients": [
+      { "item": "minecraft:leather" },
+      { "item": "minecraft:leather" },
+      { "item": "minecraft:slime_ball" }
+    ],
+    "result": { "item": "family:football" }
+  }
+}

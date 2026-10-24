@@ -1,0 +1,13 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:hand_lantern", "menu_category": { "category": "equipment" } },
+    "components": {
+      "minecraft:icon": "family_hand_lantern",
+      "minecraft:display_name": { "value": "Hand Lantern" },
+      "minecraft:max_stack_size": 1,
+      "minecraft:allow_off_hand": { "value": true },
+      "minecraft:use_modifiers": { "use_duration": 0.05 }
+    }
+  }
+}

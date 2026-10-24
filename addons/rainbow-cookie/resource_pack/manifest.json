@@ -1,0 +1,13 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Rainbow Cookie Resources",
+    "description": "The picture of the rainbow cookie.",
+    "uuid": "d0a6955f-4654-4051-a041-7808ecd025b7",
+    "version": [1, 0, 0],
+    "min_engine_version": [1, 21, 80]
+  },
+  "modules": [
+    { "type": "resources", "uuid": "f9d5104c-4e0a-423d-80dc-bfea818ab9eb", "version": [1, 0, 0] }
+  ]
+}

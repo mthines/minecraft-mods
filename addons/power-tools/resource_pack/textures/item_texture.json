@@ -1,0 +1,15 @@
+{
+  "resource_pack_name": "power_tools",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_drill": {
+      "textures": "textures/items/drill"
+    },
+    "family_chainsaw": {
+      "textures": "textures/items/chainsaw"
+    },
+    "family_power_shovel": {
+      "textures": "textures/items/power_shovel"
+    }
+  }
+}

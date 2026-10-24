@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Weapons Resources",
+    "description": "Pictures of the weapons, bullets, and grenades.",
+    "uuid": "2270533b-db10-44a1-bf12-0cac9b717e41",
+    "version": [
+      1,
+      0,
+      2
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "9ee96828-1627-4d55-88ff-e0b9d8ae49a7",
+      "version": [
+        1,
+        0,
+        2
+      ]
+    }
+  ]
+}

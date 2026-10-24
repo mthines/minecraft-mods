@@ -1,0 +1,11 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:rifle" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:iron_ingot" }],
+    "pattern": ["III", " IW", "  W"],
+    "key": { "I": { "item": "minecraft:iron_ingot" }, "W": { "item": "minecraft:oak_planks" } },
+    "result": { "item": "family:rifle", "count": 1 }
+  }
+}

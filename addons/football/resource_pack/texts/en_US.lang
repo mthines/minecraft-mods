@@ -1,0 +1,3 @@
+entity.family:football.name=Football
+item.spawn_egg.entity.family:football.name=Football Spawn Egg
+action.interact.family_kick=Kick

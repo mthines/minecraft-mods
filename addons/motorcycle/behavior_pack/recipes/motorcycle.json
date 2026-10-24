@@ -1,0 +1,15 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:motorcycle" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:iron_ingot" }],
+    "pattern": ["  L", "III", "C C"],
+    "key": {
+      "L": { "item": "minecraft:leather" },
+      "I": { "item": "minecraft:iron_ingot" },
+      "C": { "item": "minecraft:coal" }
+    },
+    "result": { "item": "family:motorcycle" }
+  }
+}

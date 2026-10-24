@@ -1,0 +1,7 @@
+{
+  "resource_pack_name": "laser-gun",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_laser_gun": { "textures": "textures/items/laser_gun" }
+  }
+}

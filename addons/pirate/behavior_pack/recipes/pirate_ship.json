@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:pirate_ship" },
+    "tags": ["crafting_table"],
+    "pattern": ["WWW", " S ", "PPP"],
+    "key": {
+      "W": "minecraft:white_wool",
+      "S": "minecraft:stick",
+      "P": "minecraft:oak_planks"
+    },
+    "unlock": [{ "item": "minecraft:oak_planks" }],
+    "result": { "item": "family:pirate_ship" }
+  }
+}

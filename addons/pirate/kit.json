@@ -1,0 +1,19 @@
+{
+  "about": "What mc kit pirate gives you: a pirate saber (sets mobs on fire), a pirate ship to sail on water, and 3 pirate friends who join your crew. With --craft, also what crafts more.",
+  "items": [
+    ["family:pirate_saber", 1],
+    ["family:pirate_ship", 1],
+    ["family:pirate_friend", 3]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:stick", 2],
+    ["minecraft:iron_ingot", 2],
+    ["minecraft:gold_ingot", 2],
+    ["minecraft:blaze_powder", 1],
+    ["minecraft:white_wool", 3],
+    ["minecraft:oak_planks", 3],
+    ["minecraft:emerald", 1],
+    ["minecraft:leather", 1]
+  ]
+}

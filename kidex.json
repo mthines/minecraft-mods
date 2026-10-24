@@ -1,0 +1,92 @@
+{
+  "name": "Minecraft mods",
+  "language": "auto",
+  "budgetUsd": 5,
+  "start": "server",
+  "instructions": "The kids play these mods on the family Bedrock server. Keep a kid's mod small and fun: one new item, block, or effect, which they can get with a kit. Draw item and block pictures with the draw_picture tool (16x16), following the picture rules in CLAUDE.md. Do not commit, push, or restart the server yourself: Kidex blocks it. When the mod is done and its test passes, tell the kid how to play it: press the Start the server button (if it isn't running already), which puts new mods in the game by itself in a minute (anyone playing gets kicked for a moment), and then, in the server screen, get it with the kit menu (the k key).",
+  "check": "./mc test {mod}",
+  "allow": [
+    "npm run new",
+    "npm run validate",
+    "npm run build",
+    "npm test",
+    "node --test",
+    "./mc test",
+    "./mc mods",
+    "./mc status"
+  ],
+  "deny": [
+    "server/data/",
+    "server/.env",
+    ".mcp.json"
+  ],
+  "actions": [
+    {
+      "id": "new",
+      "emoji": "✨",
+      "label": {
+        "en": "New mod",
+        "da": "Nyt mod"
+      },
+      "prompt": "Make a new mod (start with npm run new)."
+    },
+    {
+      "id": "change",
+      "emoji": "🔧",
+      "label": {
+        "en": "Change mod",
+        "da": "Ændr mod"
+      },
+      "pick": "addons/*",
+      "prompt": "Change the mod in addons/{pick}/."
+    },
+    {
+      "id": "server",
+      "emoji": "🖥️",
+      "label": {
+        "en": "Start server",
+        "da": "Start server"
+      },
+      "panel": "./mc dev"
+    },
+    {
+      "id": "ask",
+      "emoji": "❓",
+      "label": {
+        "en": "Ask question",
+        "da": "Spørg"
+      },
+      "prompt": "The kid has a question about the mods or Minecraft. Answer it; do not change any files."
+    }
+  ],
+  "explain": {
+    "kit.json": {
+      "en": "What you get when you try the mod",
+      "da": "Det du får, når du prøver modet"
+    },
+    "item_texture.json": {
+      "en": "A list that tells the game which picture goes with which item",
+      "da": "En liste der fortæller spillet hvilket billede der hører til hvilken ting"
+    },
+    "textures/": {
+      "en": "A picture the game paints on the item",
+      "da": "Et billede spillet maler på tingen"
+    },
+    "behavior_pack/items/": {
+      "en": "A new item: its name and what it can do",
+      "da": "En ny ting: dens navn og hvad den kan"
+    },
+    "recipes/": {
+      "en": "A crafting recipe",
+      "da": "En opskrift til crafting-bordet"
+    },
+    "scripts/": {
+      "en": "Code the game runs: this is where the magic happens",
+      "da": "Kode som spillet kører: her sker magien"
+    },
+    "texts/": {
+      "en": "The names players see in the game",
+      "da": "De navne spillerne ser i spillet"
+    }
+  }
+}

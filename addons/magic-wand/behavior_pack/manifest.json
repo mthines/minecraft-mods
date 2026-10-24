@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Magic Wand",
+    "description": "A magic wand: fire, push, and friend spells. Left-click to cast, right-click to switch.",
+    "uuid": "53a322e3-e2a3-4549-b23f-a6cc54f72da3",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "5ea7a5bd-5e77-45f8-bd82-049d2230aed4",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "1e8d68f9-fac8-4a6b-8ec5-da454d5a3a74",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "321b3117-4348-47ff-9e87-9baf3c999584",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

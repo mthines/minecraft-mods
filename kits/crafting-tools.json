@@ -1,0 +1,4 @@
+{
+  "about": "What mc kit crafting-tools gives you: a crafting table, a stonecutter, and a furnace with coal, to make stairs, slabs, fences, walls, panes, and more from the building materials yourself.",
+  "items": [["minecraft:crafting_table", 1], ["minecraft:stonecutter_block", 1], ["minecraft:furnace", 1], ["minecraft:coal", 32]]
+}

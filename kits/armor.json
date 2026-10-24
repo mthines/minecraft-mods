@@ -1,0 +1,11 @@
+{
+  "about": "A full set of armor (helmet, chestplate, leggings, boots), weakest to strongest: leather, gold, chainmail, iron, diamond, or netherite.",
+  "types": {
+    "leather": [["minecraft:leather_helmet", 1], ["minecraft:leather_chestplate", 1], ["minecraft:leather_leggings", 1], ["minecraft:leather_boots", 1]],
+    "gold": [["minecraft:golden_helmet", 1], ["minecraft:golden_chestplate", 1], ["minecraft:golden_leggings", 1], ["minecraft:golden_boots", 1]],
+    "chainmail": [["minecraft:chainmail_helmet", 1], ["minecraft:chainmail_chestplate", 1], ["minecraft:chainmail_leggings", 1], ["minecraft:chainmail_boots", 1]],
+    "iron": [["minecraft:iron_helmet", 1], ["minecraft:iron_chestplate", 1], ["minecraft:iron_leggings", 1], ["minecraft:iron_boots", 1]],
+    "diamond": [["minecraft:diamond_helmet", 1], ["minecraft:diamond_chestplate", 1], ["minecraft:diamond_leggings", 1], ["minecraft:diamond_boots", 1]],
+    "netherite": [["minecraft:netherite_helmet", 1], ["minecraft:netherite_chestplate", 1], ["minecraft:netherite_leggings", 1], ["minecraft:netherite_boots", 1]]
+  }
+}

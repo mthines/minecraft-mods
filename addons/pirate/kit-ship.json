@@ -1,0 +1,5 @@
+{
+  "about": "What mc kit pirate-ship gives you: a pirate ship. Look at water and use it to put it there.",
+  "label": "a ship to sail",
+  "items": [["family:pirate_ship", 1]]
+}

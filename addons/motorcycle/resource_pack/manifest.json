@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Motorcycle Resources",
+    "description": "The motorcycle's model, pictures, and wheel animation.",
+    "uuid": "9049eeff-09ae-49cf-9b26-afb5fdfd33b7",
+    "version": [
+      1,
+      0,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "21a51840-fe51-4a50-a870-35c5b5d1b550",
+      "version": [
+        1,
+        0,
+        1
+      ]
+    }
+  ]
+}

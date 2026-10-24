@@ -1,0 +1,12 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.family_motorcycle.wheels": {
+      "loop": true,
+      "bones": {
+        "front_wheel": { "rotation": ["query.modified_distance_moved * 180", 0, 0] },
+        "back_wheel": { "rotation": ["query.modified_distance_moved * 180", 0, 0] }
+      }
+    }
+  }
+}

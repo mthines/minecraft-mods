@@ -1,0 +1,50 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Pirate",
+    "description": "A pirate saber that sets mobs on fire, a pirate ship to sail, and pirate friends who join your crew.",
+    "uuid": "690d51e7-bb0c-4a3f-a9fa-7af4baf2ef3e",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "8323ec63-4a31-4183-829c-eb42559310ad",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "add8379a-13c4-4083-934c-20e50493675b",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "ac633382-5a8c-4e73-bb04-977934e9e557",
+      "version": [1, 1, 1]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Power Tools",
+    "description": "A drill, a chainsaw, and a power shovel that break their blocks in a blink.",
+    "uuid": "b55d873e-3a1d-4c76-b266-978d046e9b58",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "bb2b597a-68ac-4b81-8ab6-9b18f53ee9b2",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "de313c6e-1c76-45e3-936d-1372e26f77e2",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "b30561c2-6f82-4228-8887-311df9fdc622",
+      "version": [
+        1,
+        0,
+        3
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

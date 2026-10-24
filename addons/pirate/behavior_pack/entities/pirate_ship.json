@@ -1,0 +1,41 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "family:pirate_ship", "is_spawnable": true, "is_summonable": true },
+    "components": {
+      "minecraft:type_family": { "family": ["pirate_ship", "inanimate"] },
+      "minecraft:collision_box": { "width": 5.0, "height": 0.5 },
+      "minecraft:is_collidable": {},
+      "minecraft:health": { "value": 40, "max": 40 },
+      "minecraft:damage_sensor": { "triggers": [{ "cause": "all", "deals_damage": "no" }] },
+      "minecraft:knockback_resistance": { "value": 1.0 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+      "minecraft:persistent": {},
+      "minecraft:buoyant": {
+        "base_buoyancy": 1.0,
+        "apply_gravity": true,
+        "simulate_waves": true,
+        "big_wave_probability": 0.0,
+        "drag_down_on_buoyancy_removed": 0.0,
+        "liquid_blocks": ["minecraft:water", "minecraft:flowing_water"]
+      },
+      "minecraft:rideable": {
+        "seat_count": 8,
+        "family_types": ["player", "pirate"],
+        "interact_text": "action.interact.ride.boat",
+        "pull_in_entities": false,
+        "seats": [
+          { "position": [0.0, 0.8, -2.4] },
+          { "position": [-0.7, 0.6, 1.4] },
+          { "position": [0.7, 0.6, 1.4] },
+          { "position": [-0.7, 0.6, -0.9] },
+          { "position": [0.7, 0.6, -0.9] },
+          { "position": [-0.7, 0.6, 0.3] },
+          { "position": [0.7, 0.6, 0.3] },
+          { "position": [0.0, 0.6, 2.3] }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Double Jump (Golden Feather Fly) Resources",
+    "description": "The golden feather picture.",
+    "uuid": "8fd5c742-bf70-408a-a5a5-86617e6f7354",
+    "version": [
+      1,
+      0,
+      2
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "17df2a21-87e8-4895-a365-328a3a1672c5",
+      "version": [
+        1,
+        0,
+        2
+      ]
+    }
+  ]
+}

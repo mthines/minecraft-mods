@@ -1,0 +1,7 @@
+{
+  "about": "What mc kit party-commands gives you: dirt for the dirt-to-diamond recipe.",
+  "items": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:dirt", 9]
+  ]
+}

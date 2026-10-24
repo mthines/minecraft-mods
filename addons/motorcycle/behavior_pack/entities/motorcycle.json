@@ -1,0 +1,27 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "family:motorcycle", "is_spawnable": true, "is_summonable": true },
+    "components": {
+      "minecraft:type_family": { "family": ["motorcycle", "inanimate"] },
+      "minecraft:collision_box": { "width": 1.0, "height": 1.0 },
+      "minecraft:health": { "value": 20, "max": 20 },
+      "minecraft:damage_sensor": { "triggers": [{ "cause": "all", "deals_damage": "no" }] },
+      "minecraft:knockback_resistance": { "value": 1.0 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": true },
+      "minecraft:persistent": {},
+      "minecraft:movement": { "value": 0.4 },
+      "minecraft:movement.basic": {},
+      "minecraft:jump.static": {},
+      "minecraft:variable_max_auto_step": { "base_value": 1.0625, "controlled_value": 1.0625, "jump_prevented_value": 0.5625 },
+      "minecraft:input_ground_controlled": {},
+      "minecraft:rideable": {
+        "seat_count": 1,
+        "family_types": ["player"],
+        "interact_text": "action.interact.ride.horse",
+        "seats": [{ "position": [0.0, 0.5, -0.25] }]
+      }
+    }
+  }
+}

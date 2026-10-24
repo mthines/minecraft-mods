@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "family:football", "is_spawnable": true, "is_summonable": true },
+    "events": { "family:kicked": {} },
+    "components": {
+      "minecraft:type_family": { "family": ["football", "inanimate"] },
+      "minecraft:collision_box": { "width": 0.5, "height": 0.5 },
+      "minecraft:health": { "value": 10, "max": 10 },
+      "minecraft:damage_sensor": { "triggers": [{ "cause": "all", "deals_damage": "no" }] },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": true, "is_pushable_by_piston": true },
+      "minecraft:persistent": {},
+      "minecraft:fire_immune": {},
+      "minecraft:interact": {
+        "interactions": [{ "on_interact": { "event": "family:kicked", "target": "self" }, "interact_text": "action.interact.family_kick", "swing": true }]
+      }
+    }
+  }
+}

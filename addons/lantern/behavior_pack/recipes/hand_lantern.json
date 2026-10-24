@@ -1,0 +1,10 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "family:hand_lantern" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:lantern" }],
+    "ingredients": [{ "item": "minecraft:lantern" }, { "item": "minecraft:string" }],
+    "result": { "item": "family:hand_lantern" }
+  }
+}

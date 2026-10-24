@@ -1,0 +1,63 @@
+# Bedrock Dedicated Server. Start it with ./start.sh (it picks the right setup for Linux or macOS).
+services:
+  bedrock:
+    image: itzg/minecraft-bedrock-server:latest
+    container_name: family-bedrock
+    restart: unless-stopped
+    # Linux: share the computer's network, so the server shows up under LAN Games.
+    # macOS can't do this; start.sh adds docker-compose.mac.yml instead.
+    network_mode: host
+    volumes:
+      - ./data:/data
+      - ./wait-for-join-port.sh:/wait-for-join-port.sh:ro
+    # Waits for the join port to be free first, then runs the image's usual start.
+    entrypoint: ["sh", "/wait-for-join-port.sh", "/opt/demoter-entry.sh"]
+    stdin_open: true # lets `docker attach family-bedrock` reach the server console
+    tty: true
+    # Healthy means players can join: the server listens on TCP 19132 (hex 4ABC), where every join starts.
+    # The image's own check pings a different port, which kept answering while joins failed.
+    # It reads the socket table instead of connecting, because every connection blocks the port for a minute after a restart.
+    healthcheck:
+      test: ["CMD-SHELL", "grep -qE ':4ABC [0-9A-F:]+ 0A ' /proc/net/tcp /proc/net/tcp6"]
+      interval: 15s
+      timeout: 5s
+      retries: 3 # unhealthy after about 45 seconds without accepting joins
+      start_period: 120s # includes waiting up to a minute for the port
+    labels:
+      autoheal: "true" # the autoheal service below restarts it when unhealthy
+      autoheal.stop.timeout: "30" # seconds to save the world before Docker forces it to stop
+    # Which world to play (LEVEL_NAME) and the seed for a new one (LEVEL_SEED). ./mc world writes it.
+    env_file:
+      - path: ./data/world.env
+        required: false
+    environment:
+      EULA: "TRUE" # you accept https://www.minecraft.net/eula by starting the server
+      VERSION: "LATEST" # every device must run the same Minecraft version as the server
+      SERVER_NAME: "Family Server"
+      GAMEMODE: "survival"
+      # No DIFFICULTY here: it stays as server/data/server.properties says (easy at first), so ./mc peace on/off sticks.
+      MAX_PLAYERS: "10"
+      ALLOW_CHEATS: "true" # needed for /function party and other commands
+      ONLINE_MODE: "true" # players must sign in with a Microsoft account
+      ALLOW_LIST: "false" # "true" = only the gamertags below can join
+      # Any names here turn the allow list back on, e.g. "YourGamertag,KidGamertag1,KidGamertag2"
+      ALLOW_LIST_USERS: ""
+      OPS: "YourGamertag" # operators can run commands like /function party
+      TEXTUREPACK_REQUIRED: "true" # sends the resource packs to everyone who joins
+      # Players connect on TCP 19132, then play over one UDP port each from this range.
+      # Keep at least one port per player (MAX_PLAYERS).
+      SERVER_UDP_PORTS: "19140-19155"
+      ENABLE_LAN_VISIBILITY: "true" # announces the server on UDP 7551
+      CONTENT_LOG_CONSOLE_OUTPUT_ENABLED: "true" # script errors show up in `docker logs`, npm run watch, and Dash0
+
+  # Docker marks a container unhealthy but never restarts it; this does.
+  # It only touches containers labelled autoheal=true, so other containers on this computer are left alone.
+  autoheal:
+    image: willfarrell/autoheal:1.2.0
+    container_name: family-autoheal
+    restart: unless-stopped
+    environment:
+      AUTOHEAL_CONTAINER_LABEL: autoheal
+      AUTOHEAL_INTERVAL: "10"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # to restart the server

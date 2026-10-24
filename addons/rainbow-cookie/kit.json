@@ -1,0 +1,12 @@
+{
+  "about": "What mc kit rainbow-cookie gives you: 16 cookies to eat, a full stack. With --craft, also what crafts more.",
+  "items": [
+    ["family:rainbow_cookie", 16]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:cookie", 2],
+    ["minecraft:sugar", 2],
+    ["minecraft:glow_berries", 2]
+  ]
+}

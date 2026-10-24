@@ -1,0 +1,13 @@
+{
+  "about": "Ground blocks for landscaping: grass, dirt, sand, gravel, clay, moss, and snow.",
+  "types": {
+    "grass": [["minecraft:grass_block", 64], ["minecraft:dirt", 64]],
+    "dirt": [["minecraft:dirt", 64], ["minecraft:coarse_dirt", 32], ["minecraft:grass_path", 32]],
+    "sand": [["minecraft:sand", 64], ["minecraft:sandstone", 32]],
+    "red-sand": [["minecraft:red_sand", 64], ["minecraft:red_sandstone", 32]],
+    "gravel": [["minecraft:gravel", 64]],
+    "clay": [["minecraft:clay", 64]],
+    "moss": [["minecraft:moss_block", 64], ["minecraft:moss_carpet", 32]],
+    "snow": [["minecraft:snow", 64], ["minecraft:snow_layer", 32], ["minecraft:ice", 32]]
+  }
+}

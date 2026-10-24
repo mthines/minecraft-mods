@@ -1,0 +1,15 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:motorcycle",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/motorcycle" },
+      "geometry": { "default": "geometry.family_motorcycle" },
+      "animations": { "wheels": "animation.family_motorcycle.wheels" },
+      "scripts": { "animate": ["wheels"] },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#d32f2f", "overlay_color": "#212121" }
+    }
+  }
+}

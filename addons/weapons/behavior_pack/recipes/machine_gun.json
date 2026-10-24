@@ -1,0 +1,16 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:machine_gun" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:iron_ingot" }],
+    "pattern": ["IIB", "RIW", "  W"],
+    "key": {
+      "I": { "item": "minecraft:iron_ingot" },
+      "B": { "item": "minecraft:iron_block" },
+      "R": { "item": "minecraft:redstone" },
+      "W": { "item": "minecraft:oak_planks" }
+    },
+    "result": { "item": "family:machine_gun", "count": 1 }
+  }
+}

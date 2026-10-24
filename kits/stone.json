@@ -1,0 +1,31 @@
+{
+  "about": "Stone to build with, 128 blocks. Make stairs, slabs, and walls yourself with a stonecutter or crafting table (mc kit crafting-tools).",
+  "types": {
+    "stone": [["minecraft:stone", 64], ["minecraft:stone", 64]],
+    "cobblestone": [["minecraft:cobblestone", 64], ["minecraft:cobblestone", 64]],
+    "mossy-cobblestone": [["minecraft:mossy_cobblestone", 64], ["minecraft:mossy_cobblestone", 64]],
+    "stone-bricks": [["minecraft:stone_bricks", 64], ["minecraft:stone_bricks", 64]],
+    "smooth-stone": [["minecraft:smooth_stone", 64], ["minecraft:smooth_stone", 64]],
+    "granite": [["minecraft:granite", 64], ["minecraft:granite", 64]],
+    "polished-granite": [["minecraft:polished_granite", 64], ["minecraft:polished_granite", 64]],
+    "diorite": [["minecraft:diorite", 64], ["minecraft:diorite", 64]],
+    "polished-diorite": [["minecraft:polished_diorite", 64], ["minecraft:polished_diorite", 64]],
+    "andesite": [["minecraft:andesite", 64], ["minecraft:andesite", 64]],
+    "polished-andesite": [["minecraft:polished_andesite", 64], ["minecraft:polished_andesite", 64]],
+    "cobbled-deepslate": [["minecraft:cobbled_deepslate", 64], ["minecraft:cobbled_deepslate", 64]],
+    "deepslate-bricks": [["minecraft:deepslate_bricks", 64], ["minecraft:deepslate_bricks", 64]],
+    "deepslate-tiles": [["minecraft:deepslate_tiles", 64], ["minecraft:deepslate_tiles", 64]],
+    "tuff-bricks": [["minecraft:tuff_bricks", 64], ["minecraft:tuff_bricks", 64]],
+    "blackstone": [["minecraft:blackstone", 64], ["minecraft:blackstone", 64]],
+    "polished-blackstone-bricks": [["minecraft:polished_blackstone_bricks", 64], ["minecraft:polished_blackstone_bricks", 64]],
+    "sandstone": [["minecraft:sandstone", 64], ["minecraft:sandstone", 64]],
+    "smooth-sandstone": [["minecraft:smooth_sandstone", 64], ["minecraft:smooth_sandstone", 64]],
+    "red-sandstone": [["minecraft:red_sandstone", 64], ["minecraft:red_sandstone", 64]],
+    "bricks": [["minecraft:brick_block", 64], ["minecraft:brick_block", 64]],
+    "mud-bricks": [["minecraft:mud_bricks", 64], ["minecraft:mud_bricks", 64]],
+    "quartz": [["minecraft:quartz_block", 64], ["minecraft:quartz_block", 64]],
+    "prismarine": [["minecraft:prismarine", 64], ["minecraft:prismarine", 64]],
+    "nether-bricks": [["minecraft:nether_brick", 64], ["minecraft:nether_brick", 64]],
+    "end-stone-bricks": [["minecraft:end_bricks", 64], ["minecraft:end_bricks", 64]]
+  }
+}

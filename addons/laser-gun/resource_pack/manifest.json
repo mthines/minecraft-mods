@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Laser Gun Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "d1e7e71a-4132-4b66-b386-b2b937691a58",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "6fbac093-c0ea-4b48-8730-15755c08df2f",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

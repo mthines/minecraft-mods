@@ -1,0 +1,11 @@
+{
+  "about": "What mc kit lantern gives you: a hand lantern that lights up while it is anywhere in your inventory. With --craft, also what crafts another.",
+  "items": [
+    ["family:hand_lantern", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:lantern", 1],
+    ["minecraft:string", 1]
+  ]
+}

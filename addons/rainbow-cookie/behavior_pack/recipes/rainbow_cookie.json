@@ -1,0 +1,14 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "family:rainbow_cookie" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:cookie" }],
+    "ingredients": [
+      { "item": "minecraft:cookie" },
+      { "item": "minecraft:sugar" },
+      { "item": "minecraft:glow_berries" }
+    ],
+    "result": { "item": "family:rainbow_cookie", "count": 2 }
+  }
+}

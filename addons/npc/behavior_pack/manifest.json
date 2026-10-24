@@ -1,0 +1,58 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Npc",
+    "description": "NPCs that join like players and do what they're told: mc npc \"dig a hole next to me\". Needs Beta APIs (mc turns them on).",
+    "uuid": "d57ce7fb-9162-410f-bae6-0d999a48c64e",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "bccfd01c-673d-466f-879a-d2cfb3dda33b",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "ec0e6908-b39f-42cc-bf01-843bd7593619",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "85c3f4b8-9aa3-4bb4-85d4-4c6a6a7b3a36",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    },
+    {
+      "module_name": "@minecraft/server-gametest",
+      "version": "1.0.0-beta"
+    }
+  ]
+}

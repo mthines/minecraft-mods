@@ -1,0 +1,12 @@
+{
+  "about": "What mc kit motorcycle gives you: a ready motorcycle. With --craft, also what crafts another.",
+  "items": [
+    ["family:motorcycle", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 3],
+    ["minecraft:leather", 1],
+    ["minecraft:coal", 2]
+  ]
+}

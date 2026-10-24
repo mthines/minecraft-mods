@@ -1,0 +1,22 @@
+{
+  "about": "Glass blocks, clear or stained. Make panes yourself (mc kit crafting-tools).",
+  "types": {
+    "clear": [["minecraft:glass", 64]],
+    "white": [["minecraft:white_stained_glass", 64]],
+    "orange": [["minecraft:orange_stained_glass", 64]],
+    "magenta": [["minecraft:magenta_stained_glass", 64]],
+    "light-blue": [["minecraft:light_blue_stained_glass", 64]],
+    "yellow": [["minecraft:yellow_stained_glass", 64]],
+    "lime": [["minecraft:lime_stained_glass", 64]],
+    "pink": [["minecraft:pink_stained_glass", 64]],
+    "gray": [["minecraft:gray_stained_glass", 64]],
+    "light-gray": [["minecraft:light_gray_stained_glass", 64]],
+    "cyan": [["minecraft:cyan_stained_glass", 64]],
+    "purple": [["minecraft:purple_stained_glass", 64]],
+    "blue": [["minecraft:blue_stained_glass", 64]],
+    "brown": [["minecraft:brown_stained_glass", 64]],
+    "green": [["minecraft:green_stained_glass", 64]],
+    "red": [["minecraft:red_stained_glass", 64]],
+    "black": [["minecraft:black_stained_glass", 64]]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "about": "Wood to build with: logs and planks. Make stairs, slabs, fences, doors, and the rest yourself (mc kit crafting-tools).",
+  "types": {
+    "oak": [["minecraft:oak_log", 64], ["minecraft:oak_planks", 64]],
+    "spruce": [["minecraft:spruce_log", 64], ["minecraft:spruce_planks", 64]],
+    "birch": [["minecraft:birch_log", 64], ["minecraft:birch_planks", 64]],
+    "jungle": [["minecraft:jungle_log", 64], ["minecraft:jungle_planks", 64]],
+    "acacia": [["minecraft:acacia_log", 64], ["minecraft:acacia_planks", 64]],
+    "dark-oak": [["minecraft:dark_oak_log", 64], ["minecraft:dark_oak_planks", 64]],
+    "mangrove": [["minecraft:mangrove_log", 64], ["minecraft:mangrove_planks", 64]],
+    "cherry": [["minecraft:cherry_log", 64], ["minecraft:cherry_planks", 64]],
+    "pale-oak": [["minecraft:pale_oak_log", 64], ["minecraft:pale_oak_planks", 64]],
+    "bamboo": [["minecraft:bamboo_block", 64], ["minecraft:bamboo_planks", 64]],
+    "crimson": [["minecraft:crimson_stem", 64], ["minecraft:crimson_planks", 64]],
+    "warped": [["minecraft:warped_stem", 64], ["minecraft:warped_planks", 64]]
+  }
+}

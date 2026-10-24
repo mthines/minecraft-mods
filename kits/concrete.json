@@ -1,0 +1,21 @@
+{
+  "about": "Concrete, and concrete powder that sets in water.",
+  "types": {
+    "white": [["minecraft:white_concrete", 64], ["minecraft:white_concrete_powder", 16]],
+    "orange": [["minecraft:orange_concrete", 64], ["minecraft:orange_concrete_powder", 16]],
+    "magenta": [["minecraft:magenta_concrete", 64], ["minecraft:magenta_concrete_powder", 16]],
+    "light-blue": [["minecraft:light_blue_concrete", 64], ["minecraft:light_blue_concrete_powder", 16]],
+    "yellow": [["minecraft:yellow_concrete", 64], ["minecraft:yellow_concrete_powder", 16]],
+    "lime": [["minecraft:lime_concrete", 64], ["minecraft:lime_concrete_powder", 16]],
+    "pink": [["minecraft:pink_concrete", 64], ["minecraft:pink_concrete_powder", 16]],
+    "gray": [["minecraft:gray_concrete", 64], ["minecraft:gray_concrete_powder", 16]],
+    "light-gray": [["minecraft:light_gray_concrete", 64], ["minecraft:light_gray_concrete_powder", 16]],
+    "cyan": [["minecraft:cyan_concrete", 64], ["minecraft:cyan_concrete_powder", 16]],
+    "purple": [["minecraft:purple_concrete", 64], ["minecraft:purple_concrete_powder", 16]],
+    "blue": [["minecraft:blue_concrete", 64], ["minecraft:blue_concrete_powder", 16]],
+    "brown": [["minecraft:brown_concrete", 64], ["minecraft:brown_concrete_powder", 16]],
+    "green": [["minecraft:green_concrete", 64], ["minecraft:green_concrete_powder", 16]],
+    "red": [["minecraft:red_concrete", 64], ["minecraft:red_concrete_powder", 16]],
+    "black": [["minecraft:black_concrete", 64], ["minecraft:black_concrete_powder", 16]]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:magic_wand" },
+    "tags": ["crafting_table"],
+    "pattern": ["  N", " A ", "S  "],
+    "key": {
+      "N": "minecraft:glowstone_dust",
+      "A": "minecraft:amethyst_shard",
+      "S": "minecraft:stick"
+    },
+    "unlock": [{ "item": "minecraft:amethyst_shard" }],
+    "result": { "item": "family:magic_wand" }
+  }
+}

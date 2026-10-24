@@ -1,0 +1,12 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:pirate_friend", "menu_category": { "category": "items" } },
+    "components": {
+      "minecraft:icon": "family_pirate_friend",
+      "minecraft:display_name": { "value": "Pirate Friend" },
+      "minecraft:max_stack_size": 16,
+      "minecraft:entity_placer": { "entity": "family:pirate" }
+    }
+  }
+}

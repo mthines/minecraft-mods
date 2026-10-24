@@ -1,0 +1,12 @@
+{
+  "about": "What mc kit double-jump gives you: 10 golden feathers (one flap each). With --craft, also what crafts more.",
+  "label": "golden feather fly",
+  "items": [
+    ["family:golden_feather", 10]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:feather", 3],
+    ["minecraft:gold_ingot", 3]
+  ]
+}

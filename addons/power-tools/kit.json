@@ -1,0 +1,16 @@
+{
+  "about": "What mc kit power-tools gives you: a drill, a chainsaw, and a power shovel. With --craft, also what crafts more.",
+  "items": [
+    ["family:drill", 1],
+    ["family:chainsaw", 1],
+    ["family:power_shovel", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 12],
+    ["minecraft:diamond", 1],
+    ["minecraft:redstone", 3],
+    ["minecraft:iron_nugget", 2],
+    ["minecraft:iron_shovel", 1]
+  ]
+}

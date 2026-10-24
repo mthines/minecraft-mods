@@ -1,0 +1,11 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:pirate_ship", "menu_category": { "category": "items" } },
+    "components": {
+      "minecraft:icon": "family_pirate_ship",
+      "minecraft:display_name": { "value": "Pirate Ship" },
+      "minecraft:max_stack_size": 1
+    }
+  }
+}

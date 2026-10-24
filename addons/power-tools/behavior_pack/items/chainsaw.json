@@ -1,0 +1,31 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:chainsaw", "menu_category": { "category": "equipment" } },
+    "components": {
+      "minecraft:icon": "family_chainsaw",
+      "minecraft:display_name": { "value": "Chainsaw" },
+      "minecraft:max_stack_size": 1,
+      "minecraft:hand_equipped": true,
+      "minecraft:damage": { "value": 18 },
+      "minecraft:tags": { "tags": ["minecraft:is_axe", "minecraft:is_tool", "minecraft:diamond_tier"] },
+      "minecraft:digger": {
+        "use_efficiency": true,
+        "destroy_speeds": [
+          { "block": { "tags": "query.any_tag('minecraft:is_axe_item_destructible')" }, "speed": 60 },
+          { "block": "minecraft:oak_leaves", "speed": 60 },
+          { "block": "minecraft:spruce_leaves", "speed": 60 },
+          { "block": "minecraft:birch_leaves", "speed": 60 },
+          { "block": "minecraft:jungle_leaves", "speed": 60 },
+          { "block": "minecraft:acacia_leaves", "speed": 60 },
+          { "block": "minecraft:dark_oak_leaves", "speed": 60 },
+          { "block": "minecraft:mangrove_leaves", "speed": 60 },
+          { "block": "minecraft:cherry_leaves", "speed": 60 },
+          { "block": "minecraft:pale_oak_leaves", "speed": 60 },
+          { "block": "minecraft:azalea_leaves", "speed": 60 },
+          { "block": "minecraft:azalea_leaves_flowered", "speed": 60 }
+        ]
+      }
+    }
+  }
+}

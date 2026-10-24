@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Lantern Resources",
+    "description": "The hand lantern's picture.",
+    "uuid": "502d8388-9254-4dfd-99da-3fc30f595fa2",
+    "version": [
+      1,
+      0,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "1fe296b1-d455-4d51-a393-cf2bb4f28c7c",
+      "version": [
+        1,
+        0,
+        1
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Npc Resources",
+    "description": "Nothing yet: NPCs look like players.",
+    "uuid": "85c3f4b8-9aa3-4bb4-85d4-4c6a6a7b3a36",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "80e4d68c-9f6b-412f-9dd9-40b01cbc4da4",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "about": "What mc kit football gives you: a ball, and white concrete for two 5-wide, 3-high goals. With --craft, also what crafts another ball.",
+  "items": [
+    ["family:football", 1],
+    ["minecraft:white_concrete", 32]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:leather", 2],
+    ["minecraft:slime_ball", 1]
+  ]
+}

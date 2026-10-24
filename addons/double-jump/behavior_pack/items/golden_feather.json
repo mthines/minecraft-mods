@@ -1,0 +1,12 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:golden_feather", "menu_category": { "category": "items" } },
+    "components": {
+      "minecraft:icon": "family_golden_feather",
+      "minecraft:display_name": { "value": "Golden Feather" },
+      "minecraft:max_stack_size": 64,
+      "minecraft:glint": true
+    }
+  }
+}

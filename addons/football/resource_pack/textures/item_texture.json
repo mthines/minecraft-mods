@@ -1,0 +1,7 @@
+{
+  "resource_pack_name": "football",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_football": { "textures": "textures/items/football" }
+  }
+}

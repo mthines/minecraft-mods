@@ -1,0 +1,10 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "family:golden_feather" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:feather" }],
+    "ingredients": [{ "item": "minecraft:feather" }, { "item": "minecraft:gold_ingot" }],
+    "result": { "item": "family:golden_feather" }
+  }
+}

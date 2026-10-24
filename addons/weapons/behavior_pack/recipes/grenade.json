@@ -1,0 +1,11 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:grenade" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:iron_ingot" }],
+    "pattern": [" N ", "NGN", " N "],
+    "key": { "N": { "item": "minecraft:iron_nugget" }, "G": { "item": "minecraft:gunpowder" } },
+    "result": { "item": "family:grenade", "count": 2 }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "resource_pack_name": "weapons",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_pistol": { "textures": "textures/items/pistol" },
+    "family_rifle": { "textures": "textures/items/rifle" },
+    "family_bullet": { "textures": "textures/items/bullet" },
+    "family_grenade": { "textures": "textures/items/grenade" },
+    "family_machine_gun": { "textures": "textures/items/machine_gun" }
+  }
+}

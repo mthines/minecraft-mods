@@ -1,0 +1,21 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:pirate",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/pirate" },
+      "geometry": { "default": "geometry.family_pirate" },
+      "animations": {
+        "look": "animation.family_pirate.look",
+        "walk": "animation.family_pirate.walk",
+        "sit": "animation.family_pirate.sit",
+        "saber": "animation.family_pirate.saber"
+      },
+      "scripts": { "animate": ["look", "saber", { "walk": "!query.is_riding" }, { "sit": "query.is_riding" }] },
+      "render_controllers": ["controller.render.default"],
+      "enable_attachables": true,
+      "spawn_egg": { "base_color": "#b22222", "overlay_color": "#f0f0f0" }
+    }
+  }
+}

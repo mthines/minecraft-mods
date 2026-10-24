@@ -1,0 +1,7 @@
+{
+  "resource_pack_name": "magic-wand",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_magic_wand": { "textures": "textures/items/magic_wand" }
+  }
+}

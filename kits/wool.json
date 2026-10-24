@@ -1,0 +1,21 @@
+{
+  "about": "Wool in every colour. Make carpet yourself (mc kit crafting-tools).",
+  "types": {
+    "white": [["minecraft:white_wool", 64]],
+    "orange": [["minecraft:orange_wool", 64]],
+    "magenta": [["minecraft:magenta_wool", 64]],
+    "light-blue": [["minecraft:light_blue_wool", 64]],
+    "yellow": [["minecraft:yellow_wool", 64]],
+    "lime": [["minecraft:lime_wool", 64]],
+    "pink": [["minecraft:pink_wool", 64]],
+    "gray": [["minecraft:gray_wool", 64]],
+    "light-gray": [["minecraft:light_gray_wool", 64]],
+    "cyan": [["minecraft:cyan_wool", 64]],
+    "purple": [["minecraft:purple_wool", 64]],
+    "blue": [["minecraft:blue_wool", 64]],
+    "brown": [["minecraft:brown_wool", 64]],
+    "green": [["minecraft:green_wool", 64]],
+    "red": [["minecraft:red_wool", 64]],
+    "black": [["minecraft:black_wool", 64]]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "about": "What mc kit magic-wand gives you: a magic wand. Right-click casts its spell; sneak and right-click to switch spell.",
+  "items": [
+    ["family:magic_wand", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:stick", 1],
+    ["minecraft:amethyst_shard", 1],
+    ["minecraft:glowstone_dust", 1]
+  ]
+}

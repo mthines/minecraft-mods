@@ -1,0 +1,14 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:laser_gun" },
+    "tags": ["crafting_table"],
+    "pattern": ["  D", " I ", "I  "],
+    "key": {
+      "D": "minecraft:diamond",
+      "I": "minecraft:iron_ingot"
+    },
+    "unlock": [{ "item": "minecraft:diamond" }],
+    "result": { "item": "family:laser_gun" }
+  }
+}

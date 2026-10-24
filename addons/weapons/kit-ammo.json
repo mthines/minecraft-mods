@@ -1,0 +1,7 @@
+{
+  "about": "What mc kit weapons-ammo gives you: just more bullets and grenades.",
+  "items": [
+    ["family:bullet", 256],
+    ["family:grenade", 32]
+  ]
+}

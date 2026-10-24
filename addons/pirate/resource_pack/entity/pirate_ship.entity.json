@@ -1,0 +1,13 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:pirate_ship",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/pirate_ship" },
+      "geometry": { "default": "geometry.family_pirate_ship" },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#5a3a1e", "overlay_color": "#f2ead8" }
+    }
+  }
+}

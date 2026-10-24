@@ -1,0 +1,14 @@
+node_modules/
+dist/
+server/data/
+server/test-data/
+server/npc-history.json
+.DS_Store
+
+# Secrets: copy the example files and fill them in.
+**/.env*
+!**/.env.example
+**/.mcp.json
+
+# Agent notes (plans, handoffs) stay on this computer
+.agent/

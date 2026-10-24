@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Magic Wand Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "321b3117-4348-47ff-9e87-9baf3c999584",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "ab65b6ed-3a04-4925-b1ee-9e55fc924207",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

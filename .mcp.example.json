@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "dash0": {
+      "type": "http",
+      "url": "https://api.europe-west4.gcp.dash0-dev.com/mcp",
+      "headers": {
+        "Authorization": "Bearer auth_REPLACE_ME"
+      }
+    }
+  }
+}

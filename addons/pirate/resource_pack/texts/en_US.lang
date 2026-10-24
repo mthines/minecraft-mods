@@ -1,0 +1,4 @@
+entity.family:pirate_ship.name=Pirate Ship
+item.spawn_egg.entity.family:pirate_ship.name=Pirate Ship Spawn Egg
+entity.family:pirate.name=Pirate
+item.spawn_egg.entity.family:pirate.name=Pirate Spawn Egg

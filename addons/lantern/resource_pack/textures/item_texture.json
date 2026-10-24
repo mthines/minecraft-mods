@@ -1,0 +1,7 @@
+{
+  "resource_pack_name": "lantern",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_hand_lantern": { "textures": "textures/items/hand_lantern" }
+  }
+}
