@@ -1,0 +1,13 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:grappling_hook", "menu_category": { "category": "equipment" } },
+    "components": {
+      "minecraft:icon": "family_grappling_hook",
+      "minecraft:display_name": { "value": "Grappling Hook" },
+      "minecraft:max_stack_size": 1,
+      "minecraft:hand_equipped": true,
+      "minecraft:use_modifiers": { "use_duration": 0.05 }
+    }
+  }
+}

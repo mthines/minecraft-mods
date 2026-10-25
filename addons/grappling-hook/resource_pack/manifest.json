@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Grappling Hook Resources",
+    "description": "The grappling hook's picture.",
+    "uuid": "587f80a2-7573-4355-abbf-83a98c1adc17",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "8866812a-9574-47fa-aab1-76ed707daa37",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

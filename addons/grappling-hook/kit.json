@@ -1,0 +1,13 @@
+{
+  "about": "What mc kit grappling-hook gives you: a grappling hook. Right-click a block far away and the rope pulls you there; right-click a mob to pull it to you.",
+  "emoji": "🪝",
+  "items": [
+    ["family:grappling_hook", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:tripwire_hook", 1],
+    ["minecraft:string", 1],
+    ["minecraft:iron_ingot", 1]
+  ]
+}

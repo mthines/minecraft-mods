@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:grappling_hook" },
+    "tags": ["crafting_table"],
+    "pattern": ["  T", " S ", "I  "],
+    "key": {
+      "T": "minecraft:tripwire_hook",
+      "S": "minecraft:string",
+      "I": "minecraft:iron_ingot"
+    },
+    "unlock": [{ "item": "minecraft:tripwire_hook" }],
+    "result": { "item": "family:grappling_hook" }
+  }
+}
