@@ -46,7 +46,9 @@ function pressingForward(player) {
  * @property {boolean} climbing holding on in a shaft it drilled up
  * @property {string} driver the name of who drove it last, for telemetry
  * @property {string} driverId who's driving now: someone new gets on with the drill off
+ * @property {number} leftAt the tick the driver got off, 0 while someone drives
  * @property {boolean} on the drill is switched on (jump switches it)
+ * @property {number} jumpAt the tick its driver last pressed jump
  * @property {string} way which way it drills ahead, and the layer ahead: the tunnel's floor carries on from layer to layer
  * @property {number} layer
  * @property {number} floorIn the floor of the layer before (a sloping tunnel steps from there)
@@ -58,7 +60,7 @@ function pressingForward(player) {
 const states = new Map();
 const stateOf = (/** @type {import("@minecraft/server").Entity} */ machine) => {
   let state = states.get(machine.id);
-  if (!state) states.set(machine.id, (state = { next: 0, blocks: 0, climbing: false, driver: "", driverId: "", on: false, way: "", layer: 0, floorIn: 0, floorOut: 0, riseIn: 0, riseOut: 0 }));
+  if (!state) states.set(machine.id, (state = { next: 0, blocks: 0, climbing: false, driver: "", driverId: "", leftAt: 0, on: false, jumpAt: -100, way: "", layer: 0, floorIn: 0, floorOut: 0, riseIn: 0, riseOut: 0 }));
   return state;
 };
 
@@ -120,7 +122,9 @@ function breakBlocks(machine, driver, blocks) {
 /** @param {import("@minecraft/server").Entity} rig @param {Player} driver */
 function drill(rig, driver) {
   const state = stateOf(rig);
-  if (state.driverId !== driver.id) Object.assign(state, { driverId: driver.id, on: false }); // someone just got on: the drill starts off
+  // Someone just got on: the drill starts off.
+  if (state.driverId !== driver.id || (state.leftAt && system.currentTick - state.leftAt > SEAT_BACK_TICKS)) Object.assign(state, { driverId: driver.id, on: false });
+  state.leftAt = 0;
   const size = /** @type {3 | 5 | 7} */ (Number(rig.getProperty("family:drill_size")));
   const { x: pitch, y: yaw } = driver.getRotation();
   const { aim, dir, slope } = aimFrom(pitch, yaw);
@@ -185,12 +189,34 @@ function showControls(driver, size, on, tilt) {
   driver.onScreenDisplay.setActionBar(`${name}  §adrill on§r · W drills ${where} · jump to turn it off`);
 }
 
+/**
+ * Minecraft drops a rider who presses jump off some vehicles. The rig stops that (minecraft:horse.jump_strength),
+ * and in case a version of the game still does it, the rig puts its driver straight back on.
+ */
+const SEAT_BACK_TICKS = 5;
+/** @param {import("@minecraft/server").Entity} rig @param {Player} player */
+function seatBack(rig, player) {
+  if (!player.isValid || player.getComponent("minecraft:riding")?.entityRidingOn) return;
+  if (rig.getComponent("minecraft:rideable")?.getRiders().length) return;
+  rig.getComponent("minecraft:rideable")?.addRider(player);
+}
+
 /** Jump turns the drill of the rig you're driving on or off. @param {Player} player */
 function switchDrill(player) {
-  const rig = player.getComponent("minecraft:riding")?.entityRidingOn;
-  if (!rig?.isValid || rig.typeId !== RIG || driverOf(rig)?.id !== player.id) return;
+  let rig = player.getComponent("minecraft:riding")?.entityRidingOn;
+  if (!rig) {
+    // Jump may have dropped them off already: the rig they were driving a moment ago.
+    rig = player.dimension.getEntities({ type: RIG, location: player.location, maxDistance: 6 }).find((r) => {
+      const s = stateOf(r);
+      return s.driverId === player.id && (!s.leftAt || system.currentTick - s.leftAt <= SEAT_BACK_TICKS); // leftAt is 0 when it was this tick
+    });
+    if (rig) seatBack(rig, player);
+  }
+  if (!rig?.isValid || rig.typeId !== RIG) return;
   const state = stateOf(rig);
-  state.driverId = player.id;
+  if (state.driverId !== player.id) Object.assign(state, { driverId: player.id, on: false }); // just got on
+  state.leftAt = 0;
+  state.jumpAt = system.currentTick;
   state.on = !state.on;
   if (!state.on) setWorking(rig, false);
   rig.dimension.playSound(state.on ? "random.click" : "random.wood_click", rig.location, { pitch: state.on ? 0.6 : 0.4 });
@@ -284,6 +310,13 @@ system.runInterval(() => {
     if (!machine.isValid) continue;
     const driver = driverOf(machine);
     if (!driver) {
+      const state = stateOf(machine);
+      if (state.driverId && !state.leftAt) state.leftAt = system.currentTick;
+      // Dropped off by the jump that switched the drill: back on.
+      if (state.driverId && system.currentTick - state.jumpAt <= SEAT_BACK_TICKS) {
+        const player = world.getEntity(state.driverId);
+        if (player instanceof Player && player.dimension.id === machine.dimension.id) seatBack(machine, player);
+      }
       setWorking(machine, false);
       if (stateOf(machine).climbing) land(machine); // nobody holding the controls: down it comes
       continue;

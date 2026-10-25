@@ -28,6 +28,7 @@
       "minecraft:movement.basic": {},
       "minecraft:variable_max_auto_step": { "base_value": 1.0625, "controlled_value": 1.0625, "jump_prevented_value": 1.0625 },
       "minecraft:input_ground_controlled": {},
+      "minecraft:horse.jump_strength": { "value": 0 },
       "minecraft:interact": {
         "interactions": [
           {

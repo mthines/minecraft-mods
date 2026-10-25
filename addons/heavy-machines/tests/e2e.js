@@ -74,6 +74,40 @@ export async function theDrillStaysOffUntilTheDriverJumps(t) {
   t.assert(typeAt(t, 0, 1, 3) === "minecraft:stone", "The drill kept cutting after the driver jumped again to switch it off");
 }
 
+/**
+ * Minecraft can drop a real player who presses jump off a vehicle. Simulated players don't get dropped, so these
+ * drop the driver by hand, just before or just after the jump: they test putting the driver back, not the game's dismount.
+ */
+export async function aJumpThatDropsTheDriverPutsThemBack(t) {
+  for (const dropFirst of [true, false]) {
+    fill(t, "stone", [-3, 0, 2], [3, 4, 4]);
+    const { machine, driver } = await drive(t, RIG, [0, 1, 3], { switchOn: false });
+    const rideable = machine.getComponent("minecraft:rideable");
+    if (dropFirst) {
+      rideable?.ejectRider(driver);
+      driver.runCommand("scriptevent family:machine_jump");
+    } else {
+      driver.runCommand("scriptevent family:machine_jump");
+      await t.wait(1);
+      rideable?.ejectRider(driver);
+    }
+    await t.until(() => ridingOn(driver)?.id === machine.id, `The driver wasn't put back on the rig after a jump dropped them (${dropFirst ? "dropped before" : "dropped after"} the jump)`, 20);
+    await t.until(() => typeAt(t, 0, 1, 2) === "minecraft:air", "The jump that dropped the driver didn't switch the drill on", 60);
+    rideable?.ejectRider(driver);
+    machine.remove();
+    driver.disconnect();
+    await t.wait(5);
+  }
+}
+
+export async function gettingOffWithSneakStaysOff(t) {
+  const { machine, driver } = await drive(t, RIG, [0, 1, 3]);
+  await t.wait(10); // long after the jump that switched the drill on
+  machine.getComponent("minecraft:rideable")?.ejectRider(driver);
+  await t.wait(20);
+  t.assert(!ridingOn(driver), "A driver who got off was put back on the rig");
+}
+
 export async function lookingDownSlopesTheTunnelDown(t) {
   fill(t, "stone", [-3, -3, 2], [3, 4, 6]); // not deeper: the test world's bottom is a few blocks down
   const { machine, driver } = await drive(t, RIG, [0, -9, 14]); // about 40° down: a block down for every block ahead
