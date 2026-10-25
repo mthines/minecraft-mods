@@ -56,7 +56,6 @@
         "jump_prevented_value": 1.0625
       },
       "minecraft:input_ground_controlled": {},
-      "minecraft:horse.jump_strength": { "value": 0 },
       "minecraft:rideable": {
         "seat_count": 1,
         "family_types": [

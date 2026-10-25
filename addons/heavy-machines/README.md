@@ -7,8 +7,8 @@ Try them: `./mc kit heavy-machines` (add `--craft` for what crafts more).
 ## The drill rig
 
 1. Put the drill rig down on the ground, and use it to get on.
-2. **Jump** to turn the drill on. It's off when you get on, so you can drive the rig somewhere without drilling through anything on the way. Jump again to turn it off.
-3. Hold **W** and look where you want to drill. When a block is in front of the drill, it cuts a 3×3 hole and drives in. Sneak to get off.
+2. **Use** (right-click, or tap) to turn the drill on. It's off when you get on, so you can drive the rig somewhere without drilling through anything on the way. Use again to turn it off. Point at a block (there's one right in front of the drill) or hold an item: with an empty hand pointing at air, the game doesn't pass the click on. While you drive, use only switches the drill: it doesn't place or open anything.
+3. Hold **W** and look where you want to drill. When a block is in front of the drill, it cuts a 3×3 hole and drives in. Sneak or jump to get off.
 4. Everything it digs goes into your inventory. Whatever doesn't fit waits next to the rig.
 
 The drill follows where you look:

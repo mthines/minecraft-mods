@@ -1,4 +1,4 @@
-import { ButtonState, InputButton, ItemStack, Player, system, world } from "@minecraft/server";
+import { ItemStack, Player, system, world } from "@minecraft/server";
 import { AIM_DOWN, AIM_UP, HALF_WIDTH, UNBREAKABLE, aimFrom, face, findTree, frontLayer, isLeaves, isLiquid, isLog, nextStep } from "./dig.js";
 import { emit } from "./telemetry.js";
 
@@ -26,7 +26,7 @@ const driverOf = (machine) => {
 const testInput = new Map();
 system.afterEvents.scriptEventReceive.subscribe(({ id, message, sourceEntity }) => {
   if (id === "family:machine_input" && sourceEntity) testInput.set(sourceEntity.id, Number(message));
-  if (id === "family:machine_jump" && sourceEntity instanceof Player) switchDrill(sourceEntity); // simulated players can't press jump while riding
+  if (id === "family:machine_use" && sourceEntity instanceof Player) switchDrill(sourceEntity); // simulated players' use doesn't reach scripts while riding
 });
 /** @param {Player} player */
 function pressingForward(player) {
@@ -46,9 +46,7 @@ function pressingForward(player) {
  * @property {boolean} climbing holding on in a shaft it drilled up
  * @property {string} driver the name of who drove it last, for telemetry
  * @property {string} driverId who's driving now: someone new gets on with the drill off
- * @property {number} leftAt the tick the driver got off, 0 while someone drives
- * @property {boolean} on the drill is switched on (jump switches it)
- * @property {number} jumpAt the tick its driver last pressed jump
+ * @property {boolean} on the drill is switched on (use switches it)
  * @property {string} way which way it drills ahead, and the layer ahead: the tunnel's floor carries on from layer to layer
  * @property {number} layer
  * @property {number} floorIn the floor of the layer before (a sloping tunnel steps from there)
@@ -60,7 +58,7 @@ function pressingForward(player) {
 const states = new Map();
 const stateOf = (/** @type {import("@minecraft/server").Entity} */ machine) => {
   let state = states.get(machine.id);
-  if (!state) states.set(machine.id, (state = { next: 0, blocks: 0, climbing: false, driver: "", driverId: "", leftAt: 0, on: false, jumpAt: -100, way: "", layer: 0, floorIn: 0, floorOut: 0, riseIn: 0, riseOut: 0 }));
+  if (!state) states.set(machine.id, (state = { next: 0, blocks: 0, climbing: false, driver: "", driverId: "", on: false, way: "", layer: 0, floorIn: 0, floorOut: 0, riseIn: 0, riseOut: 0 }));
   return state;
 };
 
@@ -123,8 +121,7 @@ function breakBlocks(machine, driver, blocks) {
 function drill(rig, driver) {
   const state = stateOf(rig);
   // Someone just got on: the drill starts off.
-  if (state.driverId !== driver.id || (state.leftAt && system.currentTick - state.leftAt > SEAT_BACK_TICKS)) Object.assign(state, { driverId: driver.id, on: false });
-  state.leftAt = 0;
+  if (state.driverId !== driver.id) Object.assign(state, { driverId: driver.id, on: false });
   const size = /** @type {3 | 5 | 7} */ (Number(rig.getProperty("family:drill_size")));
   const { x: pitch, y: yaw } = driver.getRotation();
   const { aim, dir, slope } = aimFrom(pitch, yaw);
@@ -184,48 +181,58 @@ function drill(rig, driver) {
  */
 function showControls(driver, size, on, tilt) {
   const name = `§6§lDrill rig§r ${size}×${size}`;
-  if (!on) return driver.onScreenDisplay.setActionBar(`${name}  §7drill off§r · jump to turn it on · sneak to get off`);
+  if (!on) return driver.onScreenDisplay.setActionBar(`${name}  §7drill off§r · use (right-click) to turn it on · sneak or jump to get off`);
   const where = tilt === -90 ? "straight up" : tilt === 90 ? "straight down" : tilt === 0 ? "straight ahead" : `sloping ${tilt > 0 ? "down" : "up"} ${Math.abs(tilt)}°`;
-  driver.onScreenDisplay.setActionBar(`${name}  §adrill on§r · W drills ${where} · jump to turn it off`);
+  driver.onScreenDisplay.setActionBar(`${name}  §adrill on§r · W drills ${where} · use to turn it off`);
 }
+
+const PRESS_GAP = 6; // a held use button repeats faster than this: a gap this long means a new press
+/** @type {Map<string, number>} player id → the tick their use button was last heard */
+const lastUse = new Map();
 
 /**
- * Minecraft drops a rider who presses jump off some vehicles. The rig stops that (minecraft:horse.jump_strength),
- * and in case a version of the game still does it, the rig puts its driver straight back on.
+ * Use (right-click, or a tap) turns the drill of the rig you're driving on or off.
+ * @param {Player} player
+ * @returns {boolean} the player is driving a rig: their use went to the drill
  */
-const SEAT_BACK_TICKS = 5;
-/** @param {import("@minecraft/server").Entity} rig @param {Player} player */
-function seatBack(rig, player) {
-  if (!player.isValid || player.getComponent("minecraft:riding")?.entityRidingOn) return;
-  if (rig.getComponent("minecraft:rideable")?.getRiders().length) return;
-  rig.getComponent("minecraft:rideable")?.addRider(player);
-}
-
-/** Jump turns the drill of the rig you're driving on or off. @param {Player} player */
 function switchDrill(player) {
-  let rig = player.getComponent("minecraft:riding")?.entityRidingOn;
-  if (!rig) {
-    // Jump may have dropped them off already: the rig they were driving a moment ago.
-    rig = player.dimension.getEntities({ type: RIG, location: player.location, maxDistance: 6 }).find((r) => {
-      const s = stateOf(r);
-      return s.driverId === player.id && (!s.leftAt || system.currentTick - s.leftAt <= SEAT_BACK_TICKS); // leftAt is 0 when it was this tick
-    });
-    if (rig) seatBack(rig, player);
-  }
-  if (!rig?.isValid || rig.typeId !== RIG) return;
+  const rig = player.getComponent("minecraft:riding")?.entityRidingOn;
+  if (!rig?.isValid || rig.typeId !== RIG || driverOf(rig)?.id !== player.id) return false;
   const state = stateOf(rig);
   if (state.driverId !== player.id) Object.assign(state, { driverId: player.id, on: false }); // just got on
-  state.leftAt = 0;
-  state.jumpAt = system.currentTick;
   state.on = !state.on;
   if (!state.on) setWorking(rig, false);
   rig.dimension.playSound(state.on ? "random.click" : "random.wood_click", rig.location, { pitch: state.on ? 0.6 : 0.4 });
   const size = Number(rig.getProperty("family:drill_size"));
   showControls(player, size, state.on, Number(rig.getProperty("family:tilt")));
+  return true;
 }
-world.afterEvents.playerButtonInput.subscribe(({ player }) => {
-  if (player) switchDrill(player);
-}, { buttons: [InputButton.Jump], state: ButtonState.Pressed });
+/** @param {Player} player */
+const drivingRig = (player) => player.getComponent("minecraft:riding")?.entityRidingOn?.typeId === RIG;
+/** The use button, heard in one of the ways below: a new press switches the drill, holding it doesn't. @param {Player} player */
+function heardUse(player) {
+  const last = lastUse.get(player.id) ?? -100;
+  lastUse.set(player.id, system.currentTick);
+  if (system.currentTick - last > PRESS_GAP) system.run(() => switchDrill(player));
+}
+// Scripts don't hear the use button on its own: they hear it used on a block (there's one in front of the drill),
+// or with an item in hand. Either way, the click only switches the drill: no placing, opening, eating, or shooting.
+world.beforeEvents.playerInteractWithBlock.subscribe((event) => {
+  if (!event.player || !drivingRig(event.player)) return;
+  event.cancel = true;
+  heardUse(event.player); // not isFirstEvent: it's false for every use of simulated players
+});
+world.beforeEvents.playerInteractWithEntity.subscribe((event) => {
+  if (!event.player || !drivingRig(event.player)) return;
+  if (event.target?.typeId === RIG && Object.values(HEADS).includes(event.itemStack?.typeId ?? "")) return; // fitting a drill head
+  event.cancel = true;
+  heardUse(event.player);
+});
+world.beforeEvents.itemUse.subscribe((event) => {
+  if (!event.source || !drivingRig(event.source)) return;
+  event.cancel = true;
+  heardUse(event.source);
+});
 
 /** @param {import("@minecraft/server").Entity} machine @param {Player} driver @param {string} why */
 function stop(machine, driver, why) {
@@ -310,13 +317,7 @@ system.runInterval(() => {
     if (!machine.isValid) continue;
     const driver = driverOf(machine);
     if (!driver) {
-      const state = stateOf(machine);
-      if (state.driverId && !state.leftAt) state.leftAt = system.currentTick;
-      // Dropped off by the jump that switched the drill: back on.
-      if (state.driverId && system.currentTick - state.jumpAt <= SEAT_BACK_TICKS) {
-        const player = world.getEntity(state.driverId);
-        if (player instanceof Player && player.dimension.id === machine.dimension.id) seatBack(machine, player);
-      }
+      stateOf(machine).driverId = ""; // whoever gets on next starts with the drill off
       setWorking(machine, false);
       if (stateOf(machine).climbing) land(machine); // nobody holding the controls: down it comes
       continue;
@@ -330,7 +331,7 @@ system.runInterval(() => {
 world.afterEvents.entitySpawn.subscribe(({ entity }) => {
   if (!entity.isValid || !MACHINES.includes(entity.typeId)) return;
   const how = entity.typeId === RIG
-    ? "§6Drill rig!§r Use it to get on, and jump to turn the drill on. Then hold W and look where you want to drill: ahead, sloping up or down, or straight up or down. Use a bigger drill head on it to drill 5×5 or 7×7. It won't drill in water or lava."
+    ? "§6Drill rig!§r Use it to get on, and use (right-click) again to turn the drill on. Then hold W and look where you want to drill: ahead, sloping up or down, or straight up or down. Use a bigger drill head on it to drill 5×5 or 7×7. It won't drill in water or lava."
     : "§2Tree cutter!§r Use it to get on, then drive into a tree: it cuts the whole tree down, branches and all.";
   for (const player of entity.dimension.getPlayers({ location: entity.location, maxDistance: 8 })) {
     if (player) player.sendMessage(`${how} Sneak and hit it to pick it up.`);

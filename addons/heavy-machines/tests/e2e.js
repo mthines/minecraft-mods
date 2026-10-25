@@ -20,7 +20,7 @@ function fill(t, type, [x1, y1, z1], [x2, y2, z2]) {
 }
 
 /**
- * A machine with a driver on it, looking at `look` and holding W. A drill rig's drill is switched on.
+ * A machine with a driver on it, looking at `look` and holding W. A drill rig's drill is switched on (use).
  * The machine stands in the middle of block 0, 0 with its front edge at z 2, against whatever is at z 2.
  */
 async function drive(t, type, look, { switchOn = true } = {}) {
@@ -31,7 +31,7 @@ async function drive(t, type, look, { switchOn = true } = {}) {
   await t.until(() => ridingOn(driver)?.id === machine.id, "The driver isn't on the machine", 20);
   driver.lookAtBlock(t.at(...look));
   await t.wait(5); // a simulated player's head turns a moment after lookAtBlock
-  if (type === RIG && switchOn) driver.runCommand("scriptevent family:machine_jump"); // jump: simulated players can't jump while riding
+  if (type === RIG && switchOn) driver.runCommand("scriptevent family:machine_use"); // use: a simulated player's use doesn't reach scripts while riding
   driver.runCommand("scriptevent family:machine_input 1");
   return { machine, driver };
 }
@@ -62,50 +62,27 @@ export async function theDrillCutsA3x3TunnelAhead(t) {
   await t.until(() => has(driver, "minecraft:cobblestone"), () => `The cobblestone didn't go into the driver's inventory: ${inventory(driver).map((i) => i.typeId).join(", ") || "empty"}`, 20);
 }
 
-export async function theDrillStaysOffUntilTheDriverJumps(t) {
+export async function theDrillStaysOffUntilTheDriverUsesIt(t) {
   fill(t, "stone", [-3, 0, 2], [3, 4, 4]);
   const { driver } = await drive(t, RIG, [0, 1, 3], { switchOn: false });
   await t.wait(30);
   t.assert(allAre(t, "minecraft:stone", [-1, 0, 2], [1, 2, 2]) === true, "The drill cut before the driver switched it on: getting on and holding W should only drive");
-  driver.runCommand("scriptevent family:machine_jump");
-  await t.until(() => check(allAre(t, "minecraft:air", [-1, 0, 2], [1, 2, 2])), "The drill didn't cut after the driver jumped to switch it on", 60);
-  driver.runCommand("scriptevent family:machine_jump");
+  driver.runCommand("scriptevent family:machine_use");
+  await t.until(() => check(allAre(t, "minecraft:air", [-1, 0, 2], [1, 2, 2])), "The drill didn't cut after the driver used it to switch it on", 60);
+  await t.wait(10); // holding use repeats: a second use this soon would count as the same one
+  driver.runCommand("scriptevent family:machine_use");
   await t.wait(10);
-  t.assert(typeAt(t, 0, 1, 3) === "minecraft:stone", "The drill kept cutting after the driver jumped again to switch it off");
+  t.assert(typeAt(t, 0, 1, 3) === "minecraft:stone", "The drill kept cutting after the driver used it again to switch it off");
 }
 
-/**
- * Minecraft can drop a real player who presses jump off a vehicle. Simulated players don't get dropped, so these
- * drop the driver by hand, just before or just after the jump: they test putting the driver back, not the game's dismount.
- */
-export async function aJumpThatDropsTheDriverPutsThemBack(t) {
-  for (const dropFirst of [true, false]) {
-    fill(t, "stone", [-3, 0, 2], [3, 4, 4]);
-    const { machine, driver } = await drive(t, RIG, [0, 1, 3], { switchOn: false });
-    const rideable = machine.getComponent("minecraft:rideable");
-    if (dropFirst) {
-      rideable?.ejectRider(driver);
-      driver.runCommand("scriptevent family:machine_jump");
-    } else {
-      driver.runCommand("scriptevent family:machine_jump");
-      await t.wait(1);
-      rideable?.ejectRider(driver);
-    }
-    await t.until(() => ridingOn(driver)?.id === machine.id, `The driver wasn't put back on the rig after a jump dropped them (${dropFirst ? "dropped before" : "dropped after"} the jump)`, 20);
-    await t.until(() => typeAt(t, 0, 1, 2) === "minecraft:air", "The jump that dropped the driver didn't switch the drill on", 60);
-    rideable?.ejectRider(driver);
-    machine.remove();
-    driver.disconnect();
-    await t.wait(5);
-  }
-}
-
-export async function gettingOffWithSneakStaysOff(t) {
-  const { machine, driver } = await drive(t, RIG, [0, 1, 3]);
-  await t.wait(10); // long after the jump that switched the drill on
-  machine.getComponent("minecraft:rideable")?.ejectRider(driver);
-  await t.wait(20);
-  t.assert(!ridingOn(driver), "A driver who got off was put back on the rig");
+export async function usingTheWallInFrontSwitchesTheDrillOnWithoutPlacingAnything(t) {
+  fill(t, "stone", [-3, 0, 2], [3, 4, 4]);
+  const { driver } = await drive(t, RIG, [0, 1, 2], { switchOn: false });
+  t.hold(driver, "minecraft:dirt");
+  await t.wait(2);
+  driver.useItemInSlotOnBlock(0, t.at(0, 1, 2), Direction.North);
+  await t.until(() => typeAt(t, 0, 1, 2) === "minecraft:air", "Using the wall in front didn't switch the drill on", 60);
+  t.assert(typeAt(t, 0, 1, 1) !== "minecraft:dirt", "Using the wall placed the dirt the driver held, instead of only switching the drill");
 }
 
 export async function lookingDownSlopesTheTunnelDown(t) {
@@ -177,7 +154,7 @@ export async function climbingAgainstAWallKeepsTheDriverOutOfIt(t) {
     const solid = inside.map((at) => t.dimension.getBlock(at)).find((b) => b && !b.isAir);
     if (solid) stuck = `${solid.typeId} at ${["x", "y", "z"].map((k) => solid.location[k] - t.origin[k]).join(", ")}, the rig at ${(x - t.origin.x).toFixed(2)}, ${(y - t.origin.y).toFixed(2)}, ${(z - t.origin.z).toFixed(2)}`;
   }, 1);
-  driver.runCommand("scriptevent family:machine_jump");
+  driver.runCommand("scriptevent family:machine_use");
   driver.runCommand("scriptevent family:machine_input 1");
   await t.until(() => rig.location.y > t.origin.y + 2.5, () => `The rig didn't climb: it's at ${(rig.location.y - t.origin.y).toFixed(2)}`, 80);
   driver.runCommand("scriptevent family:machine_input 0");
