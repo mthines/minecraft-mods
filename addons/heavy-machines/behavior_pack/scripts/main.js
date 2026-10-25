@@ -1,5 +1,5 @@
 import { ButtonState, InputButton, ItemStack, Player, system, world } from "@minecraft/server";
-import { AIM_DOWN, AIM_UP, HALF_WIDTH, UNBREAKABLE, aimFrom, face, findTree, frontLayer, isLeaves, isLiquid, isLog, nextStep, shaftMiddle } from "./dig.js";
+import { AIM_DOWN, AIM_UP, HALF_WIDTH, UNBREAKABLE, aimFrom, face, findTree, frontLayer, isLeaves, isLiquid, isLog, nextStep } from "./dig.js";
 import { emit } from "./telemetry.js";
 
 const RIG = "family:drill_rig"; // the entities and the items that put them down share their names
@@ -157,18 +157,14 @@ function drill(rig, driver) {
   const solid = blocks.filter((b) => !b.isAir && !UNBREAKABLE.has(b.typeId));
   if (!solid.length) return void setWorking(rig, false); // nothing in front: it just drives
 
-  if (aim !== 0) {
-    // Up and down, the rig stays in the middle of its shaft.
-    const middle = shaftMiddle(rig.location, size);
-    if (Math.abs(middle.x - rig.location.x) > 0.05 || Math.abs(middle.z - rig.location.z) > 0.05) rig.teleport(middle);
-  }
   breakBlocks(rig, driver, solid);
   if (aim === AIM_UP) {
     if (!state.climbing) {
       rig.triggerEvent("family:climb");
       state.climbing = true;
     }
-    rig.teleport({ ...shaftMiddle(rig.location, size), y: Math.floor(rig.location.y + 0.01) + 1 });
+    // Straight up only: the layer it cut is over all of the rig, wherever it is in the shaft. Moved sideways, it went into the wall.
+    rig.teleport({ ...rig.location, y: Math.floor(rig.location.y + 0.01) + 1 });
   }
   rig.dimension.playSound("block.grindstone.use", rig.location, { pitch: 0.6, volume: 1 });
   rig.dimension.spawnParticle("minecraft:large_explosion", solid[Math.floor(solid.length / 2)].center());

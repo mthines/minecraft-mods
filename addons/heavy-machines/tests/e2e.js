@@ -1,5 +1,5 @@
 // Played by simulated players on the test server: mc test heavy-machines
-import { Direction, ItemStack } from "@minecraft/server";
+import { Direction, ItemStack, system } from "@minecraft/server";
 
 const RIG = "family:drill_rig";
 const CUTTER = "family:tree_cutter";
@@ -119,6 +119,37 @@ export async function theDrillCutsUpAndClimbs(t) {
   const height = machine.location.y;
   await t.wait(30);
   t.assert(machine.location.y > height - 0.3, `The rig fell down its shaft when the driver let go of W: ${(height - t.origin.y).toFixed(2)} → ${(machine.location.y - t.origin.y).toFixed(2)}`);
+}
+
+export async function climbingAgainstAWallKeepsTheDriverOutOfIt(t) {
+  // A 3×3 room, 3 high, in solid stone. The rig is pushed against its east wall, as holding W does in a shaft.
+  fill(t, "stone", [-3, 0, -2], [3, 9, 4]);
+  fill(t, "air", [-1, 0, 0], [1, 2, 2]);
+  const rig = t.dimension.spawnEntity(RIG, t.at(1.0, 0, 1.5));
+  const driver = t.player("Driver", 0, -3);
+  await t.wait(5);
+  t.assert(rig.getComponent("minecraft:rideable")?.addRider(driver), "The driver couldn't get on the rig");
+  await t.until(() => ridingOn(driver)?.id === rig.id, "The driver isn't on the rig", 20);
+  rig.teleport(t.at(1.0, 0, 1.5));
+  driver.lookAtBlock(t.at(1, 14, 1));
+  await t.wait(5);
+  // Every tick of the climb: nothing solid where the rig or its driver is.
+  let stuck = "";
+  const watch = system.runInterval(() => {
+    if (stuck || !rig.isValid) return;
+    const { x, y, z } = rig.location;
+    const inside = [driver.getHeadLocation()];
+    for (const dx of [-0.95, 0, 0.95]) for (const dz of [-0.95, 0, 0.95]) for (const dy of [0.05, 1, 1.95]) inside.push({ x: x + dx, y: y + dy, z: z + dz });
+    const solid = inside.map((at) => t.dimension.getBlock(at)).find((b) => b && !b.isAir);
+    if (solid) stuck = `${solid.typeId} at ${["x", "y", "z"].map((k) => solid.location[k] - t.origin[k]).join(", ")}, the rig at ${(x - t.origin.x).toFixed(2)}, ${(y - t.origin.y).toFixed(2)}, ${(z - t.origin.z).toFixed(2)}`;
+  }, 1);
+  driver.runCommand("scriptevent family:machine_jump");
+  driver.runCommand("scriptevent family:machine_input 1");
+  await t.until(() => rig.location.y > t.origin.y + 2.5, () => `The rig didn't climb: it's at ${(rig.location.y - t.origin.y).toFixed(2)}`, 80);
+  driver.runCommand("scriptevent family:machine_input 0");
+  await t.wait(5);
+  system.clearRun(watch);
+  t.assert(!stuck, `Climbing, the rig or its driver went inside the wall: ${stuck}`);
 }
 
 export async function theDrillWontWorkNextToWaterOrLava(t) {

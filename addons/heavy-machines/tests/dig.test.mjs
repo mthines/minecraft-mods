@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { AIM_DOWN, AIM_UP, aimFrom, face, findTree, isLiquid, nextStep, shaftMiddle } from "../behavior_pack/scripts/dig.js";
+import { AIM_DOWN, AIM_UP, aimFrom, face, findTree, isLiquid, nextStep } from "../behavior_pack/scripts/dig.js";
 
 const span = (blocks, axis) => [Math.min(...blocks.map((b) => b[axis])), Math.max(...blocks.map((b) => b[axis]))];
 
@@ -97,9 +97,15 @@ test("up and down cut the layer above the machine's roof, or below its floor", (
   assert.deepEqual(span(down, "y"), [9, 9]);
 });
 
-test("a machine drilling up or down stays in the middle of its shaft", () => {
-  assert.deepEqual(shaftMiddle({ x: 0.9, y: 5, z: 0.2 }, 3), { x: 0.5, y: 5, z: 0.5 });
-  assert.deepEqual(shaftMiddle({ x: 0.2, y: 5, z: 0.9 }, 5), { x: 0.5, y: 5, z: 0.5 });
+test("up and down, every layer covers the whole machine, even one pushed against the shaft's wall", () => {
+  for (const size of [3, 5, 7]) {
+    for (const x of [10.0, 10.25, 10.5, 10.75, 11.0]) {
+      for (const dir of [{ x: 0, y: 1, z: 0 }, { x: 0, y: -1, z: 0 }]) {
+        const [first, last] = span(face({ x, y: 64, z: x }, dir, size), "x");
+        assert.ok(first <= x - 1 && last + 1 >= x + 1, `a machine at x ${x} sticks out of the ${size}-wide layer ${first}..${last + 1}`);
+      }
+    }
+  }
 });
 
 test("water and lava, flowing or not, are liquids", () => {

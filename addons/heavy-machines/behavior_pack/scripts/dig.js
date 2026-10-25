@@ -40,7 +40,10 @@ export function nextStep(rise, slope) {
   return { step, rise: due - step };
 }
 
-/** The first of `size` blocks across, centered on `middle` as well as whole blocks allow. */
+/**
+ * The first of `size` blocks across, centered on `middle` as well as whole blocks allow.
+ * They always reach past both sides of a machine there, even one pushed against a wall.
+ */
 const across = (middle, size) => Math.round(middle - size / 2);
 
 /**
@@ -87,14 +90,6 @@ export function face(at, dir, size, step = 0, ceiling = -Infinity) {
  */
 export function frontLayer(at, dir) {
   return dir.x !== 0 ? Math.floor(at.x + dir.x * REACH) : Math.floor(at.z + dir.z * REACH);
-}
-
-/**
- * Where a machine drilling up or down should stand: the middle of its shaft, so it stays lined up layer after layer.
- * @param {Vec3} at @param {number} size
- */
-export function shaftMiddle(at, size) {
-  return { x: across(at.x, size) + size / 2, y: at.y, z: across(at.z, size) + size / 2 };
 }
 
 /** @param {string} type */
