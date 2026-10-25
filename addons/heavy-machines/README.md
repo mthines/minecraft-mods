@@ -7,12 +7,16 @@ Try them: `./mc kit heavy-machines` (add `--craft` for what crafts more).
 ## The drill rig
 
 1. Put the drill rig down on the ground, and use it to get on.
-2. Hold **W** and look where you want to drill: ahead, up, or down. When a block is in front of the drill, it cuts a 3×3 hole and drives in. Sneak to get off.
-3. Everything it digs goes into your inventory. Whatever doesn't fit waits next to the rig.
+2. **Jump** to turn the drill on. It's off when you get on, so you can drive the rig somewhere without drilling through anything on the way. Jump again to turn it off.
+3. Hold **W** and look where you want to drill. When a block is in front of the drill, it cuts a 3×3 hole and drives in. Sneak to get off.
+4. Everything it digs goes into your inventory. Whatever doesn't fit waits next to the rig.
 
-- **Ahead**, the tunnel's floor stays level with the rig, so you can drive straight through.
-- **Down**, it cuts the floor under it and sinks into the shaft.
-- **Up**, it cuts the ceiling and climbs. It holds on in the shaft until you look down, or until it's standing on something again. If you get off, it drops down.
+The drill follows where you look:
+
+- **Level** (within about 10°), the tunnel stays flat, so you can drive straight through.
+- **A little down or up**, the tunnel slopes that way: look 20° down and it drops a block every 3 blocks; look further and it gets steeper, up to 45° (a block down for every block ahead). The rig rolls down the steps behind the drill, or climbs them.
+- **Straight down** (more than 60°), it cuts the floor under it and sinks into the shaft.
+- **Straight up**, it cuts the ceiling and climbs. It holds on in the shaft until you look down, or until it's standing on something again. If you get off, it drops down.
 - **Not in water or lava.** It stops when it stands in water or lava, or when there's water or lava in front of the drill or right around it, so it never opens a tunnel into a lake.
 - It can't cut bedrock, barriers, portals, or command blocks.
 

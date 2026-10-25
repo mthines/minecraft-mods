@@ -20,10 +20,10 @@ function fill(t, type, [x1, y1, z1], [x2, y2, z2]) {
 }
 
 /**
- * A machine with a driver on it, looking at `look` and holding W.
+ * A machine with a driver on it, looking at `look` and holding W. A drill rig's drill is switched on.
  * The machine stands in the middle of block 0, 0 with its front edge at z 2, against whatever is at z 2.
  */
-async function drive(t, type, look) {
+async function drive(t, type, look, { switchOn = true } = {}) {
   const machine = t.dimension.spawnEntity(type, t.at(0.5, 0, 1));
   const driver = t.player("Driver", 0, -3);
   await t.wait(5);
@@ -31,6 +31,7 @@ async function drive(t, type, look) {
   await t.until(() => ridingOn(driver)?.id === machine.id, "The driver isn't on the machine", 20);
   driver.lookAtBlock(t.at(...look));
   await t.wait(5); // a simulated player's head turns a moment after lookAtBlock
+  if (type === RIG && switchOn) driver.runCommand("scriptevent family:machine_jump"); // jump: simulated players can't jump while riding
   driver.runCommand("scriptevent family:machine_input 1");
   return { machine, driver };
 }
@@ -59,6 +60,37 @@ export async function theDrillCutsA3x3TunnelAhead(t) {
   t.assert(allAre(t, "minecraft:stone", [-3, 0, 2], [-2, 4, 2]) === true && allAre(t, "minecraft:stone", [-1, 3, 2], [1, 4, 2]) === true, "The drill cut more than 3×3");
   t.assert(allAre(t, "minecraft:stone", [-1, 0, 3], [1, 2, 3]) === true, "The drill cut deeper than one layer while it stood still");
   await t.until(() => has(driver, "minecraft:cobblestone"), () => `The cobblestone didn't go into the driver's inventory: ${inventory(driver).map((i) => i.typeId).join(", ") || "empty"}`, 20);
+}
+
+export async function theDrillStaysOffUntilTheDriverJumps(t) {
+  fill(t, "stone", [-3, 0, 2], [3, 4, 4]);
+  const { driver } = await drive(t, RIG, [0, 1, 3], { switchOn: false });
+  await t.wait(30);
+  t.assert(allAre(t, "minecraft:stone", [-1, 0, 2], [1, 2, 2]) === true, "The drill cut before the driver switched it on: getting on and holding W should only drive");
+  driver.runCommand("scriptevent family:machine_jump");
+  await t.until(() => check(allAre(t, "minecraft:air", [-1, 0, 2], [1, 2, 2])), "The drill didn't cut after the driver jumped to switch it on", 60);
+  driver.runCommand("scriptevent family:machine_jump");
+  await t.wait(10);
+  t.assert(typeAt(t, 0, 1, 3) === "minecraft:stone", "The drill kept cutting after the driver jumped again to switch it off");
+}
+
+export async function lookingDownSlopesTheTunnelDown(t) {
+  fill(t, "stone", [-3, -3, 2], [3, 4, 6]); // not deeper: the test world's bottom is a few blocks down
+  const { machine, driver } = await drive(t, RIG, [0, -9, 14]); // about 40° down: a block down for every block ahead
+  await t.until(() => check(allAre(t, "minecraft:air", [-1, -1, 2], [1, 2, 2])), () => `The drill didn't cut the first layer a block deeper: ${allAre(t, "minecraft:air", [-1, -1, 2], [1, 2, 2])}`, 60);
+  t.assert(typeAt(t, 0, -2, 2) === "minecraft:stone" && typeAt(t, 0, 3, 2) === "minecraft:stone", `The first layer of the slope cut more than a block deeper than the floor and 3 high: below ${typeAt(t, 0, -2, 2)}, above ${typeAt(t, 0, 3, 2)}`);
+  machine.teleport(t.at(0.5, 0, 2)); // the rig drives a block on, still on the floor behind the step (a simulated player can't steer it)
+  driver.lookAtBlock(t.at(0, -9, 15)); // a simulated player's head doesn't stay put when what it rides moves
+  await t.wait(5);
+  t.assert(Math.abs(driver.getRotation().x - 40) < 8, `The driver should look about 40° down, not ${driver.getRotation().x.toFixed(0)}°`);
+  await t.until(() => check(allAre(t, "minecraft:air", [-1, -2, 3], [1, 1, 3])), () => `The next layer didn't step down again: ${allAre(t, "minecraft:air", [-1, -2, 3], [1, 1, 3])}; at z 3 from y -3 up: ${[-3, -2, -1, 0, 1, 2, 3].map((y) => typeAt(t, 0, y, 3)?.replace("minecraft:", "")).join(" ")}; the rig at ${["x", "y", "z"].map((k) => (machine.location[k] - t.origin[k]).toFixed(2)).join(", ")}, ${machine.getProperty("family:tilt")}°`, 60);
+}
+
+export async function lookingUpSlopesTheTunnelUp(t) {
+  fill(t, "stone", [-3, 0, 2], [3, 6, 4]);
+  await drive(t, RIG, [0, 12, 12]); // about 45° up
+  await t.until(() => check(allAre(t, "minecraft:air", [-1, 1, 2], [1, 3, 2])), () => `The drill didn't cut the first layer a block higher: ${allAre(t, "minecraft:air", [-1, 1, 2], [1, 3, 2])}`, 60);
+  t.assert(allAre(t, "minecraft:stone", [-1, 0, 2], [1, 0, 2]) === true, "Sloping up, the drill cut the step the rig drives up onto");
 }
 
 export async function theDrillKeepsGoingAsTheRigMovesForward(t) {

@@ -1,5 +1,5 @@
-import { ItemStack, Player, system, world } from "@minecraft/server";
-import { AIM_DOWN, AIM_UP, HALF_WIDTH, UNBREAKABLE, aimFrom, face, findTree, isLeaves, isLiquid, isLog, shaftMiddle } from "./dig.js";
+import { ButtonState, InputButton, ItemStack, Player, system, world } from "@minecraft/server";
+import { AIM_DOWN, AIM_UP, HALF_WIDTH, UNBREAKABLE, aimFrom, face, findTree, frontLayer, isLeaves, isLiquid, isLog, nextStep, shaftMiddle } from "./dig.js";
 import { emit } from "./telemetry.js";
 
 const RIG = "family:drill_rig"; // the entities and the items that put them down share their names
@@ -26,6 +26,7 @@ const driverOf = (machine) => {
 const testInput = new Map();
 system.afterEvents.scriptEventReceive.subscribe(({ id, message, sourceEntity }) => {
   if (id === "family:machine_input" && sourceEntity) testInput.set(sourceEntity.id, Number(message));
+  if (id === "family:machine_jump" && sourceEntity instanceof Player) switchDrill(sourceEntity); // simulated players can't press jump while riding
 });
 /** @param {Player} player */
 function pressingForward(player) {
@@ -38,11 +39,26 @@ function pressingForward(player) {
   }
 }
 
-/** @type {Map<string, { next: number, blocks: number, climbing: boolean, driver: string }>} machine id → how it's doing */
+/**
+ * @typedef {object} MachineState
+ * @property {number} next the tick it can start on the next layer
+ * @property {number} blocks cut since it started working, for telemetry
+ * @property {boolean} climbing holding on in a shaft it drilled up
+ * @property {string} driver the name of who drove it last, for telemetry
+ * @property {string} driverId who's driving now: someone new gets on with the drill off
+ * @property {boolean} on the drill is switched on (jump switches it)
+ * @property {string} way which way it drills ahead, and the layer ahead: the tunnel's floor carries on from layer to layer
+ * @property {number} layer
+ * @property {number} floorIn the floor of the layer before (a sloping tunnel steps from there)
+ * @property {number} floorOut this layer's floor
+ * @property {number} riseIn how far a sloping tunnel was behind its slope when it got to this layer
+ * @property {number} riseOut how far behind it will be after this layer, carried to the next one
+ */
+/** @type {Map<string, MachineState>} machine id → how it's doing */
 const states = new Map();
 const stateOf = (/** @type {import("@minecraft/server").Entity} */ machine) => {
   let state = states.get(machine.id);
-  if (!state) states.set(machine.id, (state = { next: 0, blocks: 0, climbing: false, driver: "" }));
+  if (!state) states.set(machine.id, (state = { next: 0, blocks: 0, climbing: false, driver: "", driverId: "", on: false, way: "", layer: 0, floorIn: 0, floorOut: 0, riseIn: 0, riseOut: 0 }));
   return state;
 };
 
@@ -104,19 +120,37 @@ function breakBlocks(machine, driver, blocks) {
 /** @param {import("@minecraft/server").Entity} rig @param {Player} driver */
 function drill(rig, driver) {
   const state = stateOf(rig);
+  if (state.driverId !== driver.id) Object.assign(state, { driverId: driver.id, on: false }); // someone just got on: the drill starts off
   const size = /** @type {3 | 5 | 7} */ (Number(rig.getProperty("family:drill_size")));
   const { x: pitch, y: yaw } = driver.getRotation();
-  const { aim, dir } = aimFrom(pitch, yaw);
-  if (rig.getProperty("family:aim") !== aim) rig.setProperty("family:aim", aim);
+  const { aim, dir, slope } = aimFrom(pitch, yaw);
+  const tilt = aim === AIM_UP ? -90 : aim === AIM_DOWN ? 90 : Math.round((-Math.atan(slope) * 180) / Math.PI);
+  if (rig.getProperty("family:tilt") !== tilt) rig.setProperty("family:tilt", tilt);
   // Climbing a shaft, the rig holds on until the driver looks down, or it's standing on something again.
   if (state.climbing && aim !== AIM_UP && (aim === AIM_DOWN || solidBelow(rig))) land(rig);
 
-  if (system.currentTick % 10 === 0) driver.onScreenDisplay.setActionBar(`§6§lDrill rig§r ${size}×${size}  W drills where you look · up, down, or ahead · sneak to get off`);
+  if (system.currentTick % 10 === 0 && system.currentTick >= state.next) showControls(driver, size, state.on, tilt);
   if (system.currentTick < state.next) return; // still on the last layer
-  if (!pressingForward(driver)) return void setWorking(rig, false);
+  if (!state.on || !pressingForward(driver)) return void setWorking(rig, false);
 
   if (inLiquid(rig)) return stop(rig, driver, "§cThe drill doesn't work in water or lava.");
-  const blocks = face(rig.location, dir, size).map((at) => rig.dimension.getBlock(at)).filter((b) => b !== undefined);
+  const rigFloor = Math.floor(rig.location.y + 0.01);
+  let at = rig.location;
+  let step = /** @type {-1 | 0 | 1} */ (0);
+  if (aim === 0) {
+    // A sloping tunnel: each layer, its floor steps up, down, or stays from the layer before, by where the driver looks now.
+    const way = `${dir.x},${dir.z}`;
+    const layer = frontLayer(rig.location, dir);
+    if (state.way !== way || layer !== state.layer) {
+      const onward = state.way === way && Math.abs(layer - state.layer) === 1;
+      Object.assign(state, onward ? { floorIn: state.floorOut, riseIn: state.riseOut } : { floorIn: rigFloor, riseIn: 0 }, { way, layer });
+    }
+    const next = nextStep(state.riseIn, slope);
+    step = next.step;
+    Object.assign(state, { floorOut: state.floorIn + step, riseOut: next.rise });
+    at = { ...rig.location, y: state.floorIn };
+  } else state.way = "";
+  const blocks = face(at, dir, size, step, rigFloor + size - 1).map((b) => rig.dimension.getBlock(b)).filter((b) => b !== undefined);
   // Water or lava in the face, or right around it, would pour into the tunnel.
   const around = blocks.flatMap((b) => [b.above(), b.below(), b.north(), b.south(), b.east(), b.west()]);
   if ([...blocks, ...around].some((b) => b && (isLiquid(b.typeId) || b.isWaterlogged))) return stop(rig, driver, "§cThere's water or lava ahead: the drill stops.");
@@ -143,6 +177,33 @@ function drill(rig, driver) {
   state.driver = driver.name;
   setWorking(rig, true);
 }
+
+/**
+ * What the drill does now, under the hotbar.
+ * @param {Player} driver @param {number} size @param {boolean} on @param {number} tilt degrees down (negative: up)
+ */
+function showControls(driver, size, on, tilt) {
+  const name = `§6§lDrill rig§r ${size}×${size}`;
+  if (!on) return driver.onScreenDisplay.setActionBar(`${name}  §7drill off§r · jump to turn it on · sneak to get off`);
+  const where = tilt === -90 ? "straight up" : tilt === 90 ? "straight down" : tilt === 0 ? "straight ahead" : `sloping ${tilt > 0 ? "down" : "up"} ${Math.abs(tilt)}°`;
+  driver.onScreenDisplay.setActionBar(`${name}  §adrill on§r · W drills ${where} · jump to turn it off`);
+}
+
+/** Jump turns the drill of the rig you're driving on or off. @param {Player} player */
+function switchDrill(player) {
+  const rig = player.getComponent("minecraft:riding")?.entityRidingOn;
+  if (!rig?.isValid || rig.typeId !== RIG || driverOf(rig)?.id !== player.id) return;
+  const state = stateOf(rig);
+  state.driverId = player.id;
+  state.on = !state.on;
+  if (!state.on) setWorking(rig, false);
+  rig.dimension.playSound(state.on ? "random.click" : "random.wood_click", rig.location, { pitch: state.on ? 0.6 : 0.4 });
+  const size = Number(rig.getProperty("family:drill_size"));
+  showControls(player, size, state.on, Number(rig.getProperty("family:tilt")));
+}
+world.afterEvents.playerButtonInput.subscribe(({ player }) => {
+  if (player) switchDrill(player);
+}, { buttons: [InputButton.Jump], state: ButtonState.Pressed });
 
 /** @param {import("@minecraft/server").Entity} machine @param {Player} driver @param {string} why */
 function stop(machine, driver, why) {
@@ -240,7 +301,7 @@ system.runInterval(() => {
 world.afterEvents.entitySpawn.subscribe(({ entity }) => {
   if (!entity.isValid || !MACHINES.includes(entity.typeId)) return;
   const how = entity.typeId === RIG
-    ? "§6Drill rig!§r Use it to get on. Hold W and look ahead, up, or down to drill 3×3 that way. Use a bigger drill head on it to drill 5×5 or 7×7. It won't drill in water or lava."
+    ? "§6Drill rig!§r Use it to get on, and jump to turn the drill on. Then hold W and look where you want to drill: ahead, sloping up or down, or straight up or down. Use a bigger drill head on it to drill 5×5 or 7×7. It won't drill in water or lava."
     : "§2Tree cutter!§r Use it to get on, then drive into a tree: it cuts the whole tree down, branches and all.";
   for (const player of entity.dimension.getPlayers({ location: entity.location, maxDistance: 8 })) {
     if (player) player.sendMessage(`${how} Sneak and hit it to pick it up.`);

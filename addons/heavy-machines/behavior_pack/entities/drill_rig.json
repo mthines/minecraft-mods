@@ -7,7 +7,7 @@
       "is_summonable": true,
       "properties": {
         "family:drill_size": { "type": "int", "range": [3, 7], "default": 3, "client_sync": true },
-        "family:aim": { "type": "int", "range": [0, 2], "default": 0, "client_sync": true },
+        "family:tilt": { "type": "int", "range": [-90, 90], "default": 0, "client_sync": true },
         "family:working": { "type": "bool", "default": false, "client_sync": true }
       }
     },

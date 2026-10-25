@@ -7,19 +7,37 @@ export const HEIGHT = 3; // how much room a machine and its driver need above th
 export const AIM_UP = 1;
 export const AIM_DOWN = 2;
 const REACH = HALF_WIDTH + 0.1; // a block this far from the middle counts as touching the front
+const SHAFT = 60; // looking further up or down than this drills a straight shaft
+const LEVEL = 10; // looking this close to level keeps the tunnel flat
+const STEEPEST = 1; // a tunnel climbs or drops at most one block for every block ahead (45°): a machine can't drive steeper
 
 /**
  * Which way the drill points, from where the driver looks.
+ * Ahead, the tunnel slopes the way the driver looks: a little down, a gentle slope down; further down, steeper, up to 45°.
  * @param {number} pitch degrees, negative is up
  * @param {number} yaw degrees: 0 is south (+z), 90 is west (-x)
- * @returns {{ aim: 0 | 1 | 2, dir: Vec3 }} aim: 0 ahead, AIM_UP, or AIM_DOWN; dir: one step that way
+ * @returns {{ aim: 0 | 1 | 2, dir: Vec3, slope: number }} aim: 0 ahead, AIM_UP, or AIM_DOWN; dir: one step that way;
+ *   slope: blocks up (negative: down) for every block ahead, from -1 to 1
  */
 export function aimFrom(pitch, yaw) {
-  if (pitch < -40) return { aim: AIM_UP, dir: { x: 0, y: 1, z: 0 } };
-  if (pitch > 40) return { aim: AIM_DOWN, dir: { x: 0, y: -1, z: 0 } };
+  if (pitch < -SHAFT) return { aim: AIM_UP, dir: { x: 0, y: 1, z: 0 }, slope: 0 };
+  if (pitch > SHAFT) return { aim: AIM_DOWN, dir: { x: 0, y: -1, z: 0 }, slope: 0 };
   const quarter = ((Math.round(yaw / 90) % 4) + 4) % 4;
   const dirs = [{ x: 0, y: 0, z: 1 }, { x: -1, y: 0, z: 0 }, { x: 0, y: 0, z: -1 }, { x: 1, y: 0, z: 0 }];
-  return { aim: 0, dir: dirs[quarter] };
+  const slope = Math.abs(pitch) < LEVEL ? 0 : Math.max(-STEEPEST, Math.min(STEEPEST, -Math.tan((pitch * Math.PI) / 180)));
+  return { aim: 0, dir: dirs[quarter], slope };
+}
+
+/**
+ * How a sloping tunnel steps: whole blocks, as often as the slope needs (a slope of 1/3 steps every third block).
+ * @param {number} rise how far the tunnel is behind (or ahead of) its slope so far, from -0.5 to 0.5
+ * @param {number} slope from aimFrom
+ * @returns {{ step: -1 | 0 | 1, rise: number }} step: the next layer's floor, one block up, level, or one down; rise: carried to the layer after
+ */
+export function nextStep(rise, slope) {
+  const due = rise + slope;
+  const step = /** @type {-1 | 0 | 1} */ (Math.max(-1, Math.min(1, Math.round(due))) || 0);
+  return { step, rise: due - step };
 }
 
 /** The first of `size` blocks across, centered on `middle` as well as whole blocks allow. */
@@ -27,13 +45,16 @@ const across = (middle, size) => Math.round(middle - size / 2);
 
 /**
  * The blocks in front of a machine: a square `size` blocks across, facing `dir`.
- * Ahead, its bottom is level with the machine's floor, so tunnels stay flat. Up and down, it's centered on the machine.
- * @param {Vec3} at the machine's location (the middle of its bottom)
+ * Ahead, its bottom is level with the tunnel's floor, or a block above or below it where the tunnel slopes.
+ * Up and down, it's centered on the machine.
+ * @param {Vec3} at the machine's location (the middle of its bottom); ahead, y is the floor of the tunnel's last layer
  * @param {Vec3} dir one step the way it points (from aimFrom)
  * @param {number} size 3, 5, or 7
+ * @param {-1 | 0 | 1} [step] ahead: the tunnel's floor steps up or down a block here (from nextStep)
+ * @param {number} [ceiling] ahead: cut at least up to here, so the machine and its driver fit while they catch up with a slope
  * @returns {Vec3[]}
  */
-export function face(at, dir, size) {
+export function face(at, dir, size, step = 0, ceiling = -Infinity) {
   const floor = Math.floor(at.y + 0.01);
   /** @type {Vec3[]} */
   const blocks = [];
@@ -45,16 +66,27 @@ export function face(at, dir, size) {
     return blocks;
   }
   // Ahead: one layer just past the front, `size` wide across the way it points.
-  const front = (along, step) => Math.floor(along + step * REACH);
   const alongX = dir.x !== 0;
-  const layer = alongX ? front(at.x, dir.x) : front(at.z, dir.z);
+  const layer = frontLayer(at, dir);
   const side0 = across(alongX ? at.z : at.x, size);
+  // A step cuts one row more: a machine is 2 blocks long, so it rolls down a step (or climbs it) a block behind the drill,
+  // and its driver's head needs the room.
+  const bottom = floor + step;
+  const top = Math.max(bottom + size - 1 + Math.abs(step), ceiling);
   for (let side = 0; side < size; side++) {
-    for (let up = 0; up < size; up++) {
-      blocks.push(alongX ? { x: layer, y: floor + up, z: side0 + side } : { x: side0 + side, y: floor + up, z: layer });
+    for (let y = bottom; y <= top; y++) {
+      blocks.push(alongX ? { x: layer, y, z: side0 + side } : { x: side0 + side, y, z: layer });
     }
   }
   return blocks;
+}
+
+/**
+ * Ahead, the x (or z) of the layer just past the machine's front.
+ * @param {Vec3} at @param {Vec3} dir one of the four ways ahead
+ */
+export function frontLayer(at, dir) {
+  return dir.x !== 0 ? Math.floor(at.x + dir.x * REACH) : Math.floor(at.z + dir.z * REACH);
 }
 
 /**
