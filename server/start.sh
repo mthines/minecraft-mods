@@ -8,6 +8,12 @@ if [[ "$(uname)" == "Darwin" ]] && command -v colima >/dev/null && ! colima stat
   colima start --network-address --port-forwarder grpc
 fi
 
+# Play the newest Minecraft already downloaded, without looking up a newer one (mc update sets BEDROCK_VERSION=LATEST).
+if [[ -z "${BEDROCK_VERSION:-}" ]]; then
+  installed="$(ls -d data/bedrock_server-* 2>/dev/null | sed 's/.*bedrock_server-//' | sort -V | tail -1)"
+  export BEDROCK_VERSION="${installed:-LATEST}"
+fi
+
 files=(-f docker-compose.yml)
 # Colima started with --network-address gives its VM an address the Mac reaches without NAT.
 # Host networking inside that VM is the only setup where the game's NetherNet (WebRTC) connection works.

@@ -327,8 +327,11 @@ case "${1:-help}" in
     # Devices update Minecraft by themselves, and the server must run the same version or nobody can join.
     before="$(server_version)"
     docker compose -p server -f server/docker-compose.yml pull --quiet bedrock autoheal
-    ./server/start.sh >/dev/null
+    BEDROCK_VERSION=LATEST ./server/start.sh >/dev/null
     docker restart "$SERVER" >/dev/null # downloads the newest Minecraft server as it starts
+    wait_until_joinable
+    # Pin the version it now has again, so later starts and restarts skip the lookup (a quick second restart).
+    ./server/start.sh >/dev/null
     wait_until_joinable
     after="$(server_version)"
     if [[ "$before" == "$after" ]]; then echo "Already up to date: Minecraft $after"; else echo "Updated Minecraft from $before to $after"; fi

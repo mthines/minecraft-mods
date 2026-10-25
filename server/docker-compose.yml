@@ -32,7 +32,9 @@ services:
         required: false
     environment:
       EULA: "TRUE" # you accept https://www.minecraft.net/eula by starting the server
-      VERSION: "LATEST" # every device must run the same Minecraft version as the server
+      # The installed Minecraft (start.sh pins it), so a start doesn't wait on looking up the newest version, which
+      # can take minutes. mc update starts it once with LATEST to fetch a newer one: devices must match the server.
+      VERSION: "${BEDROCK_VERSION:-LATEST}"
       SERVER_NAME: "Family Server"
       GAMEMODE: "survival"
       # No DIFFICULTY here: it stays as server/data/server.properties says (easy at first), so ./mc peace on/off sticks.
