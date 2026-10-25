@@ -53,6 +53,8 @@ let input = null;
 let confirm = null;
 /** @type {null | { name: string, child: import("node:child_process").ChildProcess }} */
 let action = null;
+/** @type {{ args: string[], then?: (ok: boolean) => void, question?: string }[]} commands asked for while one runs, to run after it in order */
+const queue = [];
 let watching = false;
 let kitCraft = false; // whether the k key's kits come with their crafting table and materials (mc kit --craft)
 /** @type {null | { args: string[], question?: string }} the last ./mc command, for . to run again; question: asked again first */
@@ -191,6 +193,7 @@ function statusSegments() {
     ["   Saves ", S.dim],
     ...saveSegments(),
     ...(/** @type {Segment[]} */ (action ? [["   running: ", S.dim], [`mc ${action.name}`, S.yellow]] : [])),
+    ...(/** @type {Segment[]} */ (queue.length ? [[`   next: ${queue.length}`, S.yellow]] : [])),
   ];
 }
 
@@ -375,12 +378,16 @@ function followLog(startedAt) {
 }
 
 /**
- * Runs ./mc with these arguments and shows what it prints. One at a time.
- * @param {string[]} args @param {(ok: boolean) => void} [then]
+ * Runs ./mc with these arguments and shows what it prints. One at a time: asked for while one runs, it waits its turn.
+ * @param {string[]} args @param {(ok: boolean) => void} [then] @param {string | undefined} [question]
  */
-function mc(args, then) {
-  if (action) return void tell(`Wait a moment: mc ${action.name} is still running. Try again when it's done.`, S.yellow);
-  if (args[0] !== "start") last = { args, question: confirmed }; // mc dev starts the server itself; that's not one to repeat
+function mc(args, then, question = confirmed) {
+  if (action) {
+    queue.push({ args, then, question });
+    note(`… mc ${args.join(" ")} runs when mc ${action.name} is done`, S.dim);
+    return void draw();
+  }
+  if (args[0] !== "start") last = { args, question }; // mc dev starts the server itself; that's not one to repeat
   view = "activity";
   scroll = 0;
   note(`$ mc ${args.join(" ")}`);
@@ -393,6 +400,8 @@ function mc(args, then) {
     if (code) note(`✗ mc ${args[0]} failed`);
     refreshStatus();
     then?.(code === 0);
+    const next = action ? undefined : queue.shift(); // then may have started one itself: the queue waits for that
+    if (next) mc(next.args, next.then, next.question);
   });
   draw();
 }
@@ -838,6 +847,7 @@ function keysIn(data) {
 // ── Start and stop ─────────────────────────────────────────────────────────
 
 function quit() {
+  queue.length = 0;
   action?.child.kill();
   follower?.kill();
   out.write("\x1b[?1000l\x1b[?1006l\x1b[?25h\x1b[?1049l");
