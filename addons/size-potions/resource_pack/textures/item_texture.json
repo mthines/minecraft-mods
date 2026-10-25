@@ -1,0 +1,8 @@
+{
+  "resource_pack_name": "size-potions",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_shrink_potion": { "textures": "textures/items/shrink_potion" },
+    "family_grow_potion": { "textures": "textures/items/grow_potion" }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Size Potions Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "8737e651-6920-48fa-8fdd-0d0935c2be6a",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "dd411146-e316-4dfc-94cd-e082a2754a73",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

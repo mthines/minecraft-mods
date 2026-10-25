@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:shrink_potion", "menu_category": { "category": "items" } },
+    "components": {
+      "minecraft:icon": "family_shrink_potion",
+      "minecraft:display_name": { "value": "Shrink Potion" },
+      "minecraft:max_stack_size": 16,
+      "minecraft:glint": true,
+      "minecraft:use_animation": "drink",
+      "minecraft:use_modifiers": { "use_duration": 1.6, "movement_modifier": 0.35 },
+      "minecraft:food": { "nutrition": 0, "saturation_modifier": 0, "can_always_eat": true, "using_converts_to": "minecraft:glass_bottle" }
+    }
+  }
+}

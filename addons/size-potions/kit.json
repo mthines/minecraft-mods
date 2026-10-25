@@ -1,0 +1,17 @@
+{
+  "about": "What mc kit size-potions gives you: shrink potions (tiny for 30 seconds) and grow potions (a giant for 30 seconds). With --craft, also what crafts more.",
+  "emoji": "🧪",
+  "label": "shrink and grow",
+  "items": [
+    ["family:shrink_potion", 4],
+    ["family:grow_potion", 4]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:glass_bottle", 2],
+    ["minecraft:brown_mushroom", 1],
+    ["minecraft:sugar", 1],
+    ["minecraft:bone_meal", 1],
+    ["minecraft:apple", 1]
+  ]
+}
