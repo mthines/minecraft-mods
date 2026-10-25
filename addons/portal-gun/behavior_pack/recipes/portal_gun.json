@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:portal_gun" },
+    "tags": ["crafting_table"],
+    "pattern": [" ED", " IE", "I  "],
+    "key": {
+      "D": "minecraft:diamond",
+      "E": "minecraft:ender_pearl",
+      "I": "minecraft:iron_ingot"
+    },
+    "unlock": [{ "item": "minecraft:ender_pearl" }],
+    "result": { "item": "family:portal_gun" }
+  }
+}

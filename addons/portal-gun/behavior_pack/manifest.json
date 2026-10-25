@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Portal Gun",
+    "description": "A portal gun: right-click shoots a blue portal, sneak and right-click an orange one. Walk into one, come out of the other.",
+    "uuid": "a40243cc-74f7-46fc-a963-9e5b2c113e89",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "040c0323-0997-45ae-977a-03725321fe9a",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "bb2a4b8b-50b8-4ef8-8c87-8990bd8a4459",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "f3078a0f-ae19-48ae-bab9-6b2cb1f2fc0f",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

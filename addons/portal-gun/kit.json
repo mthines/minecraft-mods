@@ -1,0 +1,13 @@
+{
+  "about": "What mc kit portal-gun gives you: a portal gun. Right-click shoots a blue portal, sneak and right-click an orange one; walk into one and come out of the other. With --craft, also what crafts more.",
+  "emoji": "🌀",
+  "items": [
+    ["family:portal_gun", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 2],
+    ["minecraft:ender_pearl", 2],
+    ["minecraft:diamond", 1]
+  ]
+}
