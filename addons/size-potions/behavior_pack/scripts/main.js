@@ -8,14 +8,25 @@ const LEFT = "family:size_left"; // dynamic property: seconds left, so a /reload
 
 // Each potion triggers an event in this mod's player.json, which swaps a component group with the
 // scale and collision box. Scripts can only read a player's scale, not set it.
+// The camera follows from just behind your head at your new height (cameras/presets/*_view.json set how far behind).
+// Normal eyes are 1.62 blocks up; change `eyes` to move the view up or down.
 const POTIONS = {
-  "family:shrink_potion": { event: "family:shrink", message: "§dYou shrink down, tiny as a mouse!" },
-  "family:grow_potion": { event: "family:grow", message: "§aYou grow into a GIANT!" },
+  "family:shrink_potion": { event: "family:shrink", message: "§dYou shrink down, tiny as a mouse!", camera: "family:tiny_view", eyes: 1.62 * 0.25 },
+  "family:grow_potion": { event: "family:grow", message: "§aYou grow into a GIANT!", camera: "family:giant_view", eyes: 1.62 * 2.5 },
 };
+
+/** Cameras throw for simulated players (no screen), so a failed camera never stops the potion. */
+function setView(player, potion) {
+  try {
+    if (potion) player.camera.setCamera(potion.camera, { entityOffset: { x: 0, y: potion.eyes, z: 0 }, viewOffset: { x: 0, y: 0 } });
+    else player.camera.clear();
+  } catch {}
+}
 
 /** @param {import("@minecraft/server").Player} player */
 function backToNormal(player) {
   player.triggerEvent("family:normal_size");
+  setView(player);
   player.setDynamicProperty(LEFT, undefined);
   player.removeEffect("jump_boost");
   player.removeEffect("strength");
@@ -34,6 +45,7 @@ world.afterEvents.itemCompleteUse.subscribe(({ itemStack, source: player }) => {
   if (!potion || !player) return;
   const seconds = player.hasTag("family:short_potions") ? SHORT_DURATION : DURATION;
   player.triggerEvent(potion.event); // drinking the other potion swaps straight to it
+  setView(player, potion);
   player.setDynamicProperty(LEFT, seconds);
   if (potion.event === "family:grow") {
     player.addEffect("jump_boost", seconds * SECONDS, { amplifier: 2, showParticles: false });

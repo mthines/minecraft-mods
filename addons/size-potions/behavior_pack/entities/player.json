@@ -364,6 +364,9 @@
         "minecraft:scale": {
           "value": 0.25
         },
+        "minecraft:movement": {
+          "value": 0.06
+        },
         "minecraft:collision_box": {
           "width": 0.15,
           "height": 0.45
@@ -373,6 +376,9 @@
         "minecraft:scale": {
           "value": 2.5
         },
+        "minecraft:movement": {
+          "value": 0.15
+        },
         "minecraft:collision_box": {
           "width": 1.5,
           "height": 4.5
@@ -381,6 +387,9 @@
       "family:normal_size": {
         "minecraft:scale": {
           "value": 1
+        },
+        "minecraft:movement": {
+          "value": 0.1
         },
         "minecraft:collision_box": {
           "width": 0.6,

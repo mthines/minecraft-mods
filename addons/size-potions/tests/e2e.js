@@ -1,5 +1,7 @@
 // Played by simulated players on the test server: mc test size-potions
 const scale = (player) => player.getComponent("minecraft:scale")?.value ?? 1;
+const speed = (player) => player.getComponent("minecraft:movement")?.currentValue ?? 0;
+const NORMAL_SPEED = 0.1;
 
 /** Drinks the potion in the first hotbar slot. */
 async function drink(t, player, potion) {
@@ -21,7 +23,9 @@ export async function aShrinkPotionMakesYouTinyThenYouPopBack(t) {
   await t.until(() => scale(player) === 0.25, () => `After drinking the shrink potion the scale is ${scale(player)}, not 0.25`, 80);
   const bottle = player.getComponent("minecraft:inventory")?.container?.getItem(0);
   t.assert(bottle?.typeId === "minecraft:glass_bottle", `Drinking should leave an empty bottle, not ${bottle?.typeId}`);
+  t.assert(speed(player) < NORMAL_SPEED, `A tiny player should walk slower, but their speed is ${speed(player)}`);
   await t.until(() => scale(player) === 1, () => `Still at scale ${scale(player)} after the potion ran out`, 120);
+  t.assert(Math.abs(speed(player) - NORMAL_SPEED) < 0.001, `Back to normal size, but the speed is ${speed(player)}, not ${NORMAL_SPEED}`);
 }
 
 export async function aGrowPotionMakesYouAGiantThatJumpsHigh(t) {
@@ -30,7 +34,9 @@ export async function aGrowPotionMakesYouAGiantThatJumpsHigh(t) {
   await drink(t, player, "family:grow_potion");
   await t.until(() => scale(player) === 2.5, () => `After drinking the grow potion the scale is ${scale(player)}, not 2.5`, 80);
   t.assert(player.getEffect("jump_boost") && player.getEffect("strength"), "A giant should jump high and hit hard");
+  t.assert(speed(player) > NORMAL_SPEED, `A giant should walk faster, but their speed is ${speed(player)}`);
   await t.until(() => scale(player) === 1 && !player.getEffect("jump_boost"), () => `Still at scale ${scale(player)} after the potion ran out`, 120);
+  t.assert(Math.abs(speed(player) - NORMAL_SPEED) < 0.001, `Back to normal size, but the speed is ${speed(player)}, not ${NORMAL_SPEED}`);
 }
 
 export async function growingWhileTinySwapsToGiant(t) {
