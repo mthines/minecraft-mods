@@ -120,7 +120,7 @@ flowchart LR
 | [`trampoline`](./addons/trampoline) | Build slime blocks with a wooden edge, like a portal, and get a trampoline. Bigger ones bounce higher. You get the blocks in a chest when you first join. | Code, with tests |
 | [`party-commands`](./addons/party-commands) | `/function party` and `/function sunny`, and 9 dirt crafts into 1 diamond | No code: commands and a recipe |
 | [`game-stats`](./addons/game-stats) | Counts what everyone digs, builds, beats, eats, and how they die, plus minutes played, blocks travelled, level-ups, and Nether trips, for the [Dash0 dashboard](./server/README.md#family-dashboard) | Code, with tests |
-| [`double-jump`](./addons/double-jump) | Golden feathers: each one is a flap in the air, and holding jump glides you down slowly. You get 10 when you join. | Item + picture + recipe + code, with tests |
+| [`double-jump`](./addons/double-jump) | Golden feathers: each one is a flap in the air, and holding jump glides you down slowly. You get 64 when you join. | Item + picture + recipe + code, with tests |
 | [`football`](./addons/football) | A ball you kick by hitting it. Build two goals of the same size and a match starts; the ball in a goal scores. | Item + entity + model + pictures + recipe + code, with tests |
 | [`lantern`](./addons/lantern) | A hand lantern that lights up around you while it's anywhere in your inventory | Item + picture + recipe + code, with tests |
 | [`motorcycle`](./addons/motorcycle) | A motorcycle you place, ride, and pick up again, with a speedometer | Item + entity + model + pictures + recipe + code, with tests |

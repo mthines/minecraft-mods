@@ -16,24 +16,24 @@ function feathersOf(player) {
   return count;
 }
 
-/** A player carrying `feathers` golden feathers, instead of the 10 spawning gives. */
+/** A player carrying `feathers` golden feathers, instead of the 64 spawning gives. */
 async function hiker(t, feathers, dx = 0, dz = 0) {
   const player = t.player("Hiker", dx, dz);
-  await t.until(() => feathersOf(player) >= 10, "Spawning gave no golden feathers", 40);
+  await t.until(() => feathersOf(player) >= 64, "Spawning gave no golden feathers", 40);
   player.getComponent("minecraft:inventory").container.clearAll();
   if (feathers) player.getComponent("minecraft:inventory").container.setItem(9, new ItemStack("family:golden_feather", feathers));
   return player;
 }
 
-export async function spawningGivesTenFeathers(t) {
+export async function spawningGivesFeathers(t) {
   const player = t.player("Hiker");
-  await t.until(() => feathersOf(player) === 10, () => `A new player should get 10 golden feathers, but has ${feathersOf(player)}`, 40);
+  await t.until(() => feathersOf(player) === 64, () => `A new player should get 64 golden feathers, but has ${feathersOf(player)}`, 40);
   player.getComponent("minecraft:inventory").container.clearAll();
   player.getComponent("minecraft:inventory").container.setItem(9, new ItemStack("family:golden_feather", 3)); // some used up
   player.kill();
   await t.wait(20);
   player.respawn();
-  await t.until(() => feathersOf(player) === 10, () => `After respawning the player should have 10 golden feathers again, but has ${feathersOf(player)}`, 60);
+  await t.until(() => feathersOf(player) === 64, () => `After respawning the player should have 64 golden feathers again, but has ${feathersOf(player)}`, 60);
 }
 
 /** Jumps from the ground and waits until the player is in the air. */

@@ -3,7 +3,7 @@ import { fresh, glide, step } from "./jump.js";
 import { emit } from "./telemetry.js";
 
 const FEATHER = "family:golden_feather";
-const SPAWN_FEATHERS = 10; // everyone has at least this many golden feathers after joining or respawning
+const SPAWN_FEATHERS = 64; // everyone has at least this many golden feathers after joining or respawning
 const FLAP = 0.7; // how hard a flap throws you up (a normal jump is about 0.42)
 const KNOCKED_SINK = 0.077; // knocked along with no push up each tick, a player sinks a steady 0.077 blocks a tick
 const PUSH_LIFT = 2.35; // each 0.01 of push up knocked in every tick sinks 0.0235 blocks a tick slower (measured in game)
@@ -59,8 +59,9 @@ function feathers(player) {
   return count;
 }
 
-/** Golden diamonds for flaps left, grey for used ones. */
-const featherBar = (left, used) => `§6${"◆".repeat(left)}§8${"◆".repeat(used)}`;
+/** Golden diamonds for flaps left, grey for used ones; with too many to fit, how many are left. */
+const featherBar = (left, used) =>
+  left + used > 16 ? `§6◆ ${left}§8 / ${left + used}` : `§6${"◆".repeat(left)}§8${"◆".repeat(used)}`;
 
 system.runInterval(() => {
   for (const player of world.getAllPlayers()) {
