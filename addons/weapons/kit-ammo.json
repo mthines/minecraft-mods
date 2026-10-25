@@ -1,8 +1,9 @@
 {
-  "about": "What mc kit weapons-ammo gives you: just more bullets and grenades.",
+  "about": "What mc kit weapons-ammo gives you: just more bullets and grenades. Pick one with weapons-ammo-bullets or weapons-ammo-grenades.",
   "emoji": "💣",
-  "items": [
-    ["family:bullet", 256],
-    ["family:grenade", 32]
-  ]
+  "types": {
+    "all": [["family:bullet", 256], ["family:grenade", 32]],
+    "bullets": [["family:bullet", 256]],
+    "grenades": [["family:grenade", 32]]
+  }
 }

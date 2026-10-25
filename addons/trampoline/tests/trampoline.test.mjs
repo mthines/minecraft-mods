@@ -135,7 +135,11 @@ test("the starter chest also has the power-tools, double-jump, weapons and weapo
     for (const [item, amount] of items) sums.set(item, (sums.get(item) ?? 0) + amount);
     return Object.fromEntries([...sums].sort());
   };
-  const fromKits = kits.flatMap((kit) => JSON.parse(readFileSync(new URL(`../../${kit}`, import.meta.url), "utf8")).items);
+  // A kit with types (weapons-ammo) gives its first type, all of them, by default.
+  const fromKits = kits.flatMap((kit) => {
+    const { items, types } = JSON.parse(readFileSync(new URL(`../../${kit}`, import.meta.url), "utf8"));
+    return items ?? Object.values(types)[0];
+  });
   assert.deepEqual(total(OTHER_MODS_KIT), total(fromKits));
   const chest = starterChest();
   assert.ok(chest.every(({ amount }) => amount <= 64), "each slot holds at most one stack");

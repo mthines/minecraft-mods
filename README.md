@@ -252,7 +252,7 @@ Run the server with `./mc` from this folder (`./mc help` lists everything):
 | `./mc kit tools [player]` | Give diamond tools to everyone online (or one player) |
 | `./mc kit motorcycle` | Give everyone online what they need to try a mod: its items (from `addons/<mod>/kit.json`) |
 | `./mc kit motorcycle --craft` | The same, plus a crafting table and what crafts more |
-| `./mc kit weapons-ammo` | Give one of a mod's extra kits (from `addons/<mod>/kit-<name>.json`): here, just bullets and grenades |
+| `./mc kit weapons-ammo` | Give one of a mod's extra kits (from `addons/<mod>/kit-<name>.json`): here, just bullets and grenades (`weapons-ammo-bullets` or `weapons-ammo-grenades` for one of them; in `mc dev` it opens a list) |
 | `./mc kit bed` | Give a kit that belongs to no mod (from `kits/<name>.json`): here, a bed |
 | `./mc kit wood-spruce` | Give building materials of one type: wood, stone, glass, wool, concrete, terracotta, ground, light, or rare (obsidian, `rare-nether-portal`, …), then `-<type>`; buckets, ingots, and things for the End work the same way: `./mc kit bucket-lava`, `./mc kit ingots-iron`, `./mc kit end-eyes` (eyes of ender; also `end-portal`, `end-dragon-fight`, `end-late-game`, `end-making-eyes`) (in `mc dev`, `k` then Enter or → on a material lists its types) |
 | `./mc logs` | Follow the server log |
