@@ -1,4 +1,4 @@
-import { EquipmentSlot, system, world } from "@minecraft/server";
+import { EquipmentSlot, ItemStack, system, world } from "@minecraft/server";
 import { emit } from "./telemetry.js";
 
 // Minecraft has no light that moves, so an invisible light block follows the player instead,
@@ -53,6 +53,15 @@ world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
   equipment.setEquipment(EquipmentSlot.Mainhand, before);
   player.playSound("armor.equip_generic");
   emit("lantern.worn", { "minecraft.player.name": player.name });
+});
+
+// Joining, or coming back after dying, gives a lantern to anyone who has none.
+// Not to NPCs, nor to e2e test players (family:e2e): their lights would land in every mod's tests.
+world.afterEvents.playerSpawn.subscribe(({ player }) => {
+  if (!player?.isValid || player.hasTag("family:npc") || player.hasTag("family:e2e")) return; // isValid: they may have left already
+  if (carriesLantern(player)) return;
+  player.getComponent("minecraft:inventory")?.container?.addItem(new ItemStack(LANTERN, 1));
+  emit("lantern.spawn_lantern", { "minecraft.player.name": player.name });
 });
 
 // Lights saved by an earlier run belong to nobody now: take them all out.

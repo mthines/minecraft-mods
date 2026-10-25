@@ -98,3 +98,19 @@ export async function usingTheLanternPutsItInTheShieldSlot(t) {
   const hand = equipment.getEquipment(EquipmentSlot.Mainhand)?.typeId;
   t.assert(hand === "minecraft:totem_of_undying", `What was in the shield slot should go to the hand, but the hand has ${hand ?? "nothing"}`);
 }
+
+const lanterns = (player) => {
+  const inventory = player.getComponent("minecraft:inventory").container;
+  let count = 0;
+  for (let slot = 0; slot < inventory.size; slot++) if (inventory.getItem(slot)?.typeId === "family:hand_lantern") count += inventory.getItem(slot).amount;
+  return count;
+};
+
+export async function respawningGivesALantern(t) {
+  const player = t.player("Walker", 0, 0);
+  player.removeTag("family:e2e"); // test players are left out of the spawn lantern
+  player.kill();
+  await t.wait(20);
+  player.respawn();
+  await t.until(() => lanterns(player) === 1, () => `After respawning the player should have 1 lantern, but has ${lanterns(player)}`, 60);
+}

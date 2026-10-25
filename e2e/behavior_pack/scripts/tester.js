@@ -62,6 +62,7 @@ export async function makeTester(dimension, corner, size) {
     /** A simulated player standing `dx, dz` from the middle. */
     player(name = `Tester${players.length + 1}`, dx = 0, dz = 0) {
       const player = spawnSimulatedPlayer({ dimension, ...t.at(dx + 0.5, 0, dz + 0.5) }, name, GameMode.Survival);
+      player.addTag("family:e2e"); // no spawn lantern or cookies: a test that wants them removes the tag and respawns
       players.push(player);
       return player;
     },
