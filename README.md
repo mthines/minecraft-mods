@@ -69,6 +69,23 @@ A wand that turns a creeper into a tame wolf. A pirate ship your friends sail wi
       <sub>A light that walks with you, even from your pocket.</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" width="33%" valign="top">
+      <img src="docs/images/items/portal_gun.png" width="64" height="64" alt=""><br>
+      <b><a href="./addons/portal-gun">Portal gun</a></b><br>
+      <sub>Shoot a blue portal and an orange one, then walk in one and out the other.</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
+      <img src="docs/images/items/grappling_hook.png" width="64" height="64" alt=""><br>
+      <b><a href="./addons/grappling-hook">Grappling hook</a></b><br>
+      <sub>Hook a wall and zip up to it, or zipline across a valley.</sub>
+    </td>
+    <td align="center" width="33%" valign="top">
+      <img src="docs/images/items/shrink_potion.png" width="64" height="64" alt=""><br>
+      <b><a href="./addons/size-potions">Shrink and grow potions</a></b><br>
+      <sub>Be tiny enough for a 1-block hole, or a giant, for 30 seconds.</sub>
+    </td>
+  </tr>
 </table>
 
 And more: [NPCs](./addons/npc) you boss around in plain words (`./mc npc "build a tower next to me"`), [trampolines](./addons/trampoline) you build like a Nether portal, [party commands](./addons/party-commands), a [welcome](./addons/welcome) message, and [game stats](./addons/game-stats) for the family dashboard. The full list is in [What's inside](#whats-inside).
@@ -114,6 +131,9 @@ flowchart LR
 | [`npc`](./addons/npc) | NPCs that join like players and do what they're told: `./mc npc "dig a hole next to me"`. They walk, follow, dig, build, fight, and talk. | Code, with tests; uses Beta APIs |
 | [`pirate`](./addons/pirate) | A pirate saber that sets mobs on fire, a pirate outfit to wear (hat, coat, trousers, boots), a pirate ship you sail on water (8 seats; whoever is at the wheel steers), and pirate friends with pirate names who join your crew: they follow you, fight monsters, and sail with you. | Items + entities + models + pictures + recipes + code, with tests |
 | [`heavy-machines`](./addons/heavy-machines) | Big machines you drive: a drill rig that cuts 3×3 tunnels ahead, up, or down (5×5 and 7×7 with bigger drill heads, never in water or lava), and a tree cutter that takes down a whole tree, branches and all | Items + entities + models + pictures + recipes + code, with tests |
+| [`portal-gun`](./addons/portal-gun) | A portal gun: right-click puts a blue portal on the wall, floor, or ceiling you aim at, sneak + right-click an orange one. Players, mobs, and dropped items that walk into one come out of the other. | Item + picture + recipe + code, with tests |
+| [`grappling-hook`](./addons/grappling-hook) | A grappling hook that pulls you to the block you aim at, up to 40 blocks away, like a zipline across a valley, and you float down after with no fall damage. Hook a mob to yank it to you. | Item + picture + recipe + code, with tests |
+| [`size-potions`](./addons/size-potions) | A shrink potion that makes you tiny enough for 1-block holes, and a grow potion that makes you a giant with big jumps, for 30 seconds each | Items + pictures + recipes + player.json + code, with tests |
 
 Each add-on is a folder in `addons/` with up to two packs:
 
