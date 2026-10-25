@@ -48,26 +48,27 @@
         "da": "Start server"
       },
       "panel": "./mc dev"
-    },
-    {
-      "id": "other",
-      "emoji": "💬",
-      "label": {
-        "en": "Something else",
-        "da": "Noget andet"
-      },
-      "prompt": "The kid wants something that isn't a new mod or a change to one mod: say a new kit (like more building materials, in kits/, see CLAUDE.md), a change to several mods, or to mc and mc dev. Do what they ask, keep it small, and check it with npm run validate and npm test (and ./mc test <mod> for a mod you changed). New kits show up in the server screen's kit menu (the k key) after the server screen restarts."
-    },
-    {
-      "id": "ask",
-      "emoji": "❓",
-      "label": {
-        "en": "Ask question",
-        "da": "Spørg"
-      },
-      "prompt": "The kid has a question about the mods or Minecraft. Answer it; do not change any files."
     }
   ],
+  "talk": {
+    "prompt": "This is the family Minecraft server, and the kids are usually playing on it right now. \"Give me ...\" means give it to everyone online. ./mc kit <kit> gives a kit to everyone online: node tools/kits.mjs menu lists them, like building materials (wood, stone, glass, wool, ...), armor, tools (diamond tools), and every mod's kit (a pirate ship is pirate-ship). Read a kit's .json in kits/ or addons/<mod>/ when you are not sure what is in it. For a plain Minecraft item no kit has, ./mc cmd give @a minecraft:<item> <count>. Day or night: ./mc cmd time set day; weather: ./mc cmd weather clear; no more monsters: ./mc kill-enemies; finding a place: ./mc locate <place>. If mc says nobody is online, tell the kid to join the server first. Something else that isn't one mod, like a new kit, a change to several mods, or to mc and mc dev, is building: do it with a plan, keep it small, and check it with npm run validate and npm test (and ./mc test <mod> for a mod you changed); new kits show up in the server screen's kit menu (the k key) after the server screen restarts. A question about the mods or Minecraft: answer it.",
+    "now": [
+      "./mc kit",
+      "./mc cmd give",
+      "./mc cmd time set",
+      "./mc cmd weather",
+      "./mc cmd effect",
+      "./mc kill-enemies",
+      "./mc locate",
+      "./mc peace",
+      "./mc fall-damage",
+      "./mc keep-inventory",
+      "./mc show-coordinates",
+      "./mc status",
+      "./mc mods",
+      "node tools/kits.mjs menu"
+    ]
+  },
   "explain": {
     "kit.json": {
       "en": "What you get when you try the mod",
