@@ -177,7 +177,10 @@ switch_rule() {
     false:) echo "$name is off. Turn it on with: mc $cmd on" ;;
     true:true) echo "$said_on" ;;
     false:false) echo "$said_off" ;;
-    *) echo "The server didn't answer. Try again, or see: mc logs" >&2; exit 1 ;;
+    *)
+      if [[ "$send" == "gamerule" ]]; then echo "The server didn't answer. Try again, or see: mc logs" >&2
+      else echo "The $cmd mod didn't answer: a new mod only loads when the server restarts (mc mods lists what's loaded). Or see: mc logs" >&2; fi
+      exit 1 ;;
   esac
 }
 
