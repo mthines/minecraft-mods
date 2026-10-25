@@ -61,7 +61,7 @@ let kitCraft = false; // whether the k key's kits come with their crafting table
 let last = null;
 /** @type {string | undefined} the question just answered with y, while its command starts */
 let confirmed;
-const server = { running: false, health: "", startedAt: "", players: new Set(), peace: false, fallDamage: /** @type {boolean | undefined} */ (undefined), keepInventory: /** @type {boolean | undefined} */ (undefined), showCoordinates: /** @type {boolean | undefined} */ (undefined), world: currentWorld() };
+const server = { running: false, health: "", startedAt: "", players: new Set(), peace: false, fallDamage: /** @type {boolean | undefined} */ (undefined), keepInventory: /** @type {boolean | undefined} */ (undefined), pvp: /** @type {boolean | undefined} */ (undefined), invincible: /** @type {boolean | undefined} */ (undefined), showCoordinates: /** @type {boolean | undefined} */ (undefined), world: currentWorld() };
 /** @type {import("node:child_process").ChildProcess | undefined} */
 let follower;
 
@@ -184,6 +184,10 @@ function statusSegments() {
     [server.peace ? "on" : "off", S.bold],
     ["   Fall damage ", S.dim],
     [server.fallDamage === undefined ? "?" : server.fallDamage ? "on" : "off", S.bold],
+    ["   PvP ", S.dim],
+    [server.pvp === undefined ? "?" : server.pvp ? "on" : "off", S.bold],
+    ["   Invincible ", S.dim],
+    [server.invincible === undefined ? "?" : server.invincible ? "on" : "off", S.bold],
     ["   Keep inventory ", S.dim],
     [server.keepInventory === undefined ? "?" : server.keepInventory ? "on" : "off", S.bold],
     ["   Coordinates ", S.dim],
@@ -370,6 +374,10 @@ function followLog(startedAt) {
     if (fall) server.fallDamage = fall[1] === "true";
     const keep = line.match(/keepinventory(?: =| has been updated to) (true|false)/);
     if (keep) server.keepInventory = keep[1] === "true";
+    const pvp = line.match(/\bpvp(?: =| has been updated to) (true|false)/);
+    if (pvp) server.pvp = pvp[1] === "true";
+    const invincible = line.match(/invincible(?: =| has been updated to) (true|false)/); // the invincible mod answers like a game rule
+    if (invincible) server.invincible = invincible[1] === "true";
     const coordinates = line.match(/showcoordinates(?: =| has been updated to) (true|false)/);
     if (coordinates) server.showCoordinates = coordinates[1] === "true";
   };
@@ -663,7 +671,7 @@ const onOff = (/** @type {boolean | undefined} */ on) => (on === undefined ? ["?
 /**
  * The o key: switches and the less used commands. A switch that only mc dev keeps (like sending saves)
  * flips right away and opens the menu again, on the same row, so several can be flipped in a row.
- * Each also has a key of its own outside the menu (s, h, i, p, f, v, z, j, c, m).
+ * Each also has a key of its own outside the menu (s, h, i, p, f, b, u, v, z, j, c, m).
  * @param {number} [index]
  */
 function optionsMenu(index = 0) {
@@ -674,6 +682,8 @@ function optionsMenu(index = 0) {
     ["Kit crafting materials", onOff(kitCraft), () => commands.i(), true],
     ["Peace", onOff(server.peace), () => commands.p()],
     ["Fall damage", onOff(server.fallDamage), () => commands.f()],
+    ["PvP (players hurt each other)", onOff(server.pvp), () => commands.b()],
+    ["Invincible (nothing hurts players)", onOff(server.invincible), () => commands.u()],
     ["Keep inventory on death", onOff(server.keepInventory), () => commands.v()],
     ["Show coordinates", onOff(server.showCoordinates), () => commands.z()],
     ["Find a place… (stronghold, fortress, …)", undefined, () => commands.j()],
@@ -718,6 +728,8 @@ const commands = {
   d: () => mc(["cmd", "time set day"]),
   p: () => mc(["peace", server.peace ? "off" : "on"]),
   f: () => mc(["fall-damage", server.fallDamage === false ? "on" : "off"]),
+  b: () => mc(["pvp", server.pvp === false ? "on" : "off"]),
+  u: () => mc(["invincible", server.invincible ? "off" : "on"]),
   v: () => mc(["keep-inventory", server.keepInventory ? "off" : "on"]),
   z: () => mc(["show-coordinates", server.showCoordinates ? "off" : "on"]),
   j: () => placeMenu(),
@@ -877,6 +889,6 @@ mc(["start"], (ok) => {
   if (!ok) return note("✗ The server didn't start. Fix what it says above, then run mc dev again.");
   watchAddons((message) => message.split("\n").filter(Boolean).forEach((line) => push(activity, line)));
   watching = true;
-  mc(["fall-damage"], () => mc(["keep-inventory"], () => mc(["show-coordinates"])));
+  mc(["fall-damage"], () => mc(["keep-inventory"], () => mc(["show-coordinates"], () => mc(["pvp"], () => mc(["invincible"])))));
   note("✓ Watching addons/: save a file and it reaches the server. Scripts reload without kicking anyone.");
 });

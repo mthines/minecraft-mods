@@ -13,7 +13,7 @@ Server
   start                  Copy the add-ons in and start the server (starts Colima on a Mac if needed)
   dev                    start, then send each add-on change to the server as you save.
                          Keys run commands: k kit, t test, w world, n NPC, d day, e kill enemies, a reload, r restart, and o options:
-                         whether saves go to the server and reload or restart it, kit crafting, peace, fall damage, a server command, mods
+                         whether saves go to the server and reload or restart it, kit crafting, peace, fall damage, PvP, invincible, a server command, mods
   stop                   Stop the server
   restart                Restart the server, to load changed add-ons
   reload                 Reload scripts and functions without kicking anyone (other changes need: mc restart)
@@ -49,6 +49,8 @@ In the game
                          Add --craft for the crafting table and materials too
   peace [on|off]         Peaceful mode: no monsters, and health refills. No argument: show which it is
   fall-damage [on|off]   Turn fall damage on or off. No argument: show which it is
+  pvp [on|off]           Whether players can hurt each other. No argument: show which it is
+  invincible [on|off]    Nothing can hurt players (mobs, falling, lava, hunger, …). No argument: show which it is
   keep-inventory [on|off]  Whether players keep their things when they die. No argument: show which it is
   show-coordinates [on|off]  Show everyone's position (x, y, z) at the top left of the screen. No argument: show which it is
   locate <place> [player]  Tell each player online (or one) where the nearest place is from where they stand, like
@@ -147,9 +149,11 @@ ensure_beta_apis() {
 
 # Picks the world the server plays next time it starts; a seed only matters for a new world.
 # A game rule switched on or off, like fall damage. It's saved in the world, so it survives restarts and stays with that world.
-# Usage: switch_rule <game rule> <mc command> <on|off|empty: just show it> <Name> <said when turned on> <said when turned off>
+# Usage: switch_rule <game rule> <mc command> <on|off|empty: just show it> <Name> <said when turned on> <said when turned off> [server command]
+# The server command defaults to "gamerule <game rule> <true|false|empty>"; a mod's switch (like invincible) sends its own
+# and answers in the log in the same words ("invincible = true").
 switch_rule() {
-  local rule="$1" cmd="$2" arg="$3" name="$4" said_on="$5" said_off="$6" value now since
+  local rule="$1" cmd="$2" arg="$3" name="$4" said_on="$5" said_off="$6" send="${7:-gamerule}" value now since
   if [[ "$(docker inspect -f '{{.State.Running}}' "$SERVER" 2>/dev/null)" != "true" ]]; then
     echo "The server isn't running. Start it with: mc start" >&2
     exit 1
@@ -161,7 +165,11 @@ switch_rule() {
     *) echo "Usage: mc $cmd [on|off]" >&2; exit 1 ;;
   esac
   since="$(date -u +%Y-%m-%dT%H:%M:%S.000000000Z)"
-  docker exec "$SERVER" send-command "gamerule $rule $value"
+  if [[ "$send" == "gamerule" ]]; then
+    docker exec "$SERVER" send-command "gamerule $rule $value"
+  else
+    docker exec "$SERVER" send-command "$send ${value:-show}"
+  fi
   sleep 1
   now="$(docker logs --since "$since" "$SERVER" 2>&1 | sed -nE "s/.*$rule( =| has been updated to) (true|false).*/\2/p" | tail -1 | tr -d '\r')"
   case "$now:$value" in
@@ -401,6 +409,8 @@ case "${1:-help}" in
     if [[ "$level" == "peaceful" ]]; then echo "Peace mode on: monsters are gone and won't spawn, and health refills."; else echo "Peace mode off: monsters are back (difficulty: easy)."; fi
     ;;
   fall-damage) switch_rule falldamage fall-damage "${2:-}" "Fall damage" "Fall damage on: falling hurts again." "Fall damage off: fall as far as you like." ;;
+  pvp) switch_rule pvp pvp "${2:-}" "PvP" "PvP on: players can hurt each other again." "PvP off: players can't hurt each other." ;;
+  invincible) switch_rule invincible invincible "${2:-}" "Invincible" "Invincible on: nothing can hurt players." "Invincible off: players can get hurt again." "scriptevent family:invincible" ;;
   keep-inventory) switch_rule keepinventory keep-inventory "${2:-}" "Keep inventory" "Keep inventory on: players keep their things when they die." "Keep inventory off: players drop their things when they die again." ;;
   reload)
     # Scripts and functions, in a second. Items, recipes, pictures, and new script files need a restart:
