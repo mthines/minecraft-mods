@@ -671,7 +671,7 @@ const onOff = (/** @type {boolean | undefined} */ on) => (on === undefined ? ["?
 /**
  * The o key: switches and the less used commands. A switch that only mc dev keeps (like sending saves)
  * flips right away and opens the menu again, on the same row, so several can be flipped in a row.
- * Each also has a key of its own outside the menu (s, h, i, p, f, b, u, v, z, j, c, m).
+ * Each also has a key of its own outside the menu (s, h, i, p, f, b, u, v, z, j, c, m), except updating Minecraft.
  * @param {number} [index]
  */
 function optionsMenu(index = 0) {
@@ -689,6 +689,7 @@ function optionsMenu(index = 0) {
     ["Find a place… (stronghold, fortress, …)", undefined, () => commands.j()],
     ["Server command…", undefined, () => commands.c()],
     ["Mods", undefined, () => commands.m()],
+    ["Update Minecraft (so updated devices can join)", undefined, () => void (confirm = { question: `Update the server to the newest Minecraft? It restarts twice. ${KICK}`, then: () => mc(["update"]) })],
   ];
   pick(
     "Options",
