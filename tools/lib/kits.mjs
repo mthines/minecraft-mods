@@ -9,7 +9,7 @@ import { ADDONS_DIR, ROOT } from "./addons.mjs";
 export const KITS_DIR = join(ROOT, "kits");
 
 /** @typedef {[string, number][]} Items */
-/** @typedef {{ about?: string, emoji?: string, label?: string, items?: Items, craft?: Items, types?: Record<string, Items> }} KitFile */
+/** @typedef {{ about?: string, emoji?: string, label?: string, category?: string, items?: Items, craft?: Items, types?: Record<string, Items> }} KitFile */
 
 /** @param {string} path @returns {KitFile} */
 const read = (path) => JSON.parse(readFileSync(path, "utf8"));
@@ -49,6 +49,25 @@ export function kitLabels() {
 
 /** The emoji in front of the diamond tools in the kit menus (they have no kit file). */
 export const TOOLS_EMOJI = "💎";
+
+/**
+ * The first level of mc dev's kit menu, in this order, with each one's emoji. A kit's `category` picks one;
+ * without it, a mod's kit is in mods and a kit in kits/ in more.
+ */
+export const CATEGORIES = { materials: "🏠", tools: "🔨", armor: "🦺", weapons: "🏹", mods: "🧩", more: "🎒" };
+
+/** @typedef {{ name: string, emoji: string, label?: string, category: string, types?: string[] }} MenuKit */
+
+/** Every kit for mc dev's kit menu, the diamond tools first: what it shows, its category, and its types (for kits like wood). @returns {MenuKit[]} */
+export function menuKits() {
+  return [
+    { name: "tools", emoji: TOOLS_EMOJI, label: "diamond tools", category: "tools" },
+    ...kitFiles().map(({ name, path }) => {
+      const { emoji = "  ", label, category, types } = read(path);
+      return { name, emoji, label, category: category ?? (path.startsWith(KITS_DIR) ? "more" : "mods"), types: types && Object.keys(types) };
+    }),
+  ];
+}
 
 /** Each kit's `emoji`, shown in front of its name in the kit menus so kids find it at a glance. */
 export function kitEmojis() {

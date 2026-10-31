@@ -5,7 +5,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { ADDONS_DIR, ROOT } from "./lib/addons.mjs";
-import { kitEmojis, kitLabels, kitNames, materials, TOOLS_EMOJI } from "./lib/kits.mjs";
+import { CATEGORIES, menuKits } from "./lib/kits.mjs";
 import { recentInstructions } from "./lib/npc-history.mjs";
 import { currentWorld } from "./lib/world.mjs";
 import { onSave, sendSaves, waiting, watchAddons } from "./watch.mjs";
@@ -562,35 +562,77 @@ function newWorld(name) {
 }
 
 /**
- * The k key: pick a kit. Building materials (wood, stone, …) open their types, with Enter or →.
- * Typing finds the types too, so "iron" lists ingots-iron: Enter gives it, → opens the rest of ingots.
+ * The k key: a category (materials, tools, …), then its kits; a kit with types, like wood, then its types (Enter or →).
+ * Typing finds everything below where you are: at the top, "iron" lists ingots-iron. Enter gives it, → opens ingots.
  */
 function kitMenu() {
-  const types = new Map(materials().map(({ name, types }) => [name, types]));
-  const labels = kitLabels();
-  const emojis = kitEmojis();
-  const label = (kit) =>
-    `${emojis.get(kit) ?? "  "} ${types.has(kit) ? `${kit}  → ${types.get(kit)?.slice(0, 3).join(", ")}, …` : labels.has(kit) ? `${kit} (${labels.get(kit)})` : kit}`;
-  const open = (kit) => (types.has(kit) ? materialMenu(kit, types.get(kit) ?? []) : giveKit(kit));
-  const typeChoices = [...types].flatMap(([kit, kinds]) =>
-    // Drawn as a branch of its material, which is named dimmed at the right: └ 💣 grenades … weapons-ammo
-    kinds.map((type) => ({
-      label: `└ ${emojis.get(kit) ?? "  "} ${type}`,
-      value: `${kit}-${type}`,
-      search: `${kit}-${type}`,
-      state: /** @type {[string, (s: string) => string]} */ ([kit, S.dim]),
-      hidden: true,
-    })),
+  const kits = menuKits();
+  const categories = Object.entries(CATEGORIES).filter(([category]) => kits.some((kit) => kit.category === category));
+  pick(
+    "Which kit?",
+    [
+      ...categories.map(([category, emoji]) => ({
+        label: `${emoji} ${category}  → ${preview(kits.filter((kit) => kit.category === category).map(({ name }) => name))}`,
+        value: CATEGORY + category,
+        search: category,
+      })),
+      ...kits.map((kit) => ({ label: `${kit.emoji} ${kit.name}`, value: kit.name, state: dim(kit.category), hidden: true })),
+      ...typeChoices(kits),
+    ],
+    (value) => openKit(kits, value, kitMenu),
+    { more: (value) => openKit(kits, value, kitMenu, true) },
   );
-  // A material is found by its name, not the types its label lists: "iron" should give ingots-iron, not open ingots.
-  const kits = kitNames().map((kit) => ({ label: label(kit), value: kit, ...(types.has(kit) ? { search: kit } : {}) }));
-  const kitOf = (value) => [...types.keys()].find((kit) => value.startsWith(`${kit}-`) && types.get(kit)?.includes(value.slice(kit.length + 1)));
-  pick("Which kit?", [{ label: `${TOOLS_EMOJI} tools (diamond tools)`, value: "tools" }, ...kits, ...typeChoices], open, {
-    more: (value) => {
-      const material = types.has(value) ? value : kitOf(value);
-      material ? open(material) : kitMenu();
-    },
-  });
+}
+
+const CATEGORY = "\u0000"; // in front of a category in the kit menu: no kit is called that
+
+/** @param {string[]} names the first three, and … if there are more */
+const preview = (names) => names.slice(0, 3).join(", ") + (names.length > 3 ? ", …" : "");
+
+/** @param {string} text @returns {[string, (s: string) => string]} a choice's state, dimmed */
+const dim = (text) => [text, S.dim];
+
+/** The kits of one category, like the materials. One with a single kit (armor) opens that kit right away. @param {string} category */
+function categoryMenu(category) {
+  const kits = menuKits().filter((kit) => kit.category === category);
+  if (kits.length === 1) return openKit(kits, kits[0].name, kitMenu);
+  const back = () => categoryMenu(category);
+  pick(
+    `Which ${category}?`,
+    [
+      ...kits.map(({ name, emoji, label, types }) => ({
+        label: `${emoji} ${types ? `${name}  → ${preview(types)}` : label ? `${name} (${label})` : name}`,
+        value: name,
+        ...(types ? { search: name } : {}), // "iron" should give ingots-iron, not match ingots by the types its label lists
+      })),
+      ...typeChoices(kits),
+    ],
+    (value) => openKit(kits, value, back),
+    { more: (value) => openKit(kits, value, back, true), back: kitMenu },
+  );
+}
+
+/**
+ * The types of the kits, found by typing. Drawn as a branch of their kit, which is named dimmed at the right:
+ * └ 💣 grenades … weapons-ammo
+ * @param {import("./lib/kits.mjs").MenuKit[]} kits
+ */
+const typeChoices = (kits) =>
+  kits.flatMap(({ name, emoji, types = [] }) =>
+    types.map((type) => ({ label: `└ ${emoji} ${type}`, value: `${name}-${type}`, search: `${name}-${type}`, state: dim(name), hidden: true })),
+  );
+
+/**
+ * What picking a choice in the kit menus does: a category or a kit with types opens, anything else is given.
+ * With more (→), a type opens its kit's other types instead, and a kit without types just stays.
+ * @param {import("./lib/kits.mjs").MenuKit[]} kits @param {string} value @param {() => void} here the menu it was picked in @param {boolean} [more]
+ */
+function openKit(kits, value, here, more = false) {
+  if (value.startsWith(CATEGORY)) return categoryMenu(value.slice(CATEGORY.length));
+  const kit = kits.find(({ name }) => name === value) ?? (more ? kits.find(({ name, types }) => types?.some((type) => value === `${name}-${type}`)) : undefined);
+  if (kit?.types) return pick(`Which ${kit.name}?`, kit.types.map((type) => ({ label: type, value: `${kit.name}-${type}` })), giveKit, { back: here });
+  if (more) return here();
+  giveKit(value);
 }
 
 /**
@@ -641,11 +683,6 @@ function npcMore(instruction) {
     },
     { back: npcMenu },
   );
-}
-
-/** Which type of a building material, like oak or spruce wood. @param {string} kit @param {string[]} types */
-function materialMenu(kit, types) {
-  pick(`Which ${kit}?`, types.map((type) => ({ label: type, value: `${kit}-${type}` })), giveKit, { back: kitMenu });
 }
 
 /** Gives a kit: to the one player online, or asks who. @param {string} kit */

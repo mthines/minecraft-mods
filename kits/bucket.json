@@ -1,6 +1,7 @@
 {
   "about": "Buckets: 4 of lava, water, milk, or powder snow, or 4 empty ones to pick up lava and water yourself.",
   "emoji": "🪣",
+  "category": "tools",
   "types": {
     "lava": [["minecraft:lava_bucket", 4]],
     "water": [["minecraft:water_bucket", 4]],

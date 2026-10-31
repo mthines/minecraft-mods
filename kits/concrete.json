@@ -1,6 +1,7 @@
 {
   "about": "Concrete, and concrete powder that sets in water.",
   "emoji": "🧱",
+  "category": "materials",
   "types": {
     "white": [["minecraft:white_concrete", 64], ["minecraft:white_concrete_powder", 16]],
     "orange": [["minecraft:orange_concrete", 64], ["minecraft:orange_concrete_powder", 16]],

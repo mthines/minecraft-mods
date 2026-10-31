@@ -1,6 +1,7 @@
 {
   "about": "Crafting materials, 64 of one kind: iron ingots (for buckets, tools, rails, …), gold, copper, netherite, and diamonds, emeralds, redstone, lapis, coal, and more, plus everyday materials: flint, string, sticks, leather, feathers, bones, gunpowder, paper, slime balls, glowstone dust, clay, bricks, ink sacs, bone meal, sugar cane, wheat, honeycomb, and nether wart.",
   "emoji": "🔩",
+  "category": "materials",
   "label": "iron, gold, diamonds…",
   "types": {
     "iron": [["minecraft:iron_ingot", 64]],

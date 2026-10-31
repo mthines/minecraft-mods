@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { MinecraftItemTypes } from "@minecraft/vanilla-data";
 import { ROOT, listAddons, walk } from "./addons.mjs";
-import { TOOLS_EMOJI } from "./kits.mjs";
+import { CATEGORIES, TOOLS_EMOJI } from "./kits.mjs";
 
 /** Every vanilla item, to catch kits giving an item Bedrock calls something else (oak's fence gate is minecraft:fence_gate). */
 const VANILLA_ITEMS = new Set(Object.values(MinecraftItemTypes));
@@ -29,15 +29,19 @@ export function validate() {
     for (const pack of addon.packs) headerUuids.add(pack.manifest.header?.uuid);
   }
 
-  const seenEmojis = new Map([[TOOLS_EMOJI, "the diamond tools (tools/lib/kits.mjs)"]]);
+  const seenEmojis = new Map([
+    [TOOLS_EMOJI, "the diamond tools (tools/lib/kits.mjs)"],
+    ...Object.entries(CATEGORIES).map(([category, emoji]) => [emoji, `the ${category} category (CATEGORIES in tools/lib/kits.mjs)`]),
+  ]);
   /** Checks one kit file: its items (or, for kits like the building materials, each type's items) and craft lists. */
   function checkKit(path, where) {
     try {
-      const { items, types, craft = [], label, emoji } = JSON.parse(readFileSync(path, "utf8"));
+      const { items, types, craft = [], label, emoji, category } = JSON.parse(readFileSync(path, "utf8"));
       // One emoji that's always drawn two columns wide (no ❤️-style ones made of several characters), so the menus line up.
       if (typeof emoji !== "string" || !/^\p{Emoji_Presentation}$/u.test(emoji)) errors.push(`${where}: emoji (shown in front of the kit in the kit menus) should be one emoji, like "🪵"`);
       else if (seenEmojis.has(emoji)) errors.push(`${where}: emoji ${emoji} is already used by ${seenEmojis.get(emoji)}: give every kit its own`);
       else seenEmojis.set(emoji, where);
+      if (category !== undefined && !Object.hasOwn(CATEGORIES, category)) errors.push(`${where}: category (where mc dev's kit menu lists it) should be one of ${Object.keys(CATEGORIES).join(", ")}`);
       if (label !== undefined && (typeof label !== "string" || !label.trim())) errors.push(`${where}: label (what the kit menu in mc dev shows in brackets) should be some words, like "golden feather fly"`);
       const ok = (list) => Array.isArray(list) && list.length > 0 && list.every(([item, n]) => /^[a-z0-9_]+:[a-z0-9_.]+$/.test(item) && Number.isInteger(n) && n > 0);
       const lists = types ? Object.entries(types).map(([type, list]) => [`${where} type ${type}`, list]) : [[where, items]];

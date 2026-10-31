@@ -1,6 +1,7 @@
 {
   "about": "Ground blocks for landscaping: grass, dirt, sand, gravel, clay, moss, and snow.",
   "emoji": "🌱",
+  "category": "materials",
   "types": {
     "grass": [["minecraft:grass_block", 64], ["minecraft:dirt", 64]],
     "dirt": [["minecraft:dirt", 64], ["minecraft:coarse_dirt", 32], ["minecraft:grass_path", 32]],

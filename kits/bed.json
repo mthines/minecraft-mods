@@ -1,5 +1,6 @@
 {
   "about": "What mc kit bed gives you: a bed, to sleep through the night and set where you respawn.",
   "emoji": "🛌",
+  "category": "more",
   "items": [["minecraft:bed", 1]]
 }

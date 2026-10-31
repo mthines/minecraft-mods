@@ -1,6 +1,7 @@
 {
   "about": "What mc kit laser-gun gives you: a blue laser gun. Right-click shoots a laser beam.",
   "emoji": "🔫",
+  "category": "weapons",
   "items": [
     ["family:laser_gun", 1]
   ],

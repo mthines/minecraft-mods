@@ -1,5 +1,6 @@
 {
   "about": "What mc kit crafting-table gives you: a crafting table, to craft anything that needs the big 3×3 grid.",
   "emoji": "🪚",
+  "category": "tools",
   "items": [["minecraft:crafting_table", 1]]
 }

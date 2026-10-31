@@ -1,6 +1,7 @@
 {
   "about": "Terracotta. Make glazed terracotta for patterns yourself in a furnace (mc kit crafting-tools).",
   "emoji": "🏺",
+  "category": "materials",
   "types": {
     "plain": [["minecraft:hardened_clay", 64]],
     "white": [["minecraft:white_terracotta", 64]],

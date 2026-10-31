@@ -1,6 +1,7 @@
 {
   "about": "For the End and the Ender Dragon. eyes: eyes of ender to find a stronghold and open its End portal (mc locate stronghold says where it is). portal: a whole End portal to build yourself, frames and eyes. dragon-fight: a bow to shoot the End crystals, a pumpkin to wear so Endermen leave you alone, golden apples, and blocks to climb. late-game: what you get after the dragon, like elytra and rockets to fly, totems, and shulker boxes. making-eyes: the blaze rods and ender pearls that craft eyes of ender.",
   "emoji": "🐉",
+  "category": "more",
   "label": "eyes of ender, dragon fight…",
   "types": {
     "eyes": [["minecraft:ender_eye", 16]],

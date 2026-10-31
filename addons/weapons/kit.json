@@ -1,6 +1,7 @@
 {
   "about": "What mc kit weapons gives you: a pistol, a rifle, a machine gun, bullets, and grenades. With --craft, also what crafts more.",
   "emoji": "💥",
+  "category": "weapons",
   "items": [
     ["family:pistol", 1],
     ["family:rifle", 1],

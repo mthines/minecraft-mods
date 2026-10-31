@@ -1,6 +1,7 @@
 {
   "about": "Stone to build with, 128 blocks. Make stairs, slabs, and walls yourself with a stonecutter or crafting table (mc kit crafting-tools).",
   "emoji": "🪨",
+  "category": "materials",
   "types": {
     "stone": [["minecraft:stone", 64], ["minecraft:stone", 64]],
     "cobblestone": [["minecraft:cobblestone", 64], ["minecraft:cobblestone", 64]],

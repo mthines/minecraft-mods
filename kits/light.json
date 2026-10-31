@@ -1,6 +1,7 @@
 {
   "about": "Light: torches, lanterns, glowstone, sea lanterns, froglights, lamps, end rods, and candles.",
   "emoji": "💡",
+  "category": "materials",
   "types": {
     "torches": [["minecraft:torch", 64], ["minecraft:lantern", 16]],
     "soul-torches": [["minecraft:soul_torch", 64], ["minecraft:soul_lantern", 16]],
