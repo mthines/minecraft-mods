@@ -41,7 +41,7 @@ const serverLog = [];
 let view = "activity";
 let scroll = 0; // rows scrolled up from the newest line
 /** @typedef {{ more?: (value: string) => void, moreLabel?: string, back?: () => void }} PickExtras → opens more for a choice (moreLabel says what, in the hints), ← goes back */
-/** @typedef {{ label: string, value: string, state?: [string, (s: string) => string], hidden?: boolean }} Choice state: shown at the right, like "● on"; hidden: only shown when something is typed */
+/** @typedef {{ label: string, value: string, state?: [string, (s: string) => string], hidden?: boolean, search?: string }} Choice state: shown at the right, like "● on"; hidden: only shown when something is typed; search: what typing matches, if not the label */
 /** @type {null | { title: string, choices: Choice[], filter: string, number: string, index: number, then: (value: string) => void } & PickExtras} number: digits typed so far */
 let picker = null;
 /** @type {null | { row: number, first: number, count: number, left: number, right: number }} where the picker's choices are on screen (1-based, like mouse clicks), for clicking them */
@@ -455,7 +455,7 @@ function typeNumber(digit) {
 /** The picker's choices that match what was typed. */
 function shownChoices() {
   const typed = picker?.filter.toLowerCase() ?? "";
-  return (picker?.choices ?? []).filter(({ label, hidden }) => (!hidden || typed) && label.toLowerCase().includes(typed));
+  return (picker?.choices ?? []).filter(({ label, hidden, search }) => (!hidden || typed) && (search ?? label).toLowerCase().includes(typed));
 }
 
 const KICK = "Everyone playing gets kicked.";
@@ -563,7 +563,7 @@ function newWorld(name) {
 
 /**
  * The k key: pick a kit. Building materials (wood, stone, …) open their types, with Enter or →.
- * Typing finds the types too, so "flint" lists ingots-flint without opening ingots first.
+ * Typing finds the types too, so "iron" lists ingots-iron: Enter gives it, → opens the rest of ingots.
  */
 function kitMenu() {
   const types = new Map(materials().map(({ name, types }) => [name, types]));
@@ -575,9 +575,14 @@ function kitMenu() {
   const typeChoices = [...types].flatMap(([kit, kinds]) =>
     kinds.map((type) => ({ label: `${emojis.get(kit) ?? "  "} ${kit}-${type}`, value: `${kit}-${type}`, hidden: true })),
   );
-  const kits = kitNames().map((kit) => ({ label: label(kit), value: kit }));
+  // A material is found by its name, not the types its label lists: "iron" should give ingots-iron, not open ingots.
+  const kits = kitNames().map((kit) => ({ label: label(kit), value: kit, ...(types.has(kit) ? { search: kit } : {}) }));
+  const kitOf = (value) => [...types.keys()].find((kit) => value.startsWith(`${kit}-`) && types.get(kit)?.includes(value.slice(kit.length + 1)));
   pick("Which kit?", [{ label: `${TOOLS_EMOJI} tools (diamond tools)`, value: "tools" }, ...kits, ...typeChoices], open, {
-    more: (kit) => (types.has(kit) ? open(kit) : kitMenu()),
+    more: (value) => {
+      const material = types.has(value) ? value : kitOf(value);
+      material ? open(material) : kitMenu();
+    },
   });
 }
 
