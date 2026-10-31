@@ -1,5 +1,5 @@
 {
-  "about": "Crafting materials, 64 of one kind: iron ingots (for buckets, tools, rails, …), gold, copper, netherite, and diamonds, emeralds, redstone, lapis, coal, and more.",
+  "about": "Crafting materials, 64 of one kind: iron ingots (for buckets, tools, rails, …), gold, copper, netherite, and diamonds, emeralds, redstone, lapis, coal, and more, plus everyday materials: flint, string, sticks, leather, feathers, bones, gunpowder, paper, slime balls, glowstone dust, clay, bricks, ink sacs, bone meal, sugar cane, wheat, honeycomb, and nether wart.",
   "emoji": "🔩",
   "label": "iron, gold, diamonds…",
   "types": {
@@ -14,6 +14,25 @@
     "coal": [["minecraft:coal", 64]],
     "quartz": [["minecraft:quartz", 64]],
     "iron-nugget": [["minecraft:iron_nugget", 64]],
-    "gold-nugget": [["minecraft:gold_nugget", 64]]
+    "gold-nugget": [["minecraft:gold_nugget", 64]],
+    "charcoal": [["minecraft:charcoal", 64]],
+    "flint": [["minecraft:flint", 64]],
+    "string": [["minecraft:string", 64]],
+    "stick": [["minecraft:stick", 64]],
+    "leather": [["minecraft:leather", 64]],
+    "feather": [["minecraft:feather", 64]],
+    "bone": [["minecraft:bone", 64]],
+    "gunpowder": [["minecraft:gunpowder", 64]],
+    "paper": [["minecraft:paper", 64]],
+    "slime": [["minecraft:slime_ball", 64]],
+    "glowstone-dust": [["minecraft:glowstone_dust", 64]],
+    "clay": [["minecraft:clay_ball", 64]],
+    "brick": [["minecraft:brick", 64]],
+    "ink-sac": [["minecraft:ink_sac", 64]],
+    "bone-meal": [["minecraft:bone_meal", 64]],
+    "sugar-cane": [["minecraft:sugar_cane", 64]],
+    "wheat": [["minecraft:wheat", 64]],
+    "honeycomb": [["minecraft:honeycomb", 64]],
+    "nether-wart": [["minecraft:nether_wart", 64]]
   }
 }
