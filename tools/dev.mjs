@@ -573,7 +573,14 @@ function kitMenu() {
     `${emojis.get(kit) ?? "  "} ${types.has(kit) ? `${kit}  → ${types.get(kit)?.slice(0, 3).join(", ")}, …` : labels.has(kit) ? `${kit} (${labels.get(kit)})` : kit}`;
   const open = (kit) => (types.has(kit) ? materialMenu(kit, types.get(kit) ?? []) : giveKit(kit));
   const typeChoices = [...types].flatMap(([kit, kinds]) =>
-    kinds.map((type) => ({ label: `${emojis.get(kit) ?? "  "} ${kit}-${type}`, value: `${kit}-${type}`, hidden: true })),
+    // Drawn as a branch of its material, which is named dimmed at the right: └ 💣 grenades … weapons-ammo
+    kinds.map((type) => ({
+      label: `└ ${emojis.get(kit) ?? "  "} ${type}`,
+      value: `${kit}-${type}`,
+      search: `${kit}-${type}`,
+      state: /** @type {[string, (s: string) => string]} */ ([kit, S.dim]),
+      hidden: true,
+    })),
   );
   // A material is found by its name, not the types its label lists: "iron" should give ingots-iron, not open ingots.
   const kits = kitNames().map((kit) => ({ label: label(kit), value: kit, ...(types.has(kit) ? { search: kit } : {}) }));
