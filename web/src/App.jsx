@@ -122,8 +122,7 @@ export function App() {
   } else if (tab === "do") {
     title = "Do something";
     tiles = [
-      { key: "day", emoji: "🌞", title: "Make it day", onClick: () => doIt("day", "Making it day") },
-      { key: "enemies", emoji: "💀", title: "Kill enemies", sub: "zombies, creepers…", onClick: () => doIt("enemies", "Removing enemies") },
+      ...(menu?.actions ?? []).map((a) => ({ key: a.id, emoji: a.emoji, title: a.title, sub: a.sub, onClick: () => doIt(a.id, a.doing) })),
       { key: "clear", emoji: "🧹", title: sure ? "Tap again to empty!" : "Clear backpack", sub: sure ? `for ${who === "@a" ? "everyone" : who}` : "item bar stays", danger: sure, onClick: clear },
     ];
   } else if (tab === "find") {

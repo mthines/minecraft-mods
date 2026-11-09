@@ -17,6 +17,16 @@ Bedrock add-ons for the family server. `README.md` explains the layout and the `
 - Script API calls that need a screen, like `player.camera`, throw for simulated players: wrap them so the rest of the action still runs.
 - On the family server, NPCs (the npc mod's simulated players) come through as `undefined` in every other mod. This applies to entries of `world.getAllPlayers()` and `getPlayers()`, and to the entities in events like `entityHitEntity`, `entityHurt`, `entityDie` and `playerSpawn`. Guard them: `if (!player) continue;`, `hitEntity?.typeId`. A per-tick player loop without the guard throws every tick while an NPC is around, and stops for every player after the NPC. That's how golden-feather flying, trampolines and lanterns all stopped working near NPCs.
 
+## `mc dev` and the kit menu on the iPad: add to both
+
+Two screens drive the same server: `mc dev` (keys, `tools/dev.mjs`) and the touch kit menu for kids (`./mc web`, `tools/web.mjs` and `web/`, started by `mc dev`). Whatever a person can do in one, they should be able to do in the other: a new action, rule, kit, world or place goes in both, in the same change. Don't leave one behind.
+
+- Share the data, so adding it once adds it twice: kits and types come from `tools/lib/kits.mjs`, one-press actions (day, night, kill enemies) from `tools/lib/actions.mjs`, places to find from `tools/lib/places.mjs`, and the pictures from `web/src/icons.js`. Add a one-press action to `ACTIONS` and it gets a key in mc dev and a tile in the Do tab. Things with more steps or a question first (clear inventory, the rules and worlds in the Game tab) are built in each by hand: do both.
+- The kids can't read yet, so no two tiles on one screen may look the same. A new kit type needs its own picture in `ICONS` in `web/src/icons.js` (a drawn block, ingot or gem in its color, or an emoji or two); `npm test` fails without it. mc dev draws the same pictures as emoji or colored glyphs.
+- The web server never passes text from the page to `./mc`: each API route in `tools/web.mjs` picks the command itself from a list (a kit name must be in `kitNames`, a world in `server/data/worlds`). Keep it that way. There is no login: anyone on the wifi can use it.
+- Keep it fast on the iPad: show what's in files at once (worlds, peace) and let anything that asks the server (the rules) fill in after, like the Game tab does. One `send-command` can ask for several things.
+- `mc dev` needs a terminal and can't be tested without one, and the page needs a look at phone width (about 400px) in a browser: say which of those you couldn't check. Restart `mc dev` after changing `tools/web.mjs`; the page is rebuilt then.
+
 ## Performance (the server is one script thread, so one heavy tick lags everyone)
 
 - Budget a tick. Whatever runs every tick (`system.runInterval(fn)`, a per-player loop, a held button) must stay small: a few `getBlock` calls and one or two entity queries. Work that is big (a 7×7 drill face, 49 `setblock` commands and as many item drops, a 9×9×9 block scan, flood-filling a tree) never runs every tick: spread it over ticks, cap it per tick (like `FELL_PER_TICK` in heavy-machines), or run it less often.

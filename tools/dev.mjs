@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { ADDONS_DIR, ROOT } from "./lib/addons.mjs";
 import { CATEGORIES, menuKits } from "./lib/kits.mjs";
+import { ACTIONS } from "./lib/actions.mjs";
 import { lanUrls } from "./lib/lan.mjs";
 import { PLACES } from "./lib/places.mjs";
 import { terminalIcon, typeIcon } from "../web/src/icons.js";
@@ -233,8 +234,7 @@ function hintRows(width) {
         ["t", "🧪 test"],
         ["w", "🌍 world"],
         ["n", "🤖 NPC"],
-        ["d", "🌞 day"],
-        ["e", "💀 kill enemies"],
+        ...ACTIONS.map(({ key, emoji, label }) => [key, `${emoji} ${label}`]), // day, night, kill enemies
         ["j", "🧭 find a place"],
         ["x", "🧹 clear inventory"],
         ["o", "🔧 options"],
@@ -778,7 +778,7 @@ const commands = {
     note(onSave.alwaysRestart ? "Saved scripts restart the server now, which kicks everyone." : "Saved scripts reload without kicking anyone again.");
   },
   n: () => npcMenu(),
-  d: () => mc(["cmd", "time set day"]),
+  ...Object.fromEntries(ACTIONS.map(({ key, args }) => [key, () => mc(args)])), // day, night, kill enemies: tools/lib/actions.mjs, shared with the kit menu on the iPad
   p: () => mc(["peace", server.peace ? "off" : "on"]),
   f: () => mc(["fall-damage", server.fallDamage === false ? "on" : "off"]),
   b: () => mc(["pvp", server.pvp === false ? "on" : "off"]),
@@ -786,7 +786,6 @@ const commands = {
   v: () => mc(["keep-inventory", server.keepInventory ? "off" : "on"]),
   z: () => mc(["show-coordinates", server.showCoordinates ? "off" : "on"]),
   j: () => placeMenu(),
-  e: () => mc(["kill-enemies"]),
   x: () =>
     pick(
       "Clear everyone's inventory? Armor and the off hand stay.",

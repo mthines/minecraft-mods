@@ -1,6 +1,7 @@
 // Every kit and type needs an icon, and no two tiles on one screen may look the same: the kids can't read yet.
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { ACTIONS } from "../../tools/lib/actions.mjs";
 import { CATEGORIES, menuKits } from "../../tools/lib/kits.mjs";
 import { avatars, ICONS, iconKey, landscapes, OPTION_ICONS, terminalIcon, typeIcon } from "./icons.js";
 
@@ -45,4 +46,10 @@ test("the terminal's icons look different too", () => {
     const twice = keys.filter((key, at) => keys.indexOf(key) !== at);
     assert.deepEqual(twice, [], `${name} in the terminal: ${twice.join(" ")}`);
   }
+});
+
+test("the actions each have their own picture and their own mc dev key", () => {
+  noRepeats("actions", [...ACTIONS.map((a) => a.emoji), "🧹"]);
+  const keys = ACTIONS.map((a) => a.key);
+  assert.deepEqual(keys.filter((key, at) => keys.indexOf(key) !== at), []);
 });

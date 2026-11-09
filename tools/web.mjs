@@ -8,6 +8,7 @@ import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { CATEGORIES, kitNames, menuKits } from "./lib/kits.mjs";
+import { ACTIONS } from "./lib/actions.mjs";
 import { lanUrls } from "./lib/lan.mjs";
 import { PLACES } from "./lib/places.mjs";
 import { currentWorld } from "./lib/world.mjs";
@@ -27,7 +28,7 @@ function menu() {
   const categories = Object.entries(CATEGORIES)
     .map(([name, emoji]) => ({ name, emoji, kits: kits.filter((kit) => kit.category === name) }))
     .filter(({ kits }) => kits.length);
-  return { categories };
+  return { categories, actions: ACTIONS.map(({ id, emoji, title, sub, doing }) => ({ id, emoji, title, sub, doing })) };
 }
 
 let cache = { at: 0, players: /** @type {string[]} */ ([]) };
@@ -122,8 +123,7 @@ createServer(async (req, res) => {
       if (who !== "@a" && !(await players()).includes(who)) return json(res, 400, { error: `${who} is not online.` });
       const one = who === "@a" ? [] : [who];
       const commands = {
-        day: () => ["cmd", "time set day"],
-        enemies: () => ["kill-enemies"],
+        ...Object.fromEntries(ACTIONS.map(({ id, args }) => [id, () => args])), // tools/lib/actions.mjs, shared with mc dev
         clear: () => ["clear-inventory", "backpack", ...one],
         find: () => (PLACES.some(([, value]) => value === place) ? ["locate", place, ...one] : undefined),
       };
