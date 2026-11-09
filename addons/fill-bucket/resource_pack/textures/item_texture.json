@@ -1,0 +1,9 @@
+{
+  "resource_pack_name": "fill_bucket",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_fill_bucket": {
+      "textures": "textures/items/fill_bucket"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "family:fill_bucket" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:bucket" }],
+    "ingredients": [
+      { "item": "minecraft:bucket" },
+      { "item": "minecraft:cobblestone" },
+      { "item": "minecraft:oak_planks" },
+      { "item": "minecraft:dirt" }
+    ],
+    "result": { "item": "family:fill_bucket" }
+  }
+}

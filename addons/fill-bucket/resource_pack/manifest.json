@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Fill Bucket Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "08485b2e-0371-4c16-a519-8af4511c6d35",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "03ceefa2-e6bc-47b6-9a1c-cb37ec5ccf9b",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "about": "What mc kit fill-bucket gives you: the Fill Bucket. Build only the outline of a wall, floor or line, then use the bucket on the inside of a block: it fills the hole with the same block, like the paint bucket in Paint. Use it in the air within 3 seconds to undo. With --craft, also what crafts another one.",
+  "emoji": "🎨",
+  "category": "tools",
+  "items": [
+    ["family:fill_bucket", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:bucket", 1],
+    ["minecraft:cobblestone", 1],
+    ["minecraft:oak_planks", 1],
+    ["minecraft:dirt", 1]
+  ]
+}
