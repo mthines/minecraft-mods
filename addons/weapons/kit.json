@@ -1,21 +1,23 @@
 {
-  "about": "What mc kit weapons gives you: a pistol, a rifle, a machine gun, bullets, and grenades. With --craft, also what crafts more.",
+  "about": "What mc kit weapons gives you: a pistol, a rifle, a machine gun, an ammo bag (bullets you get hop into it by themselves, up to 10000), bullets, and grenades. With --craft, also what crafts more.",
   "emoji": "💥",
   "category": "weapons",
   "items": [
     ["family:pistol", 1],
     ["family:rifle", 1],
     ["family:machine_gun", 1],
+    ["family:magazine", 1],
     ["family:bullet", 64],
     ["family:grenade", 32]
   ],
   "craft": [
     ["minecraft:crafting_table", 1],
-    ["minecraft:iron_ingot", 11],
+    ["minecraft:iron_ingot", 13],
     ["minecraft:oak_planks", 4],
     ["minecraft:iron_nugget", 8],
     ["minecraft:gunpowder", 4],
     ["minecraft:iron_block", 1],
-    ["minecraft:redstone", 1]
+    ["minecraft:redstone", 1],
+    ["minecraft:chest", 1]
   ]
 }

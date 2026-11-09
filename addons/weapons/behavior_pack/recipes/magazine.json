@@ -1,0 +1,11 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:magazine" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:iron_ingot" }],
+    "pattern": ["I", "C", "I"],
+    "key": { "I": { "item": "minecraft:iron_ingot" }, "C": { "item": "minecraft:chest" } },
+    "result": { "item": "family:magazine", "count": 1 }
+  }
+}

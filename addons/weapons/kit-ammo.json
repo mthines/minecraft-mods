@@ -1,10 +1,11 @@
 {
-  "about": "What mc kit weapons-ammo gives you: just more bullets and grenades. Pick one with weapons-ammo-bullets or weapons-ammo-grenades.",
+  "about": "What mc kit weapons-ammo gives you: just more bullets, grenades and bazooka missiles. Pick one with weapons-ammo-bullets, weapons-ammo-grenades or weapons-ammo-missiles.",
   "emoji": "💣",
   "category": "weapons",
   "types": {
-    "all": [["family:bullet", 256], ["family:grenade", 32]],
+    "all": [["family:bullet", 256], ["family:grenade", 32], ["family:missile", 64]],
     "bullets": [["family:bullet", 256]],
-    "grenades": [["family:grenade", 32]]
+    "grenades": [["family:grenade", 32]],
+    "missiles": [["family:missile", 64]]
   }
 }

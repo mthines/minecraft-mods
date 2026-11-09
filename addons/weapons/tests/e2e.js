@@ -16,7 +16,12 @@ async function setUp(t, weapon, { bullets = 64, distance = 6 } = {}) {
   return { player, mob, full: health(mob) };
 }
 
-const bulletsLeft = (player) => player.getComponent("minecraft:inventory")?.container?.getItem(1)?.amount ?? 0;
+/** Bullets in slot 1: loose, or in the ammo bag they turn into within a second (its count is the line under its name). */
+function bulletsLeft(player) {
+  const item = player.getComponent("minecraft:inventory")?.container?.getItem(1);
+  if (item?.typeId === "family:magazine") return Number(/(\d+) \//.exec(item.getLore()[0] ?? "")?.[1] ?? 0);
+  return item?.amount ?? 0;
+}
 
 export async function aPistolShotHurtsAMob(t) {
   const { player, mob, full } = await setUp(t, "family:pistol");
@@ -158,6 +163,45 @@ export async function theMachineGunStopsWhenTheBulletsRunOut(t) {
   await t.wait(30);
   t.assert(bulletsLeft(player) === 0, `${bulletsLeft(player)} bullets left after holding the trigger`);
   player.stopUsingItem();
+}
+
+export async function bulletsHopIntoTheAmmoBagAndFeedTheGuns(t) {
+  const player = t.player("Loader");
+  const inventory = player.getComponent("minecraft:inventory")?.container;
+  player.setItem(new ItemStack("family:magazine", 1), 0, true);
+  await t.wait(10);
+  await useOnce(t, player); // a right-click shows how much it holds
+  // The count is the mod's own dynamic property, which this test's pack can't read: read the line under its name.
+  const inMagazine = () => Number(/(\d+) \//.exec(inventory?.getItem(0)?.getLore()[0] ?? "")?.[1] ?? 0);
+  const loose = () => [...Array(inventory?.size ?? 0).keys()].reduce((n, i) => n + (inventory?.getItem(i)?.typeId === "family:bullet" ? inventory.getItem(i).amount : 0), 0);
+  t.assert(/ 10000/.test(inventory?.getItem(0)?.getLore()[0] ?? ""), `The ammo bag should hold 10000 bullets, but says "${inventory?.getItem(0)?.getLore()[0]}"`);
+
+  // Bullets you get go into the bag by themselves, no click needed.
+  for (let slot = 1; slot <= 11; slot++) player.setItem(new ItemStack("family:bullet", 64), slot);
+  await t.until(() => inMagazine() === 704, () => `11 stacks of bullets should hop into the bag (704), but it has ${inMagazine()}`);
+  t.assert(loose() === 0, `No loose bullets should be left, but ${loose()} are`);
+
+  // Shooting takes from the bag.
+  player.setItem(new ItemStack("family:pistol", 1), 1, true);
+  const mob = t.dimension.spawnEntity(TARGET, t.at(0.5, 0, 6.5));
+  await t.wait(10);
+  const full = health(mob);
+  await aim(t, player, mob);
+  player.attack();
+  await t.until(() => health(mob) < full, "A pistol with only a filled ammo bag (no loose bullets) didn't shoot");
+  t.assert(inMagazine() === 703, `One shot should take one bullet from the ammo bag, but it has ${inMagazine()}`);
+}
+
+export async function bulletsFromAKitComeInABag(t) {
+  const player = t.player("Kit");
+  const inventory = player.getComponent("minecraft:inventory")?.container;
+  player.setItem(new ItemStack("family:bullet", 64), 3);
+  player.setItem(new ItemStack("family:bullet", 64), 5);
+  // Only bullets and bags: other mods give new players things too (a golden feather).
+  const items = () => [...Array(inventory?.size ?? 0).keys()].map((i) => inventory?.getItem(i)).filter((i) => i?.typeId === "family:bullet" || i?.typeId === "family:magazine");
+  await t.until(() => items().length === 1 && items()[0].typeId === "family:magazine", () => `Two stacks of bullets and no bag should become one ammo bag, but the inventory has ${items().map((i) => `${i.amount} ${i.typeId}`).join(", ")}`);
+  const lore = items()[0].getLore()[0] ?? "";
+  t.assert(/128 \//.test(lore), `The new ammo bag should hold the 128 bullets, but says "${lore}"`);
 }
 
 export async function aGrenadeBlowsABigHole(t) {

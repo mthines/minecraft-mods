@@ -121,6 +121,7 @@ flowchart LR
 | --- | --- | --- |
 | [`welcome`](./addons/welcome) | Says hi when you join | Code: 10 lines of JavaScript |
 | [`rainbow-cookie`](./addons/rainbow-cookie) | A new cookie that heals you to full life and makes you fast and bouncy. Craft it from a cookie, sugar, and glow berries. | Item + picture + recipe + a little code |
+| [`cafe`](./addons/cafe) | A cosy café: coffee that makes you super fast, and slices of cake. Its kit has chairs, tables, lanterns and a shovel to dig your café underground. | Items + pictures + recipes + a little code, with tests |
 | [`trampoline`](./addons/trampoline) | Build slime blocks with a wooden edge, like a portal, and get a trampoline. Bigger ones bounce higher. You get the blocks in a chest when you first join. | Code, with tests |
 | [`party-commands`](./addons/party-commands) | `/function party` and `/function sunny`, and 9 dirt crafts into 1 diamond | No code: commands and a recipe |
 | [`game-stats`](./addons/game-stats) | Counts what everyone digs, builds, beats, eats, and how they die, plus minutes played, blocks travelled, level-ups, and Nether trips, for the [Dash0 dashboard](./server/README.md#family-dashboard) | Code, with tests |
@@ -280,8 +281,8 @@ Run the server with `./mc` from this folder (`./mc help` lists everything):
 | `./mc kit motorcycle --craft` | The same, plus a crafting table and what crafts more |
 | `./mc kit weapons-ammo` | Give one of a mod's extra kits (from `addons/<mod>/kit-<name>.json`): here, just bullets and grenades (`weapons-ammo-bullets` or `weapons-ammo-grenades` for one of them; in `mc dev` it opens a list) |
 | `./mc kit bed` | Give a kit that belongs to no mod (from `kits/<name>.json`): here, a bed |
-| `./mc kit wood-spruce` | Give building materials of one type: wood, stone, glass, wool, concrete, terracotta, ground, light, or rare (obsidian, `rare-nether-portal`, …), then `-<type>`; buckets, ingots, and things for the End work the same way: `./mc kit bucket-lava`, `./mc kit ingots-iron`, `./mc kit end-eyes` (eyes of ender; also `end-portal`, `end-dragon-fight`, `end-late-game`, `end-making-eyes`) (in `mc dev`, `k` then Enter or → on a material lists its types, or type the type: `flint`) |
 | `./mc kit item:oak_stairs` | Give any one item or block Minecraft has (about 1600), by its name; one stack, or one for tools. Find the name with `./mc items oak stairs`. In `mc dev`, `k` then `🔎 any item…`; on the iPad, type in the kit search box and the matching items load below the kits |
+| `./mc kit wood-spruce` | Give building materials of one type: wood, stone, glass, wool, concrete, terracotta, ground, light, or rare (obsidian, `rare-nether-portal`, …), then `-<type>`; buckets, ingots, and things for the End work the same way: `./mc kit bucket-lava`, `./mc kit ingots-iron`, `./mc kit end-eyes` (eyes of ender; also `end-portal`, `end-dragon-fight`, `end-late-game`, `end-making-eyes`) (in `mc dev`, `k` then Enter or → on a material lists its types, or type the type: `flint`) |
 | `./mc logs` | Follow the server log |
 | `./mc console` | Type server commands (leave with Ctrl+P, then Ctrl+Q) |
 | `./mc peace on` / `./mc peace off` | Peaceful mode: no monsters, and health refills. `./mc peace` shows which it is; it stays that way after restarts. |

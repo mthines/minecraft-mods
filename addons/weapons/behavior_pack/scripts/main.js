@@ -1,9 +1,11 @@
-import { EntityDamageCause, EntitySwingSource, EquipmentSlot, GameMode, Player, system, world } from "@minecraft/server";
+import { EntityDamageCause, EntitySwingSource, EquipmentSlot, GameMode, ItemStack, Player, system, world } from "@minecraft/server";
 import { emit } from "./telemetry.js";
 import { throwSpeed } from "./throw.js";
 
 const AMMO = "family:bullet";
 const GRENADE = "family:grenade";
+const MAGAZINE = "family:magazine"; // the ammo bag (it started as a magazine)
+const MAGAZINE_SIZE = 10000; // bullets in one ammo bag, about 156 stacks
 const BLAST = 7; // grenade explosion power: TNT is 4, a charged creeper 6
 const SPRAY_TICKS = 5; // holding right-click this long sprays the machine gun; a shorter tap toggles its scope (20 ticks = 1 second)
 
@@ -23,11 +25,100 @@ const holdingSince = new Map();
 /** @type {Map<string, string>} player id → the gun they're looking through the scope of */
 const scoped = new Map();
 
-/** Takes one bullet from the player's inventory. Creative players never run out. @param {Player} player */
+/** Bullets in a magazine (kept on the item itself). @param {import("@minecraft/server").ItemStack} magazine */
+const loaded = (magazine) => /** @type {number} */ (magazine.getDynamicProperty("bullets") ?? 0);
+
+/** Sets a magazine's bullets, and the line under its name that shows them. @param {import("@minecraft/server").ItemStack} magazine @param {number} bullets */
+function setLoaded(magazine, bullets) {
+  magazine.setDynamicProperty("bullets", bullets);
+  magazine.setLore([`§7Bullets: ${bullets} / ${MAGAZINE_SIZE}`]);
+}
+
+/**
+ * Puts every loose bullet in the inventory into the ammo bag in `slot`, until it's full. Returns how many went in.
+ * @param {import("@minecraft/server").Container} inventory @param {number} slot
+ */
+function fillMagazine(inventory, slot) {
+  const magazine = inventory.getItem(slot);
+  if (magazine?.typeId !== MAGAZINE) return 0;
+  const before = loaded(magazine);
+  let bullets = before;
+  for (let i = 0; i < inventory.size && bullets < MAGAZINE_SIZE; i++) {
+    const item = inventory.getItem(i);
+    if (item?.typeId !== AMMO) continue;
+    const take = Math.min(item.amount, MAGAZINE_SIZE - bullets);
+    bullets += take;
+    if (take < item.amount) {
+      item.amount -= take;
+      inventory.setItem(i, item);
+    } else {
+      inventory.setItem(i, undefined);
+    }
+  }
+  if (bullets === before && magazine.getLore().length) return 0;
+  setLoaded(magazine, bullets);
+  inventory.setItem(slot, magazine);
+  return bullets - before;
+}
+
+/** Right-click with an ammo bag: loose bullets go into it, and it says how many it holds. @param {Player} player */
+function useMagazine(player) {
+  const inventory = player.getComponent("minecraft:inventory")?.container;
+  if (!inventory) return;
+  fillMagazine(inventory, player.selectedSlotIndex);
+  const magazine = inventory.getItem(player.selectedSlotIndex);
+  if (magazine?.typeId !== MAGAZINE) return;
+  player.onScreenDisplay.setActionBar(`§aAmmo bag: ${loaded(magazine)} / ${MAGAZINE_SIZE} bullets`);
+  player.playSound("armor.equip_leather");
+}
+
+/**
+ * Bullets you pick up, craft or get from a kit hop into your ammo bag by themselves, once a second. One pass over
+ * the inventory per player finds the first bag with room and the first loose bullets. No bag with room: the first
+ * stack of loose bullets turns into a new bag, so you always get your bullets in a bag.
+ */
+system.runInterval(() => {
+  for (const player of world.getAllPlayers()) {
+    if (!player) continue; // NPCs on the family server
+    const inventory = player.getComponent("minecraft:inventory")?.container;
+    if (!inventory) continue;
+    let bag = -1;
+    let loose = -1;
+    for (let slot = 0; slot < inventory.size; slot++) {
+      const item = inventory.getItem(slot);
+      if (loose < 0 && item?.typeId === AMMO) loose = slot;
+      else if (bag < 0 && item?.typeId === MAGAZINE && loaded(item) < MAGAZINE_SIZE) bag = slot;
+    }
+    if (loose < 0) continue;
+    let added = 0;
+    if (bag < 0) {
+      // The new bag takes the place of the first stack, with its bullets already in it.
+      const magazine = new ItemStack(MAGAZINE, 1);
+      added = /** @type {ItemStack} */ (inventory.getItem(loose)).amount;
+      setLoaded(magazine, added);
+      inventory.setItem(loose, magazine);
+      bag = loose;
+    }
+    added += fillMagazine(inventory, bag);
+    const total = loaded(/** @type {ItemStack} */ (inventory.getItem(bag)));
+    if (added > 0) player.onScreenDisplay.setActionBar(`§a+${added} bullets in your ammo bag (${total} / ${MAGAZINE_SIZE})`);
+  }
+}, 20);
+
+/** Takes one bullet: from a magazine first, then loose bullets. Creative players never run out. @param {Player} player */
 function takeAmmo(player) {
   if (player.getGameMode() === GameMode.Creative) return true;
   const inventory = player.getComponent("minecraft:inventory")?.container;
   if (!inventory) return false;
+  for (let slot = 0; slot < inventory.size; slot++) {
+    const item = inventory.getItem(slot);
+    if (item?.typeId !== MAGAZINE) continue;
+    const bullets = loaded(item);
+    if (bullets <= 0) continue;
+    setLoaded(item, bullets - 1);
+    inventory.setItem(slot, item);
+    return true;
+  }
   for (let slot = 0; slot < inventory.size; slot++) {
     const item = inventory.getItem(slot);
     if (item?.typeId !== AMMO) continue;
@@ -124,6 +215,7 @@ function toggleScope(player, gun) {
 // Every gun: right-click toggles the scope. (The machine gun does it when you let go of a short tap, below.)
 world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
   if (isGun(itemStack.typeId) && itemStack.typeId !== MACHINE_GUN) toggleScope(player, itemStack.typeId);
+  else if (itemStack.typeId === MAGAZINE) useMagazine(player);
 });
 
 // Every gun: left-click shoots once, in the scope or not. (The game only tells us about the click, not holding it.)

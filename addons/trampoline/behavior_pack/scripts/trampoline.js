@@ -157,8 +157,10 @@ export const OTHER_MODS_KIT = [
   ["family:pistol", 1],
   ["family:rifle", 1],
   ["family:machine_gun", 1],
+  ["family:magazine", 1],
   ["family:bullet", 64 + 256],
   ["family:grenade", 32 + 32],
+  ["family:missile", 64],
 ];
 
 /** Everything in the starter chest, in stacks. */
