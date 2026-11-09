@@ -54,3 +54,7 @@ nav button.on { background: var(--card); color: var(--text); }
 .tile.here { outline: 3px solid #e6c34a; }
 .badge { position: absolute; top: 8px; left: 10px; font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: #555; }
 .tile.on .badge { background: var(--hi); }
+.tile.loading { opacity: .7; }
+.tile.loading .badge { animation: pulse 1s ease-in-out infinite alternate; }
+@keyframes pulse { to { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .tile.loading .badge { animation: none; } }

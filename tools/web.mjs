@@ -57,16 +57,37 @@ function mc(args, timeout = 60000) {
 /** The on/off options a kid can flip: what each is called in ./mc (mc <name> [on|off]). */
 const OPTIONS = ["peace", "invincible", "fall-damage", "pvp", "keep-inventory"];
 
-/** Whether an option is on (true), off (false), or unknown (null, when the server isn't running). @param {string} id */
-async function optionState(id) {
-  if (id === "peace") return existsSync(PROPS) && /^difficulty=peaceful/m.test(readFileSync(PROPS, "utf8"));
-  try {
-    const { stdout } = await mc([id]);
-    const now = stdout.match(/ is (on|off)\b/);
-    return now ? now[1] === "on" : null;
-  } catch {
-    return null;
-  }
+const peaceOn = () => existsSync(PROPS) && /^difficulty=peaceful/m.test(readFileSync(PROPS, "utf8"));
+
+// The server only says a rule's value when asked, in its log. One send-command asks for all of them (it reads a command
+// a line), so the four answer in about a second instead of four ./mc calls one after another.
+const ASKS = { "fall-damage": ["gamerule falldamage", /falldamage(?: =| has been updated to) (true|false)/], pvp: ["gamerule pvp", /\bpvp(?: =| has been updated to) (true|false)/], "keep-inventory": ["gamerule keepinventory", /keepinventory(?: =| has been updated to) (true|false)/], invincible: ["scriptevent family:invincible show", /invincible(?: =| has been updated to) (true|false)/] };
+/** @type {Record<string, boolean | null>} what we last knew, shown at once while the real answer comes */
+const known = {};
+/** @type {Promise<Record<string, boolean | null>> | undefined} */
+let asking;
+
+/** Asks the server for the rules' values (one question at a time). */
+function ruleStates() {
+  asking ??= (async () => {
+    const since = new Date().toISOString();
+    try {
+      await run("docker", ["exec", SERVER, "send-command", Object.values(ASKS).map(([ask]) => ask).join("\n")]);
+    } catch {
+      return Object.fromEntries(Object.keys(ASKS).map((id) => [id, null]));
+    }
+    /** @type {Record<string, boolean | null>} */
+    let found = {};
+    for (let tries = 0; tries < 8 && Object.keys(found).length < Object.keys(ASKS).length; tries++) {
+      await new Promise((done) => setTimeout(done, 250));
+      const { stdout, stderr } = await run("docker", ["logs", "--since", since, SERVER]).catch(() => ({ stdout: "", stderr: "" }));
+      const log = `${stdout}\n${stderr}`;
+      found = Object.fromEntries(Object.entries(ASKS).flatMap(([id, [, pattern]]) => { const m = log.match(pattern); return m ? [[id, m[1] === "true"]] : []; }));
+    }
+    for (const id of Object.keys(ASKS)) known[id] = found[id] ?? null;
+    return { ...known };
+  })().finally(() => { asking = undefined; });
+  return asking;
 }
 
 const worlds = () => (existsSync(WORLDS) ? readdirSync(WORLDS, { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name).sort() : []);
@@ -115,17 +136,18 @@ createServer(async (req, res) => {
         return json(res, 409, { error: String(error.stderr || error.message).trim().split("\n")[0] || "That didn't work. Is the server running?" });
       }
     }
-    if (url.pathname === "/api/options") {
-      const states = [];
-      for (const id of OPTIONS) states.push({ id, on: await optionState(id) });
+    if (url.pathname === "/api/game") {
+      // Straight away: the worlds and peace come from files, the rules from what we knew (undefined: still to ask).
       const now = currentWorld();
-      return json(res, 200, { options: states, worlds: worlds().map((name) => ({ name, current: name === now })), players: await players().catch(() => []) });
+      return json(res, 200, { options: OPTIONS.map((id) => ({ id, on: id === "peace" ? peaceOn() : known[id] })), worlds: worlds().map((name) => ({ name, current: name === now })) });
     }
+    if (url.pathname === "/api/game/rules") return json(res, 200, { rules: await ruleStates() });
     if (url.pathname === "/api/option" && req.method === "POST") {
       const { id, on } = await body(req);
       if (!OPTIONS.includes(id) || typeof on !== "boolean") return json(res, 400, { error: "I don't know that one." });
       try {
         await mc([id, on ? "on" : "off"]);
+        known[id] = on;
         return json(res, 200, { ok: true, on });
       } catch (error) {
         return json(res, 409, { error: "That didn't work. Is the server running?" });

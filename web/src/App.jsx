@@ -47,7 +47,11 @@ export function App() {
 
   useEffect(() => {
     if (tab !== "game") return;
-    get("/api/options").then(setGame).catch(() => say("😕 Can't reach the kit server.", false));
+    // The worlds come at once; the rules (fall damage, PvP, …) take a second to ask the server, and fill in when they arrive.
+    get("/api/game").then((g) => setGame((old) => ({ ...g, options: g.options.map((o) => ({ ...o, on: o.on ?? old?.options.find((x) => x.id === o.id)?.on })) })))
+      .then(() => get("/api/game/rules"))
+      .then(({ rules }) => setGame((g) => ({ ...g, options: g.options.map((o) => (o.id in rules ? { ...o, on: rules[o.id] } : o)) })))
+      .catch(() => say("😕 Can't reach the kit server.", false));
   }, [tab, say]);
 
   const flip = async (id, on) => {
@@ -71,7 +75,7 @@ export function App() {
       return say(`⚠️ ${r.players.join(", ")} will be kicked! Tap again to switch`, false);
     }
     setSwitchTo(null);
-    if (r.ok) get("/api/options").then(setGame).catch(() => {});
+    if (r.ok) get("/api/game").then((g) => setGame((old) => ({ ...g, options: old.options }))).catch(() => {});
     say(r.ok ? "✅ New world is ready!" : `😕 ${r.error}`, !!r.ok);
   };
 
@@ -108,7 +112,7 @@ export function App() {
     tiles = [
       ...(game?.options ?? []).map((o) => ({
         key: o.id, emoji: OPTION_ICONS[o.id], title: OPTION_NAMES[o.id], sub: OPTION_HINTS[o.id], section: "rules", state: o.on,
-        onClick: () => (o.on === null ? say("😕 Is the server running?", false) : flip(o.id, !o.on)),
+        onClick: () => (o.on === undefined ? say("⏳ One moment…", true) : o.on === null ? say("😕 Is the server running?", false) : flip(o.id, !o.on)),
       })),
       ...(game?.worlds ?? []).map((w) => ({
         key: `world-${w.name}`, emoji: icons.get(w.name), title: w.name, sub: w.current ? "you are here" : switchTo === w.name ? "tap again!" : "", section: "worlds",
@@ -172,8 +176,8 @@ export function App() {
         <div className="grid">
           {tiles.map((t, at) => [
             t.section && t.section !== tiles[at - 1]?.section ? <h2 key={`h-${t.section}`} className="section">{t.section === "rules" ? "⚙️ Rules" : "🌍 Worlds"}</h2> : null,
-            <button key={t.key} className={`tile ${t.danger ? "danger" : ""} ${t.here ? "here" : ""} ${t.state === true ? "on" : ""}`} onClick={t.onClick}>
-              {t.state !== undefined && <span className="badge">{t.state === null ? "?" : t.state ? "✔ ON" : "✖ OFF"}</span>}
+            <button key={t.key} className={`tile ${t.danger ? "danger" : ""} ${t.here ? "here" : ""} ${t.state === true ? "on" : ""} ${t.state === undefined && t.section === "rules" ? "loading" : ""}`} onClick={t.onClick}>
+              {(t.state !== undefined || t.section === "rules") && <span className="badge">{t.state === undefined ? "…" : t.state === null ? "?" : t.state ? "✔ ON" : "✖ OFF"}</span>}
               <Icon icon={typeof t.emoji === "string" ? t.emoji.trim() || "📦" : t.emoji} />
               <span className="name">{t.title}</span>
               {t.sub && t.sub !== t.title && <span className="sub">{t.sub}</span>}
