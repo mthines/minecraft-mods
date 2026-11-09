@@ -105,7 +105,7 @@ createServer(async (req, res) => {
   try {
     if (url.pathname === "/api/menu") return json(res, 200, menu());
     // Any item by name: the page sends what was typed, we answer from the list of every item (nothing typed reaches ./mc).
-    if (url.pathname === "/api/items") return json(res, 200, searchItems(url.searchParams.get("q") ?? "", 48));
+    if (url.pathname === "/api/items") return json(res, 200, searchItems(url.searchParams.get("q") ?? "", Math.min(Number(url.searchParams.get("limit")) || 48, 480)));
     if (url.pathname === "/api/players") return json(res, 200, { players: await players().catch(() => []) });
     if (url.pathname === "/api/give" && req.method === "POST") {
       const { kit, who = "@a", craft = false } = await body(req);

@@ -11,7 +11,8 @@ export function App() {
   const [failed, setFailed] = useState(false);
   const [path, setPath] = useState([]); // [category] or [category, kit]
   const [search, setSearch] = useState("");
-  const [found, setFound] = useState({ q: "", items: [], total: 0 }); // items matching the search, asked of the server: there are too many to list as kits
+  const [found, setFound] = useState({ q: "", items: [], total: 0 });
+  const [shown, setShown] = useState(48); // how many found items to ask for: "Show more" adds a page // items matching the search, asked of the server: there are too many to list as kits
   const [players, setPlayers] = useState([]);
   const [who, setWho] = useState("@a");
   const [craft, setCraft] = useState(false);
@@ -33,12 +34,13 @@ export function App() {
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => setShown(48), [search]);
   useEffect(() => {
     const q = search.trim();
     if (q.length < 2) return;
-    const id = setTimeout(() => get(`/api/items?q=${encodeURIComponent(q)}`).then((d) => setFound({ q, ...d })).catch(() => {}), 200);
+    const id = setTimeout(() => get(`/api/items?q=${encodeURIComponent(q)}&limit=${shown}`).then((d) => setFound({ q, ...d })).catch(() => {}), 200);
     return () => clearTimeout(id);
-  }, [search]);
+  }, [search, shown]);
 
   const say = useCallback((text, ok) => {
     clearTimeout(timer.current);
@@ -180,7 +182,7 @@ export function App() {
       <main>
         {failed && <p className="empty">Can't reach the kit server. Is <code>./mc web</code> running?</p>}
         {menu && onKits && !tiles.length && <p className="empty">No kits found 🤷</p>}
-        {onKits && q && found.q === search.trim() && found.total > found.items.length && <p className="dim">{found.total} items match: showing {found.items.length}. Type more of the name.</p>}
+        {onKits && q && found.q === search.trim() && found.total > found.items.length && <button className="chip" onClick={() => setShown(shown + 48)}>➕ Show more ({found.total - found.items.length} more items)</button>}
         <div className="grid">
           {tiles.map((t, at) => [
             t.section && t.section !== tiles[at - 1]?.section ? <h2 key={`h-${t.section}`} className="section">{t.section === "rules" ? "⚙️ Rules" : "🌍 Worlds"}</h2> : null,

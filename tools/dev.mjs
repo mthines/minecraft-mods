@@ -45,7 +45,7 @@ const serverLog = [];
 /** @type {"activity" | "server"} */
 let view = "activity";
 let scroll = 0; // rows scrolled up from the newest line
-/** @typedef {{ more?: (value: string) => void, moreLabel?: string, back?: () => void }} PickExtras → opens more for a choice (moreLabel says what, in the hints), ← goes back */
+/** @typedef {{ more?: (value: string) => void, moreLabel?: string, back?: () => void, lazy?: (typed: string) => Choice[] }} PickExtras lazy: more choices found only for what is typed (every item), listed after the others; → opens more for a choice (moreLabel says what, in the hints), ← goes back */
 /** @typedef {{ label: string, value: string, icon?: { text: string, color?: number }, state?: [string, (s: string) => string], hidden?: boolean, search?: string }} Choice icon: drawn before the label (the web menu's pictures: an emoji, or glyphs in a color); state: shown at the right, like "● on"; hidden: only shown when something is typed; search: what typing matches, if not the label */
 /** @type {null | { title: string, choices: Choice[], filter: string, number: string, index: number, then: (value: string) => void } & PickExtras} number: digits typed so far */
 let picker = null;
@@ -460,7 +460,8 @@ function typeNumber(digit) {
 /** The picker's choices that match what was typed. */
 function shownChoices() {
   const typed = picker?.filter.toLowerCase() ?? "";
-  return (picker?.choices ?? []).filter(({ label, hidden, search }) => (!hidden || typed) && (search ?? label).toLowerCase().includes(typed));
+  const own = (picker?.choices ?? []).filter(({ label, hidden, search }) => (!hidden || typed) && (search ?? label).toLowerCase().includes(typed));
+  return typed && picker?.lazy ? [...own, ...picker.lazy(typed)] : own;
 }
 
 const KICK = "Everyone playing gets kicked.";
@@ -581,29 +582,24 @@ function kitMenu() {
         value: CATEGORY + category,
         search: category,
       })),
-      { label: "🔎 any item…  → search every item and block by name", value: ANY_ITEM, search: "any item" },
       ...kits.map((kit) => ({ label: `${kit.emoji} ${kit.name}`, value: kit.name, state: dim(kit.category), hidden: true })),
       ...typeChoices(kits),
     ],
-    (value) => (value === ANY_ITEM ? itemSearch() : openKit(kits, value, kitMenu)),
-    { more: (value) => openKit(kits, value, kitMenu, true) },
+    (value) => openKit(kits, value, kitMenu),
+    { more: (value) => openKit(kits, value, kitMenu, true), lazy: anyItems },
   );
 }
 
-const ANY_ITEM = "\u0000any"; // the "any item" choice in the kit menu
-
-/** The "any item" choice: ask what to look for, then list what matches (the first 40) to give. Every item is a kit called item:<name>. @param {string} [text] */
-function itemSearch(text) {
-  const ask = () => void (input = { prompt: "Find an item by name (oak stairs):", text: text ?? "", then: (typed) => typed && itemSearch(typed) });
-  if (text === undefined) return ask();
-  const { items, total } = searchItems(text, 40);
-  if (!items.length) return tell(`No item has "${text}" in its name. Try k again.`, S.yellow);
-  pick(
-    total > items.length ? `${total} items match "${text}": the first ${items.length}` : `${total} item${total === 1 ? "" : "s"} match "${text}"`,
-    items.map((name) => ({ label: `📦 ${name}`, value: ITEM_PREFIX + name })),
-    giveKit,
-    { back: ask },
-  );
+let lastItems = { typed: "", choices: /** @type {Choice[]} */ ([]) };
+/**
+ * Every item and block matching what's typed, so typing in the kit menus finds them after the kits (tools/lib/items.mjs).
+ * Nothing is listed until two letters are typed, and no more than 30 at once: that's the lazy part.
+ * @param {string} typed @returns {Choice[]}
+ */
+function anyItems(typed) {
+  if (typed.trim().length < 2) return [];
+  if (lastItems.typed !== typed) lastItems = { typed, choices: searchItems(typed, 30).items.map((name) => ({ label: `📦 ${name}`, value: ITEM_PREFIX + name, state: dim("any item") })) };
+  return lastItems.choices;
 }
 
 const CATEGORY = "\u0000"; // in front of a category in the kit menu: no kit is called that
@@ -630,7 +626,7 @@ function categoryMenu(category) {
       ...typeChoices(kits),
     ],
     (value) => openKit(kits, value, back),
-    { more: (value) => openKit(kits, value, back, true), back: kitMenu },
+    { more: (value) => openKit(kits, value, back, true), back: kitMenu, lazy: anyItems },
   );
 }
 
