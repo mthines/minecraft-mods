@@ -933,7 +933,7 @@ async function startKitMenu() {
     draw();
   });
   webUrl = lanUrls(port)[0] ?? `http://localhost:${port}`;
-  note(`✓ Kit menu for the iPad: ${webUrl} (Share → Add to Home Screen)`);
+  note(`✓ Kit menu for the iPad: ${webUrl} (Share → Add to Home Screen). If that name doesn't open, try ${lanUrls(port)[1] ?? "the IP in ./mc web"}`);
   draw();
 }
 
