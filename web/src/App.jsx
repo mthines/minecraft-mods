@@ -157,7 +157,7 @@ export function App() {
     <div className="app">
       <header>
         <div className="row">
-          {onKits && back ? <button className="back" onClick={back} aria-label="Back">←</button> : null}
+          {onKits && back ? <button className="back" onClick={back} aria-label="Back"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden><path d="M15 5L8 12L15 19" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg></button> : null}
           <h1>{title}</h1>
           {onKits && <input type="search" placeholder="🔍 Find a kit" value={search} onChange={(e) => setSearch(e.target.value)} enterKeyHint="search" />}
         </div>
