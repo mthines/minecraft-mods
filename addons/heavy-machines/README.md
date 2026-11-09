@@ -20,7 +20,7 @@ The drill follows where you look:
 - **Not in water or lava.** It stops when it stands in water or lava, or when there's water or lava in front of the drill or right around it, so it never opens a tunnel into a lake.
 - It can't cut bedrock, barriers, portals, or command blocks.
 
-**Bigger drill heads.** Use a drill head on the rig to put it on; the old head drops next to the rig. Bigger heads cut wider but slower.
+**Bigger drill heads.** Use a drill head on the rig to put it on; the old head drops next to the rig. Every head cuts every block at once, even deepslate and obsidian deep down.
 
 | Drill head | Cuts | Craft |
 | --- | --- | --- |
@@ -34,6 +34,8 @@ Craft a rig from a drill head, 4 iron blocks, a furnace, and 3 iron ingots.
 ## The tree cutter
 
 Put it down, get on, and drive into a tree with **W**. It cuts down the whole tree: the trunk, the branches that go sideways, and the leaves. The logs, saplings, and apples go into your inventory.
+
+When leaves are in the way of the trunk (a big tree, or a jungle), it cuts through the leaves in front of it as you drive, 3 wide and 4 high, until it gets to the trunk. A player's leaves, like a hedge, stay.
 
 It only cuts trees. Logs without leaves, like a log cabin, are someone's building, so it leaves them alone. It doesn't work in water or lava either.
 

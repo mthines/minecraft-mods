@@ -1,0 +1,11 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:titan_egg" },
+    "tags": ["crafting_table"],
+    "pattern": ["###", "#E#", "###"],
+    "key": { "#": { "item": "minecraft:cobblestone" }, "E": { "item": "minecraft:egg" } },
+    "unlock": [{ "item": "minecraft:egg" }],
+    "result": { "item": "family:titan_egg" }
+  }
+}

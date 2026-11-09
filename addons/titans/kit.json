@@ -1,0 +1,15 @@
+{
+  "about": "What mc kit titans gives you: 2 titan eggs (each brings a huge titan that grabs a tree as a club and throws boulders, fiery ones once it's down to half health), a diamond sword and a shield to fight it. With --craft, also what crafts another egg.",
+  "emoji": "🗿",
+  "label": "titan eggs, sword and shield",
+  "items": [
+    ["family:titan_egg", 2],
+    ["minecraft:diamond_sword", 1],
+    ["minecraft:shield", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:cobblestone", 8],
+    ["minecraft:egg", 1]
+  ]
+}

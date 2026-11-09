@@ -169,14 +169,22 @@ function draw(portal, color, spin) {
   }
 }
 
-// Draw everyone's portals.
+const SEEN_FROM = 48; // blocks: further than this nobody sees a portal's flames, so they aren't drawn
+
+/** Someone is close enough to see the portal. @param {Portal} portal @param {import("@minecraft/server").Player[]} players */
+const seenBy = (portal, players) => {
+  const c = centerOf(portal);
+  return players.some((p) => p.dimension.id === portal.dimension && Math.hypot(p.location.x - c.x, p.location.y - c.y, p.location.z - c.z) < SEEN_FROM);
+};
+
+// Draw everyone's portals, the ones someone is near.
 system.runInterval(() => {
   const spin = (system.currentTick / 40) * Math.PI;
-  for (const player of world.getAllPlayers()) {
-    if (!player) continue; // NPCs are undefined in other mods' scripts
+  const players = world.getAllPlayers().filter(Boolean); // NPCs are undefined in other mods' scripts
+  for (const player of players) {
     const pair = pairOf(player);
-    if (pair.blue) draw(pair.blue, "blue", spin);
-    if (pair.orange) draw(pair.orange, "orange", -spin);
+    if (pair.blue && seenBy(pair.blue, players)) draw(pair.blue, "blue", spin);
+    if (pair.orange && seenBy(pair.orange, players)) draw(pair.orange, "orange", -spin);
   }
 }, 4);
 

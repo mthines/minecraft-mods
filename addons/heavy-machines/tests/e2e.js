@@ -226,6 +226,19 @@ export async function theTreeCutterCutsDownTheWholeTree(t) {
   await t.until(() => inventory(driver).some((i) => i.typeId === "minecraft:oak_log" && i.amount >= 9), () => `The logs didn't go into the driver's inventory: ${inventory(driver).map((i) => `${i.amount} ${i.typeId}`).join(", ") || "empty"}`, 20);
 }
 
+export async function theTreeCutterCutsThroughLeavesToGetToTheTrunk(t) {
+  tree(t, 4);
+  fill(t, "oak_leaves", [-1, 0, 2], [1, 3, 3]); // so many leaves the trunk can't be reached
+  fill(t, "oak_leaves [\"persistent_bit\"=true]", [2, 0, 2], [2, 3, 2]); // a player's hedge next to it stays
+  const { machine } = await drive(t, CUTTER, [0, 1, 4]);
+  await t.until(() => check(allAre(t, "minecraft:air", [-1, 0, 2], [1, 3, 2])), () => `The cutter didn't cut the leaves in front of it: ${allAre(t, "minecraft:air", [-1, 0, 2], [1, 3, 2])}`, 40);
+  t.assert(allAre(t, "minecraft:oak_leaves", [2, 0, 2], [2, 3, 2]) === true, "The cutter cut a player's hedge");
+  machine.teleport(t.at(0.5, 0, 2)); // it drives on into the hole (a simulated player can't steer it)
+  await t.until(() => check(allAre(t, "minecraft:air", [-1, 0, 3], [1, 3, 3])), "The cutter didn't cut the next leaves after it drove on", 40);
+  machine.teleport(t.at(0.5, 0, 3));
+  await t.until(() => check(allAre(t, "minecraft:air", [0, 0, 4], [0, 5, 4])), () => `The trunk behind the leaves is still there: ${allAre(t, "minecraft:air", [0, 0, 4], [0, 5, 4])}`, 60);
+}
+
 export async function theTreeCutterLeavesBuildingsAlone(t) {
   fill(t, "oak_log", [-1, 0, 2], [1, 3, 2]); // a log wall, no leaves
   await drive(t, CUTTER, [0, 1, 2]);

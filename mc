@@ -17,7 +17,7 @@ Server
   stop                   Stop the server
   doctor [--fix]         Check Colima, Docker, the server and the add-ons, and say what's wrong and how to fix it.
                          --fix asks Claude to fix what it finds
-  restart               Restart the server, to load changed add-ons
+  restart               Copy the add-ons to the server and restart it, to load new and changed ones
   reload                 Reload scripts and functions without kicking anyone (other changes need: mc restart)
   status                 Show whether the server is running and accepting joins
   update                 Update the server to the newest Minecraft, to match devices
@@ -374,6 +374,8 @@ case "${1:-help}" in
   stop) docker compose -p server stop ;;
   restart)
     ensure_beta_apis
+    # Copies the add-ons first: a new mod only reaches the server by deploy, which the watcher does only when Send saved files is on.
+    npm run --silent deploy | grep -v "Restart the server" || exit 1
     docker restart "$SERVER" >/dev/null
     wait_until_joinable
     ;;

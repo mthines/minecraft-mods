@@ -1,0 +1,20 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:titan",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/titan" },
+      "geometry": { "default": "geometry.family_titan" },
+      "animations": {
+        "look": "animation.family_titan.look",
+        "walk": "animation.family_titan.walk",
+        "smash": "animation.family_titan.smash",
+        "props": "animation.family_titan.props"
+      },
+      "scripts": { "animate": ["look", "walk", "smash", "props"] },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#8a6a4a", "overlay_color": "#ff7a1a" }
+    }
+  }
+}

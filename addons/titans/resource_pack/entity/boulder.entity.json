@@ -1,0 +1,14 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:boulder",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/blocks/cobblestone" },
+      "geometry": { "default": "geometry.family_boulder" },
+      "animations": { "spin": "animation.family_titan.boulder_spin" },
+      "scripts": { "animate": ["spin"] },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}

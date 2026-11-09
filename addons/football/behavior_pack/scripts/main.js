@@ -53,9 +53,19 @@ function playersNear(game) {
   return world.getDimension(game.dimension).getPlayers({ location: game.center, maxDistance: NEARBY }).filter(Boolean); // NPCs (simulated players from the npc mod) come through as undefined in other mods
 }
 
+/** @type {Map<string, string>} game id → the entity id of its ball */
+const ballIds = new Map();
+
 /** @param {Game} game */
 function ballOf(game) {
-  return world.getDimension(game.dimension).getEntities({ type: BALL, tags: [tagOf(game)] })[0];
+  // Every tick asks for every game's ball: remember which entity it is, and only search the whole dimension when that one is gone.
+  const id = ballIds.get(game.id);
+  const known = id === undefined ? undefined : world.getEntity(id);
+  if (known?.isValid && known.hasTag(tagOf(game))) return known;
+  const ball = world.getDimension(game.dimension).getEntities({ type: BALL, tags: [tagOf(game)] })[0];
+  if (ball) ballIds.set(game.id, ball.id);
+  else ballIds.delete(game.id);
+  return ball;
 }
 
 /** Puts the game's ball on the middle spot, removing any old one. @param {Game} game */

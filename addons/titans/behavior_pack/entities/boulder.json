@@ -1,0 +1,29 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "family:boulder", "is_spawnable": false, "is_summonable": true },
+    "component_groups": {
+      "family:despawn": { "minecraft:instant_despawn": {} }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["boulder", "inanimate"] },
+      "minecraft:collision_box": { "width": 0.8, "height": 0.8 },
+      "minecraft:projectile": {
+        "on_hit": { "impact_damage": { "damage": 6, "knockback": true }, "stick_in_ground": {} },
+        "power": 1,
+        "gravity": 0.05,
+        "inertia": 1,
+        "liquid_inertia": 0.6,
+        "uncertainty_base": 0,
+        "uncertainty_multiplier": 0,
+        "hit_sound": "random.explode"
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+      "minecraft:timer": { "time": 10, "looping": false, "time_down_event": { "event": "family:despawn", "target": "self" } }
+    },
+    "events": {
+      "family:despawn": { "add": { "component_groups": ["family:despawn"] } }
+    }
+  }
+}

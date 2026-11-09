@@ -1,0 +1,47 @@
+{
+  "format_version": "1.12.0",
+  "minecraft:geometry": [
+    {
+      "description": { "identifier": "geometry.family_titan", "texture_width": 64, "texture_height": 64, "visible_bounds_width": 3, "visible_bounds_height": 3.5, "visible_bounds_offset": [0, 1.5, 0] },
+      "bones": [
+        { "name": "root", "pivot": [0, 0, 0] },
+        { "name": "body", "parent": "root", "pivot": [0, 24, 0], "cubes": [{ "origin": [-4, 12, -2], "size": [8, 12, 4], "uv": [0, 16] }] },
+        { "name": "head", "parent": "body", "pivot": [0, 24, 0], "cubes": [{ "origin": [-4, 24, -4], "size": [8, 8, 8], "uv": [0, 0] }] },
+        { "name": "hair", "parent": "head", "pivot": [0, 24, 0], "cubes": [{ "origin": [-4, 28, -4], "size": [8, 4, 8], "inflate": 0.5, "uv": [32, 0] }] },
+        { "name": "fire_hair", "parent": "head", "pivot": [0, 24, 0], "cubes": [{ "origin": [-4, 28, -4], "size": [8, 4, 8], "inflate": 0.6, "uv": [32, 12] }] },
+        { "name": "rightArm", "parent": "body", "pivot": [-5, 22, 0], "cubes": [{ "origin": [-8, 12, -2], "size": [4, 12, 4], "uv": [0, 32] }] },
+        {
+          "name": "tree", "parent": "rightArm", "pivot": [-6, 13, 0], "rotation": [60, 0, 0],
+          "cubes": [
+            { "origin": [-7, 12, -1], "size": [2, 16, 2], "uv": [32, 24] },
+            { "origin": [-9, 25, -3], "size": [6, 6, 6], "uv": [40, 24] }
+          ]
+        },
+        { "name": "leftArm", "parent": "body", "pivot": [5, 22, 0], "cubes": [{ "origin": [4, 12, -2], "size": [4, 12, 4], "uv": [0, 32], "mirror": true }] },
+        { "name": "rightLeg", "parent": "root", "pivot": [-1.9, 12, 0], "cubes": [{ "origin": [-3.9, 0, -2], "size": [4, 12, 4], "uv": [16, 32] }] },
+        { "name": "leftLeg", "parent": "root", "pivot": [1.9, 12, 0], "cubes": [{ "origin": [-0.1, 0, -2], "size": [4, 12, 4], "uv": [16, 32], "mirror": true }] }
+      ]
+    },
+    {
+      "description": { "identifier": "geometry.family_boulder", "texture_width": 16, "texture_height": 16, "visible_bounds_width": 1.5, "visible_bounds_height": 1.5, "visible_bounds_offset": [0, 0.5, 0] },
+      "bones": [
+        {
+          "name": "rock", "pivot": [0, 6, 0],
+          "cubes": [
+            {
+              "origin": [-6, 0, -6], "size": [12, 12, 12],
+              "uv": {
+                "north": { "uv": [0, 0], "uv_size": [16, 16] },
+                "south": { "uv": [0, 0], "uv_size": [16, 16] },
+                "east": { "uv": [0, 0], "uv_size": [16, 16] },
+                "west": { "uv": [0, 0], "uv_size": [16, 16] },
+                "up": { "uv": [0, 0], "uv_size": [16, 16] },
+                "down": { "uv": [0, 0], "uv_size": [16, 16] }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

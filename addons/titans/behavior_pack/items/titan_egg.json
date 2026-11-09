@@ -1,0 +1,12 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": { "identifier": "family:titan_egg", "menu_category": { "category": "items" } },
+    "components": {
+      "minecraft:icon": "family_titan_egg",
+      "minecraft:display_name": { "value": "Titan Egg" },
+      "minecraft:max_stack_size": 16,
+      "minecraft:entity_placer": { "entity": "family:titan" }
+    }
+  }
+}

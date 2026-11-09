@@ -17,6 +17,17 @@ Bedrock add-ons for the family server. `README.md` explains the layout and the `
 - Script API calls that need a screen, like `player.camera`, throw for simulated players: wrap them so the rest of the action still runs.
 - On the family server, NPCs (the npc mod's simulated players) come through as `undefined` in every other mod. This applies to entries of `world.getAllPlayers()` and `getPlayers()`, and to the entities in events like `entityHitEntity`, `entityHurt`, `entityDie` and `playerSpawn`. Guard them: `if (!player) continue;`, `hitEntity?.typeId`. A per-tick player loop without the guard throws every tick while an NPC is around, and stops for every player after the NPC. That's how golden-feather flying, trampolines and lanterns all stopped working near NPCs.
 
+## Performance (the server is one script thread, so one heavy tick lags everyone)
+
+- Budget a tick. Whatever runs every tick (`system.runInterval(fn)`, a per-player loop, a held button) must stay small: a few `getBlock` calls and one or two entity queries. Work that is big (a 7×7 drill face, 49 `setblock` commands and as many item drops, a 9×9×9 block scan, flood-filling a tree) never runs every tick: spread it over ticks, cap it per tick (like `FELL_PER_TICK` in heavy-machines), or run it less often.
+- Heavy-machines lagged when a drill layer took 1 tick: up to 49 `setblock … destroy` commands, 49 dropped items, ~7 block lookups per face block for the water check, a sound, a particle and a drop scan, all each tick. Pace anything repeated and player-driven (`LAYER_TICKS`-style, a few ticks per step), and let the pace, not the cost per step, set how fast it feels.
+- Sound and particles are decoration: play them every few steps, not every step, and wrap them in try/catch (the chunk may not be loaded).
+- Interval period: use the slowest that still feels right (`, 5` or `, 20`, not the default every tick) for anything that isn't movement or aiming. Scans like "find a tree near the titan" belong at 20 ticks or more, and only while they're needed.
+- Entity queries: pass `location` and `maxDistance`, a `type` or `families` filter, and `closest`/`limit` when you only need one. Don't call `getEntities()` on a whole dimension every tick; keep a `Map` of the ids you care about and look them up with `world.getEntity(id)`.
+- Cache what you read from `world.getDynamicProperty` (parse JSON once, write it back only when it changes), like `all()` in trampoline and football.
+- Don't allocate per tick for nothing: no neighbour arrays for blocks that are already in the list, no `[...a, ...b]` copies of big lists, no string keys built for every block when a number or an early `continue` does it.
+- Review before calling a mod done: for each `runInterval` and each event that can fire many times a tick (hit, tick-driven use, explosion), count the worst case per tick (blocks, entities, commands, particles) with the biggest setting (the 7×7 head, a full crew, a crowd of players) and make sure that's bounded. `mc test` can't see lag: tests run with one or two players and tiny worlds. After it reaches the family server, check for lag with a bigger setting, not only errors in the log.
+
 ## Testing (`./mc test`)
 
 - It runs on a separate container (`family-e2e`) with its own flat world in `server/test-data/`, never the family world. Each run starts from `server/test-data/fresh-world/`.

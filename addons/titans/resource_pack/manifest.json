@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Titans Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "6b621736-f6cc-4403-adc5-57a4562f9a31",
+    "version": [
+      1,
+      0,
+      1
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "b57251d7-f5ef-4c45-9daf-b59beb827007",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

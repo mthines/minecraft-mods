@@ -1,5 +1,5 @@
 import { ItemStack, Player, system, world } from "@minecraft/server";
-import { AIM_DOWN, AIM_UP, HALF_WIDTH, UNBREAKABLE, aimFrom, face, findTree, frontLayer, isLeaves, isLiquid, isLog, nextStep } from "./dig.js";
+import { AIM_DOWN, AIM_UP, HALF_WIDTH, HEIGHT, UNBREAKABLE, aimFrom, face, findTree, frontLayer, isLeaves, isLiquid, isLog, nextStep } from "./dig.js";
 import { emit } from "./telemetry.js";
 
 const RIG = "family:drill_rig"; // the entities and the items that put them down share their names
@@ -8,7 +8,7 @@ const MACHINES = [RIG, CUTTER];
 /** Drill heads by how many blocks across they cut. */
 const HEADS = { 3: "family:drill_head", 5: "family:big_drill_head", 7: "family:giant_drill_head" };
 const FIT_EVENTS = { "family:fit_drill_head": 3, "family:fit_big_drill_head": 5, "family:fit_giant_drill_head": 7 };
-const LAYER_TICKS = { 3: 6, 5: 9, 7: 12 }; // how long one layer takes: bigger heads are slower
+const LAYER_TICKS = { 3: 2, 5: 3, 7: 4 }; // how long one layer takes: fast, but a layer every tick (up to 49 blocks and drops) lagged the server
 const FELL_PER_TICK = 60; // blocks of a tree cut each tick, so a giant tree doesn't freeze the server
 const DIMENSIONS = ["overworld", "nether", "the_end"];
 
@@ -167,8 +167,10 @@ function drill(rig, driver) {
     // Straight up only: the layer it cut is over all of the rig, wherever it is in the shaft. Moved sideways, it went into the wall.
     rig.teleport({ ...rig.location, y: Math.floor(rig.location.y + 0.01) + 1 });
   }
-  rig.dimension.playSound("block.grindstone.use", rig.location, { pitch: 0.6, volume: 1 });
-  rig.dimension.spawnParticle("minecraft:large_explosion", solid[Math.floor(solid.length / 2)].center());
+  if (system.currentTick % 6 < LAYER_TICKS[size]) { // once in a few layers: every layer was a sound and a particle for nothing
+    rig.dimension.playSound("block.grindstone.use", rig.location, { pitch: 0.6, volume: 1 });
+    rig.dimension.spawnParticle("minecraft:large_explosion", solid[Math.floor(solid.length / 2)].center());
+  }
   state.next = system.currentTick + LAYER_TICKS[size];
   state.blocks += solid.length;
   state.driver = driver.name;
@@ -283,8 +285,9 @@ function cut(cutter, driver) {
   if (inLiquid(cutter)) return stop(cutter, driver, "§cThe tree cutter doesn't work in water or lava.");
   // The trunk in front: the 3 blocks across the front, from the ground up to the driver's head.
   const { dir } = aimFrom(0, driver.getRotation().y);
-  const trunk = face(cutter.location, dir, 3).find((at) => isLog(cutter.dimension.getBlock(at)?.typeId ?? ""));
-  if (!trunk) return;
+  const front = face(cutter.location, dir, 3, 0, Math.floor(cutter.location.y + 0.01) + HEIGHT);
+  const trunk = front.find((at) => isLog(cutter.dimension.getBlock(at)?.typeId ?? ""));
+  if (!trunk) return trimLeaves(cutter, driver, front);
   const tree = findTree(trunk, (at) => {
     const block = cutter.dimension.getBlock(at);
     if (!block) return undefined;
@@ -306,6 +309,22 @@ function cut(cutter, driver) {
   driver.onScreenDisplay.setActionBar(`§2§lTimber!§r ${tree.logs.length} logs`);
   state.next = system.currentTick + batches + 20;
   state.blocks += tree.logs.length;
+  state.driver = driver.name;
+  setWorking(cutter, true);
+}
+
+/**
+ * No trunk in front, but leaves: it cuts its way through them, so it can get to a trunk hidden in a big tree's leaves.
+ * Only natural leaves: a player's hedge stays.
+ * @param {import("@minecraft/server").Entity} cutter @param {Player} driver @param {import("@minecraft/server").Vector3[]} front
+ */
+function trimLeaves(cutter, driver, front) {
+  const leaves = front.map((at) => cutter.dimension.getBlock(at)).filter((b) => b !== undefined && isLeaves(b.typeId) && b.permutation.getState("persistent_bit") !== true);
+  if (!leaves.length) return;
+  breakBlocks(cutter, driver, leaves);
+  cutter.dimension.playSound("mob.sheep.shear", cutter.location, { pitch: 1.2, volume: 0.6 });
+  const state = stateOf(cutter);
+  state.next = system.currentTick + 2;
   state.driver = driver.name;
   setWorking(cutter, true);
 }

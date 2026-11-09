@@ -1,0 +1,34 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.family_titan.look": {
+      "loop": true,
+      "bones": { "head": { "rotation": ["query.target_x_rotation", "query.target_y_rotation", 0] } }
+    },
+    "animation.family_titan.walk": {
+      "loop": true,
+      "bones": {
+        "rightArm": { "rotation": ["math.cos(query.modified_distance_moved * 38.17) * 30 * query.modified_move_speed", 0, 0] },
+        "leftArm": { "rotation": ["math.cos(query.modified_distance_moved * 38.17) * -30 * query.modified_move_speed", 0, 0] },
+        "rightLeg": { "rotation": ["math.cos(query.modified_distance_moved * 38.17) * -35 * query.modified_move_speed", 0, 0] },
+        "leftLeg": { "rotation": ["math.cos(query.modified_distance_moved * 38.17) * 35 * query.modified_move_speed", 0, 0] }
+      }
+    },
+    "animation.family_titan.smash": {
+      "loop": true,
+      "bones": { "rightArm": { "rotation": ["query.is_delayed_attacking ? -130 : 0", 0, 0] } }
+    },
+    "animation.family_titan.boulder_spin": {
+      "loop": true,
+      "bones": { "rock": { "rotation": ["query.life_time * 360", "query.life_time * 200", 0] } }
+    },
+    "animation.family_titan.props": {
+      "loop": true,
+      "bones": {
+        "tree": { "scale": "query.property('family:has_tree') ? 1 : 0" },
+        "hair": { "scale": "query.property('family:fiery') ? 0 : 1" },
+        "fire_hair": { "scale": "query.property('family:fiery') ? 1 : 0" }
+      }
+    }
+  }
+}
