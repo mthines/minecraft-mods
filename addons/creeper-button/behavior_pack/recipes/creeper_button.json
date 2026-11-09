@@ -1,0 +1,14 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "family:creeper_button" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:gunpowder" }],
+    "ingredients": [
+      { "item": "minecraft:stone_button" },
+      { "item": "minecraft:gunpowder" },
+      { "item": "minecraft:green_dye" }
+    ],
+    "result": { "item": "family:creeper_button", "count": 1 }
+  }
+}

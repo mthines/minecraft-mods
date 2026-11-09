@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Cloud Boots Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "7ed77567-dd70-4b50-843e-eac27517f67f",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "dae74ddb-4577-4e47-bbb4-c7240d094703",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

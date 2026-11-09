@@ -1,0 +1,15 @@
+{
+  "about": "What mc kit cloud-boots gives you: cloud boots (wear them to stand on the clouds, crouch to fall through) and scaffolding to climb up there. With --craft, also what crafts more boots.",
+  "emoji": "👢",
+  "label": "cloud boots",
+  "items": [
+    ["family:cloud_boots", 1],
+    ["minecraft:scaffolding", 64],
+    ["minecraft:scaffolding", 64]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:white_wool", 2],
+    ["minecraft:feather", 2]
+  ]
+}

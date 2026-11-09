@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Planes Resources",
+    "description": "The planes' models, pictures, and spinning propellers.",
+    "uuid": "942bfa38-166d-4fee-b914-392b8bc606b0",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "d6082c79-5b07-41f5-8293-c15d306f39f6",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

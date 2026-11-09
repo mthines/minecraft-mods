@@ -1,0 +1,12 @@
+{
+  "about": "What mc kit bazooka gives you: a bazooka and missiles that blow a hole as big as a house.",
+  "emoji": "🚀",
+  "category": "weapons",
+  "items": [
+    ["family:bazooka", 1],
+    ["family:missile", 64]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1]
+  ]
+}

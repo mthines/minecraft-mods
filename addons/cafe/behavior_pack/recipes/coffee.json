@@ -1,0 +1,14 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "family:coffee" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:cocoa_beans" }],
+    "ingredients": [
+      { "item": "minecraft:cocoa_beans" },
+      { "item": "minecraft:sugar" },
+      { "item": "minecraft:glass_bottle" }
+    ],
+    "result": { "item": "family:coffee", "count": 2 }
+  }
+}

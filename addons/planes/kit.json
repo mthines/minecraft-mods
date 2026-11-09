@@ -1,0 +1,15 @@
+{
+  "about": "What mc kit planes gives you: a fighter plane (10000 bullets) and a bomber plane (500 grenades), both full. With --craft, also what crafts another.",
+  "emoji": "🛫",
+  "items": [
+    ["family:fighter", 1],
+    ["family:bomber", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 10],
+    ["minecraft:gunpowder", 2],
+    ["minecraft:blue_dye", 1],
+    ["minecraft:yellow_dye", 1]
+  ]
+}

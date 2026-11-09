@@ -1,0 +1,20 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "family:plane_grenade", "is_spawnable": false, "is_summonable": true },
+    "components": {
+      "minecraft:collision_box": { "width": 0.3, "height": 0.3 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+      "minecraft:projectile": {
+        "on_hit": { "stick_in_ground": {} },
+        "power": 1.0,
+        "gravity": 0.06,
+        "uncertainty_base": 0,
+        "uncertainty_multiplier": 0,
+        "anchor": 1,
+        "offset": [0, -0.1, 0]
+      }
+    }
+  }
+}

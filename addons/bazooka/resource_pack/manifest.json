@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Bazooka Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "924e053d-8253-4ab6-bb72-e2b0ed9244c1",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "f690c563-1e97-4f59-ab86-1c075dca81f2",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

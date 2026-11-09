@@ -1,0 +1,12 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:plane_grenade",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/plane" },
+      "geometry": { "default": "geometry.family_plane_grenade" },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}

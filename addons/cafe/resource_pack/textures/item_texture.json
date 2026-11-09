@@ -1,0 +1,8 @@
+{
+  "resource_pack_name": "cafe",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_coffee": { "textures": "textures/items/coffee" },
+    "family_cake_slice": { "textures": "textures/items/cake_slice" }
+  }
+}

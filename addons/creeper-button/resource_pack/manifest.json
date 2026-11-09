@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Creeper Button Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "bc18ab38-1919-4fed-a2a1-da0bcec39015",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "024896eb-1e1c-4aca-90f5-e78535094f77",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

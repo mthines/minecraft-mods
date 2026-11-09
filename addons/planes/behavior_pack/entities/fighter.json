@@ -1,0 +1,24 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "family:fighter", "is_spawnable": true, "is_summonable": true,
+      "properties": { "family:ammo": { "type": "int", "range": [0, 10000], "default": 10000 } }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["plane", "inanimate"] },
+      "minecraft:collision_box": { "width": 1.6, "height": 1.0 },
+      "minecraft:health": { "value": 20, "max": 20 },
+      "minecraft:damage_sensor": { "triggers": [{ "cause": "all", "deals_damage": "no" }] },
+      "minecraft:knockback_resistance": { "value": 1.0 },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": true },
+      "minecraft:persistent": {},
+      "minecraft:rideable": {
+        "seat_count": 1,
+        "family_types": ["player"],
+        "interact_text": "action.interact.ride.horse",
+        "seats": [{ "position": [0.0, 0.35, 0.1] }]
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "resource_pack_name": "cloud-boots",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_cloud_boots": { "textures": "textures/items/cloud_boots" }
+  }
+}

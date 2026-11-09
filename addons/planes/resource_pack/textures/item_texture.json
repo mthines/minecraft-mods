@@ -1,0 +1,8 @@
+{
+  "resource_pack_name": "planes",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_fighter": { "textures": "textures/items/fighter" },
+    "family_bomber": { "textures": "textures/items/bomber" }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "about": "What mc kit cafe gives you: coffee that makes you super fast, cake slices, and stairs (chairs), fences and pressure plates (tables), lanterns, flower pots and a shovel to dig a cosy café underground. With --craft, also what crafts more coffee and cake.",
+  "emoji": "☕",
+  "items": [
+    ["family:coffee", 16],
+    ["family:cake_slice", 16],
+    ["minecraft:oak_stairs", 8],
+    ["minecraft:oak_fence", 4],
+    ["minecraft:wooden_pressure_plate", 4],
+    ["minecraft:lantern", 4],
+    ["minecraft:flower_pot", 4],
+    ["minecraft:poppy", 4],
+    ["minecraft:iron_shovel", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:cocoa_beans", 2],
+    ["minecraft:sugar", 2],
+    ["minecraft:glass_bottle", 2],
+    ["minecraft:cake", 1]
+  ]
+}

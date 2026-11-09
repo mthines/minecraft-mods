@@ -1,0 +1,13 @@
+{
+  "about": "What mc kit creeper-button gives you: the Creeper Button. Press Use to turn into a creeper: it hisses, then BOOM, and you fly up. Mobs get hurt and pushed, you and the blocks don't. With --craft, also what crafts another one.",
+  "emoji": "💚",
+  "items": [
+    ["family:creeper_button", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:stone_button", 1],
+    ["minecraft:gunpowder", 1],
+    ["minecraft:green_dye", 1]
+  ]
+}

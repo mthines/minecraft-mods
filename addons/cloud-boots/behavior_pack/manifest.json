@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Cloud Boots",
+    "description": "Cloud boots: wear them to stand, walk and run on the clouds. Crouch to fall through.",
+    "uuid": "97fc36c4-4118-4f8e-8e5c-c2f6c1b9d6fb",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "b37d2a20-1dd9-4e6e-93b5-815bdcfee6ac",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "3d2c4155-c5eb-4f96-8da4-7a10631a587b",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "7ed77567-dd70-4b50-843e-eac27517f67f",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

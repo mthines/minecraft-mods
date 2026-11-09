@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Cafe Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "8f4997a0-de6d-472b-b6e5-2be913a8023c",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "bf454276-b293-4b76-8181-9a829d2a0186",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

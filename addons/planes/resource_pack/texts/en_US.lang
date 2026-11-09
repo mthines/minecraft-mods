@@ -1,0 +1,5 @@
+entity.family:fighter.name=Fighter Plane
+entity.family:bomber.name=Bomber Plane
+entity.family:plane_grenade.name=Grenade
+item.spawn_egg.entity.family:fighter.name=Fighter Plane Spawn Egg
+item.spawn_egg.entity.family:bomber.name=Bomber Plane Spawn Egg

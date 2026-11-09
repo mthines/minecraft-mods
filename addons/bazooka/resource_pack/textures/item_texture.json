@@ -1,0 +1,8 @@
+{
+  "resource_pack_name": "bazooka",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_bazooka": { "textures": "textures/items/bazooka" },
+    "family_missile": { "textures": "textures/items/missile" }
+  }
+}

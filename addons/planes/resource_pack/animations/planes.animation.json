@@ -1,0 +1,18 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.family_fighter.propeller": {
+      "loop": true,
+      "bones": {
+        "propeller": { "rotation": [0, 0, "query.anim_time * 1080"] }
+      }
+    },
+    "animation.family_bomber.propellers": {
+      "loop": true,
+      "bones": {
+        "propeller_left": { "rotation": [0, 0, "query.anim_time * 1080"] },
+        "propeller_right": { "rotation": [0, 0, "-query.anim_time * 1080"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Planes",
+    "description": "A fighter plane with 10000 bullets and a bomber plane with 500 grenades: fly where you look, tap or hold jump to fire.",
+    "uuid": "fc64f352-845a-47d5-8c79-a08e3ee6e462",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "0bb63709-4e31-4212-9b62-bf4e41c6c7e7",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "65787c6d-e7bb-462d-9e0b-79c56ee1f36d",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "942bfa38-166d-4fee-b914-392b8bc606b0",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

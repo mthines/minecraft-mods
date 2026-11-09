@@ -1,0 +1,15 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:bomber",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/plane" },
+      "geometry": { "default": "geometry.family_bomber" },
+      "animations": { "propellers": "animation.family_bomber.propellers" },
+      "scripts": { "animate": ["propellers"] },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#f2c623", "overlay_color": "#2f6fd6" }
+    }
+  }
+}
