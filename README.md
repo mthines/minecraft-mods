@@ -281,6 +281,7 @@ Run the server with `./mc` from this folder (`./mc help` lists everything):
 | `./mc kit weapons-ammo` | Give one of a mod's extra kits (from `addons/<mod>/kit-<name>.json`): here, just bullets and grenades (`weapons-ammo-bullets` or `weapons-ammo-grenades` for one of them; in `mc dev` it opens a list) |
 | `./mc kit bed` | Give a kit that belongs to no mod (from `kits/<name>.json`): here, a bed |
 | `./mc kit wood-spruce` | Give building materials of one type: wood, stone, glass, wool, concrete, terracotta, ground, light, or rare (obsidian, `rare-nether-portal`, …), then `-<type>`; buckets, ingots, and things for the End work the same way: `./mc kit bucket-lava`, `./mc kit ingots-iron`, `./mc kit end-eyes` (eyes of ender; also `end-portal`, `end-dragon-fight`, `end-late-game`, `end-making-eyes`) (in `mc dev`, `k` then Enter or → on a material lists its types, or type the type: `flint`) |
+| `./mc kit item:oak_stairs` | Give any one item or block Minecraft has (about 1600), by its name; one stack, or one for tools. Find the name with `./mc items oak stairs`. In `mc dev`, `k` then `🔎 any item…`; on the iPad, type in the kit search box and the matching items load below the kits |
 | `./mc logs` | Follow the server log |
 | `./mc console` | Type server commands (leave with Ctrl+P, then Ctrl+Q) |
 | `./mc peace on` / `./mc peace off` | Peaceful mode: no monsters, and health refills. `./mc peace` shows which it is; it stays that way after restarts. |

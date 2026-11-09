@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { CATEGORIES, kitNames, menuKits } from "./lib/kits.mjs";
 import { ACTIONS } from "./lib/actions.mjs";
+import { itemOfKit, searchItems } from "./lib/items.mjs";
 import { lanUrls } from "./lib/lan.mjs";
 import { PLACES } from "./lib/places.mjs";
 import { currentWorld } from "./lib/world.mjs";
@@ -103,10 +104,12 @@ createServer(async (req, res) => {
   const url = new URL(req.url ?? "/", "http://x");
   try {
     if (url.pathname === "/api/menu") return json(res, 200, menu());
+    // Any item by name: the page sends what was typed, we answer from the list of every item (nothing typed reaches ./mc).
+    if (url.pathname === "/api/items") return json(res, 200, searchItems(url.searchParams.get("q") ?? "", 48));
     if (url.pathname === "/api/players") return json(res, 200, { players: await players().catch(() => []) });
     if (url.pathname === "/api/give" && req.method === "POST") {
       const { kit, who = "@a", craft = false } = await body(req);
-      if (kit !== "tools" && !kitNames(true).includes(kit)) return json(res, 400, { error: "No such kit." });
+      if (kit !== "tools" && !kitNames(true).includes(kit) && !(typeof kit === "string" && itemOfKit(kit))) return json(res, 400, { error: "No such kit." });
       if (who !== "@a" && !(await players()).includes(who)) return json(res, 400, { error: `${who} is not online.` });
       try {
         const { stdout } = await mc(["kit", kit, who, ...(craft === true ? ["--craft"] : [])]);

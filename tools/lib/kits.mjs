@@ -5,6 +5,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { ADDONS_DIR, ROOT } from "./addons.mjs";
+import { itemKit } from "./items.mjs";
 
 export const KITS_DIR = join(ROOT, "kits");
 
@@ -80,11 +81,13 @@ export function kitNames(types = false) {
 }
 
 /**
- * What a kit gives, or undefined if there's no kit by that name.
+ * What a kit gives, or undefined if there's no kit by that name. `item:<name>` is any one item (tools/lib/items.mjs).
  * @param {string} name @param {boolean} [craft] add its crafting table and materials
  * @returns {Items | undefined}
  */
 export function kitItems(name, craft = false) {
+  const item = itemKit(name);
+  if (item) return item;
   for (const file of kitFiles()) {
     const kit = read(file.path);
     if (name === file.name) return [...(kit.items ?? Object.values(kit.types ?? {})[0] ?? []), ...(craft ? kit.craft ?? [] : [])];

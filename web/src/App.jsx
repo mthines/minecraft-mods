@@ -1,5 +1,5 @@
 import { Icon } from "./Icon.jsx";
-import { avatars, landscapes, OPTION_HINTS, OPTION_ICONS, OPTION_NAMES, typeIcon } from "./icons.js";
+import { avatars, itemIcon, landscapes, OPTION_HINTS, OPTION_ICONS, OPTION_NAMES, typeIcon } from "./icons.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // Same structure as the k menu in mc dev: a category, then its kits, then a kit's types (like wood → spruce).
@@ -11,6 +11,7 @@ export function App() {
   const [failed, setFailed] = useState(false);
   const [path, setPath] = useState([]); // [category] or [category, kit]
   const [search, setSearch] = useState("");
+  const [found, setFound] = useState({ q: "", items: [], total: 0 }); // items matching the search, asked of the server: there are too many to list as kits
   const [players, setPlayers] = useState([]);
   const [who, setWho] = useState("@a");
   const [craft, setCraft] = useState(false);
@@ -31,6 +32,13 @@ export function App() {
     const id = setInterval(() => !document.hidden && load(), 8000);
     return () => clearInterval(id);
   }, []);
+
+  useEffect(() => {
+    const q = search.trim();
+    if (q.length < 2) return;
+    const id = setTimeout(() => get(`/api/items?q=${encodeURIComponent(q)}`).then((d) => setFound({ q, ...d })).catch(() => {}), 200);
+    return () => clearTimeout(id);
+  }, [search]);
 
   const say = useCallback((text, ok) => {
     clearTimeout(timer.current);
@@ -135,7 +143,7 @@ export function App() {
       ...(`${k.name} ${k.label ?? ""}`.toLowerCase().includes(q) && !k.types ? [kitTile(k)] : []),
       ...(k.types ? (k.name.includes(q) ? [kitTile(k)] : []) : []),
       ...(k.types ?? []).filter((t) => `${k.name}-${t}`.includes(q)).map((t) => typeTile(k, t)),
-    ]);
+    ]).concat(found.q === search.trim() ? found.items.map((name) => ({ key: `item-${name}`, emoji: itemIcon(name), title: name.replaceAll("_", " "), sub: "any item", onClick: () => give(`item:${name}`, name.replaceAll("_", " ")) })) : []);
   } else if (kit?.types) {
     title = `${kit.emoji} ${kit.name}`;
     back = () => setPath(category.kits.length === 1 ? [] : [category.name]);
@@ -158,7 +166,7 @@ export function App() {
         <div className="row">
           {onKits && back ? <button className="back" onClick={back} aria-label="Back"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden><path d="M15 5L8 12L15 19" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg></button> : null}
           <h1>{title}</h1>
-          {onKits && <input type="search" placeholder="🔍 Find a kit" value={search} onChange={(e) => setSearch(e.target.value)} enterKeyHint="search" />}
+          {onKits && <input type="search" placeholder="🔍 Find a kit or any item" value={search} onChange={(e) => setSearch(e.target.value)} enterKeyHint="search" />}
         </div>
         {tab !== "game" && <div className="row chips" role="group" aria-label="Give to">
           <span className="label">{onKits ? "Give to" : tab === "find" ? "Tell" : "For"}</span>
@@ -172,6 +180,7 @@ export function App() {
       <main>
         {failed && <p className="empty">Can't reach the kit server. Is <code>./mc web</code> running?</p>}
         {menu && onKits && !tiles.length && <p className="empty">No kits found 🤷</p>}
+        {onKits && q && found.q === search.trim() && found.total > found.items.length && <p className="dim">{found.total} items match: showing {found.items.length}. Type more of the name.</p>}
         <div className="grid">
           {tiles.map((t, at) => [
             t.section && t.section !== tiles[at - 1]?.section ? <h2 key={`h-${t.section}`} className="section">{t.section === "rules" ? "⚙️ Rules" : "🌍 Worlds"}</h2> : null,

@@ -50,6 +50,8 @@ In the game
   kit <kit> [player]     Give what you need to try a mod (its kit.json), one of its extra kits, like weapons-ammo,
                          or a kit from kits/, like bed or wood-spruce (building materials: wood, stone, glass, …).
                          Add --craft for the crafting table and materials too
+  kit item:<name> [player]  Give any one item or block Minecraft has, like item:oak_stairs
+  items <text>           Find items by name (oak stairs): every one is a kit you can give as item:<name>
   peace [on|off]         Peaceful mode: no monsters, and health refills. No argument: show which it is
   fall-damage [on|off]   Turn fall damage on or off. No argument: show which it is
   pvp [on|off]           Whether players can hurt each other. No argument: show which it is
@@ -328,6 +330,11 @@ case "${1:-help}" in
     [[ -n "$mod" ]] || echo "Other kits: $(kit_names | tr '\n' ' ')"
     [[ -z "$mod" || "$craft" == true ]] || ! node tools/kits.mjs has-craft "$mod" ||
       echo "For the crafting table and materials too: mc kit $mod ${3:+$3 }--craft"
+    ;;
+  items)
+    # mc items <text>: the names of the items that match, as kit names (tools/lib/items.mjs).
+    [[ -n "${2:-}" ]] || { echo "Usage: mc items <text>, like: mc items oak stairs" >&2; exit 1; }
+    node tools/kits.mjs find "${@:2}" || { echo "No item has that in its name." >&2; exit 1; }
     ;;
   update)
     # Devices update Minecraft by themselves, and the server must run the same version or nobody can join.

@@ -114,3 +114,14 @@ export function terminalIcon(icon) {
   if (typeof icon === "string") return { text: icon };
   return { text: icon.shape === "block" ? GLYPHS[icon.pattern ?? "plain"] : SHAPES[icon.shape], color: color256(icon.swatch ?? icon.color) };
 }
+
+/** Any other item (kit "item:<name>", found by searching): a picture by what its name says, else a box. Only the names are different, so the name is on the tile. */
+const ITEM_LOOKS = [
+  [/diamond/, "💎"], [/emerald/, "💚"], [/gold/, "🟡"], [/iron/, "⚪"], [/copper/, "🟠"], [/netherite/, "⬛"], [/redstone/, "🔴"], [/lapis/, "🔵"], [/coal|charcoal/, "⬛"],
+  [/sword/, "🗡️"], [/pickaxe/, "⛏️"], [/_axe$/, "🪓"], [/shovel/, "🪏"], [/hoe$/, "🌾"], [/^bow$|arrow/, "🏹"], [/helmet|chestplate|leggings|boots|shield/, "🛡️"],
+  [/spawn_egg/, "🥚"], [/boat|raft/, "🛶"], [/minecart|rail/, "🚃"], [/bucket/, "🪣"], [/potion|bottle/, "🧪"], [/book/, "📕"], [/door|gate/, "🚪"], [/bed$/, "🛏️"],
+  [/log|planks|wood|stem|stick|sign/, "🪵"], [/leaves|sapling|grass|fern|flower|tulip|rose|azalea/, "🌿"], [/glass/, "🪟"], [/wool|carpet/, "🧶"], [/torch|lantern|candle|lamp/, "🔦"],
+  [/apple|bread|beef|pork|chicken|mutton|cod|salmon|carrot|potato|melon|berries|cookie|cake|pie|stew|soup/, "🍎"], [/dye|banner/, "🎨"], [/music_disc/, "💿"], [/fish/, "🐟"],
+  [/stone|brick|deepslate|tuff|ore|cobble|granite|diorite|andesite|slab|stairs|wall/, "🧱"],
+];
+export const itemIcon = (name) => ITEM_LOOKS.find(([pattern]) => pattern.test(name))?.[1] ?? "📦";

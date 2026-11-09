@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { ADDONS_DIR, ROOT } from "./lib/addons.mjs";
 import { CATEGORIES, menuKits } from "./lib/kits.mjs";
+import { ITEM_PREFIX, searchItems } from "./lib/items.mjs";
 import { ACTIONS } from "./lib/actions.mjs";
 import { lanUrls } from "./lib/lan.mjs";
 import { PLACES } from "./lib/places.mjs";
@@ -580,11 +581,28 @@ function kitMenu() {
         value: CATEGORY + category,
         search: category,
       })),
+      { label: "🔎 any item…  → search every item and block by name", value: ANY_ITEM, search: "any item" },
       ...kits.map((kit) => ({ label: `${kit.emoji} ${kit.name}`, value: kit.name, state: dim(kit.category), hidden: true })),
       ...typeChoices(kits),
     ],
-    (value) => openKit(kits, value, kitMenu),
+    (value) => (value === ANY_ITEM ? itemSearch() : openKit(kits, value, kitMenu)),
     { more: (value) => openKit(kits, value, kitMenu, true) },
+  );
+}
+
+const ANY_ITEM = "\u0000any"; // the "any item" choice in the kit menu
+
+/** The "any item" choice: ask what to look for, then list what matches (the first 40) to give. Every item is a kit called item:<name>. @param {string} [text] */
+function itemSearch(text) {
+  const ask = () => void (input = { prompt: "Find an item by name (oak stairs):", text: text ?? "", then: (typed) => typed && itemSearch(typed) });
+  if (text === undefined) return ask();
+  const { items, total } = searchItems(text, 40);
+  if (!items.length) return tell(`No item has "${text}" in its name. Try k again.`, S.yellow);
+  pick(
+    total > items.length ? `${total} items match "${text}": the first ${items.length}` : `${total} item${total === 1 ? "" : "s"} match "${text}"`,
+    items.map((name) => ({ label: `📦 ${name}`, value: ITEM_PREFIX + name })),
+    giveKit,
+    { back: ask },
   );
 }
 
