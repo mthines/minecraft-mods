@@ -745,6 +745,8 @@ function optionsMenu(index = 0) {
     ["Find a place… (stronghold, fortress, …)", undefined, () => commands.j()],
     ["Server command…", undefined, () => commands.c()],
     ["Mods", undefined, () => commands.m()],
+    ["Doctor: what's wrong? (checks Colima, Docker, the server)", undefined, () => mc(["doctor"], (ok) => ok || askDoctorFix())],
+    ["Doctor: let Claude fix it", undefined, () => void (confirm = { question: "Let Claude fix what the doctor finds? It may restart Colima or the server, which kicks everyone.", then: () => mc(["doctor", "--fix"]) })],
     ["Update Minecraft (so updated devices can join)", undefined, () => void (confirm = { question: `Update the server to the newest Minecraft? It restarts twice. ${KICK}`, then: () => mc(["update"]) })],
   ];
   pick(
@@ -757,6 +759,11 @@ function optionsMenu(index = 0) {
     },
   );
   if (picker) picker.index = index;
+}
+
+/** After a doctor run that found problems: offers to let Claude fix them. */
+function askDoctorFix() {
+  confirm = { question: "The doctor found problems. Let Claude fix them? It may restart Colima or the server, which kicks everyone.", then: () => mc(["doctor", "--fix"]) };
 }
 
 /** @type {Record<string, () => void>} */

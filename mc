@@ -15,7 +15,9 @@ Server
                          Keys run commands: k kit, t test, w world, n NPC, d day, e kill enemies, a reload, r restart, and o options:
                          whether saves go to the server and reload or restart it, kit crafting, peace, fall damage, PvP, invincible, a server command, mods
   stop                   Stop the server
-  restart                Restart the server, to load changed add-ons
+  doctor [--fix]         Check Colima, Docker, the server and the add-ons, and say what's wrong and how to fix it.
+                         --fix asks Claude to fix what it finds
+  restart               Restart the server, to load changed add-ons
   reload                 Reload scripts and functions without kicking anyone (other changes need: mc restart)
   status                 Show whether the server is running and accepting joins
   update                 Update the server to the newest Minecraft, to match devices
@@ -363,6 +365,7 @@ case "${1:-help}" in
     "$0" start
     exec npm run --silent watch
     ;;
+  doctor) shift; exec node tools/doctor.mjs "$@" ;;
   stop) docker compose -p server stop ;;
   restart)
     ensure_beta_apis
