@@ -102,6 +102,10 @@ flowchart LR
   E --> F["🎮 Everyone plays,<br/>on any device"]
 ```
 
+## Kit menu on the iPad
+
+`./mc dev` starts a touch-screen version of the `k` menu too (or `./mc web` on its own; `npm run web:dev` while changing it). It has the same kits and categories, with a different picture on every tile for kids who can't read yet, plus tabs for day, kill enemies, clear backpack, finding a place, and a Game tab with peace mode, invincible, fall damage, PvP, keep inventory and switching worlds. The address shows in mc dev's status bar, like `http://192.168.1.20:8080`: open it in Safari on the iPad (same wifi), then Share → Add to Home Screen to make it an app. There is no login, so anyone on your wifi can use it, and switching worlds restarts the server. Over plain http the app needs the server running (no offline mode).
+
 ## Why it works for a family
 
 - **Kids make the mods, by talking.** With [Kidex](https://github.com/mthines/kidex) (`./mc kidex`), a kid presses space and says what they want. Kidex asks a question or two with big buttons, reads its plan out loud, and builds once they say 👍. They watch the files appear, answer a quiz while they wait, and get confetti when it works. Grown-ups use Claude Code in the same folder.

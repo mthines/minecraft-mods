@@ -8,16 +8,22 @@
     "dev": "./mc dev",
     "new": "node tools/new-addon.mjs",
     "validate": "node tools/validate.mjs",
-    "test": "node --test \"addons/**/*.test.mjs\" \"tools/**/*.test.mjs\"",
+    "test": "node --test \"addons/**/*.test.mjs\" \"tools/**/*.test.mjs\" \"web/**/*.test.mjs\"",
     "build": "node tools/validate.mjs && node tools/build.mjs",
     "deploy": "node tools/validate.mjs && node tools/deploy.mjs",
     "watch": "node tools/watch.mjs",
-    "e2e": "node tools/e2e.mjs"
+    "e2e": "node tools/e2e.mjs",
+    "web": "vite build --logLevel warn --config web/vite.config.js && node tools/web.mjs",
+    "web:dev": "node tools/web-dev.mjs"
   },
   "devDependencies": {
     "@minecraft/server": "2.8.0",
     "@minecraft/server-gametest": "1.0.0-beta.1.26.52-stable",
-    "prismarine-nbt": "2.8.0"
+    "@vitejs/plugin-react": "^6.2.1",
+    "prismarine-nbt": "2.8.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "vite": "^8.3.6"
   },
   "engines": {
     "node": ">=20"

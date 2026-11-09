@@ -6,6 +6,9 @@ import { join } from "node:path";
 import { promisify } from "node:util";
 import { ADDONS_DIR, ROOT } from "./lib/addons.mjs";
 import { CATEGORIES, menuKits } from "./lib/kits.mjs";
+import { lanUrls } from "./lib/lan.mjs";
+import { PLACES } from "./lib/places.mjs";
+import { terminalIcon, typeIcon } from "../web/src/icons.js";
 import { recentInstructions } from "./lib/npc-history.mjs";
 import { currentWorld } from "./lib/world.mjs";
 import { onSave, sendSaves, waiting, watchAddons } from "./watch.mjs";
@@ -41,7 +44,7 @@ const serverLog = [];
 let view = "activity";
 let scroll = 0; // rows scrolled up from the newest line
 /** @typedef {{ more?: (value: string) => void, moreLabel?: string, back?: () => void }} PickExtras → opens more for a choice (moreLabel says what, in the hints), ← goes back */
-/** @typedef {{ label: string, value: string, state?: [string, (s: string) => string], hidden?: boolean, search?: string }} Choice state: shown at the right, like "● on"; hidden: only shown when something is typed; search: what typing matches, if not the label */
+/** @typedef {{ label: string, value: string, icon?: { text: string, color?: number }, state?: [string, (s: string) => string], hidden?: boolean, search?: string }} Choice icon: drawn before the label (the web menu's pictures: an emoji, or glyphs in a color); state: shown at the right, like "● on"; hidden: only shown when something is typed; search: what typing matches, if not the label */
 /** @type {null | { title: string, choices: Choice[], filter: string, number: string, index: number, then: (value: string) => void } & PickExtras} number: digits typed so far */
 let picker = null;
 /** @type {null | { row: number, first: number, count: number, left: number, right: number }} where the picker's choices are on screen (1-based, like mouse clicks), for clicking them */
@@ -194,6 +197,7 @@ function statusSegments() {
     [server.showCoordinates === undefined ? "?" : server.showCoordinates ? "on" : "off", S.bold],
     ["   Kit crafting ", S.dim],
     [kitCraft ? "on" : "off", S.bold],
+    ...(/** @type {Segment[]} */ (webUrl ? [["   iPad ", S.dim], [webUrl, S.bold]] : [])),
     ["   Saves ", S.dim],
     ...saveSegments(),
     ...(/** @type {Segment[]} */ (action ? [["   running: ", S.dim], [`mc ${action.name}`, S.yellow]] : [])),
@@ -280,12 +284,12 @@ function drawPicker(body, width) {
     left + S.dim(`╭${"─".repeat(boxWidth - 2)}╮`),
     left + S.dim("│") + fit([[` ${picker.title}`, S.bold], ...filter], boxWidth - 2) + S.dim("│"),
     ...(choices.length ? [] : [left + S.dim("│") + fit([["   nothing matches", S.dim]], boxWidth - 2) + S.dim("│")]),
-    ...choices.slice(first, first + visible).map(({ label, state }, i) => {
+    ...choices.slice(first, first + visible).map(({ label, state, icon }, i) => {
       const chosen = first + i === picker?.index;
       const style = chosen ? S.tab : plain;
       const key = String(first + i + 1).padStart(String(choices.length).length);
       /** @type {Segment[]} */
-      const row = [[`${chosen ? " ▸" : "  "} ${key} ${label}`, style]];
+      const row = [[`${chosen ? " ▸" : "  "} ${key} `, style], ...(icon ? [[icon.text, icon.color === undefined ? style : ansi(`38;5;${icon.color}${chosen ? ";46" : ""}`)], [" ", style]] : []), [label, style]];
       if (state) row.push([" ".repeat(Math.max(1, boxWidth - 3 - len(row) - [...state[0]].length)), style], [state[0], chosen ? S.tab : state[1]]);
       return left + S.dim("│") + fit(row, boxWidth - 2, style) + S.dim("│");
     }),
@@ -619,7 +623,10 @@ function categoryMenu(category) {
  */
 const typeChoices = (kits) =>
   kits.flatMap(({ name, emoji, types = [] }) =>
-    types.map((type) => ({ label: `└ ${emoji} ${type}`, value: `${name}-${type}`, search: `${name}-${type}`, state: dim(name), hidden: true })),
+    types.map((type) => {
+      const icon = terminalIcon(typeIcon(name, type) ?? emoji);
+      return { label: type, icon: { ...icon, text: `└ ${icon.text}` }, value: `${name}-${type}`, search: `${name}-${type}`, state: dim(name), hidden: true };
+    }),
   );
 
 /**
@@ -630,7 +637,7 @@ const typeChoices = (kits) =>
 function openKit(kits, value, here, more = false) {
   if (value.startsWith(CATEGORY)) return categoryMenu(value.slice(CATEGORY.length));
   const kit = kits.find(({ name }) => name === value) ?? (more ? kits.find(({ name, types }) => types?.some((type) => value === `${name}-${type}`)) : undefined);
-  if (kit?.types) return pick(`Which ${kit.name}?`, kit.types.map((type) => ({ label: type, value: `${kit.name}-${type}` })), giveKit, { back: here });
+  if (kit?.types) return pick(`Which ${kit.name}?`, kit.types.map((type) => ({ label: type, icon: terminalIcon(typeIcon(kit.name, type) ?? kit.emoji), value: `${kit.name}-${type}` })), giveKit, { back: here });
   if (more) return here();
   giveKit(value);
 }
@@ -693,24 +700,6 @@ function giveKit(kit) {
   pick(`Give ${kit} to`, [everyone, ...[...server.players].map((p) => ({ label: p, value: p }))], (who) => mc(["kit", kit, who, ...craft]));
 }
 
-/** What the j key finds with /locate, as each player's way there. */
-const PLACES = [
-  ["🟢 stronghold (the End portal)", "stronghold"],
-  ["🔥 fortress (Nether: blazes for blaze rods)", "fortress"],
-  ["🐷 bastion (Nether: piglins and gold)", "bastion_remnant"],
-  ["🏘️ village", "village"],
-  ["🗝️ trial chambers", "trial_chambers"],
-  ["🌀 ruined portal", "ruined_portal"],
-  ["⛏️ mineshaft", "mineshaft"],
-  ["🚢 shipwreck", "shipwreck"],
-  ["💰 buried treasure", "buried_treasure"],
-  ["🌊 ocean monument", "monument"],
-  ["🏰 woodland mansion", "mansion"],
-  ["🏹 pillager outpost", "pillager_outpost"],
-  ["🏺 trail ruins", "trail_ruins"],
-  ["💀 ancient city", "ancient_city"],
-  ["🌌 end city (the End)", "end_city"],
-];
 
 /** The j key: tells players where the nearest place is from where each one stands. */
 function placeMenu() {
@@ -922,8 +911,35 @@ function keysIn(data) {
 
 // ── Start and stop ─────────────────────────────────────────────────────────
 
+/** @type {import("node:child_process").ChildProcess | undefined} the kit menu for touch screens (tools/web.mjs) */
+let webChild;
+let webUrl = "";
+
+/** Builds web/ and serves it (./mc web) for the iPad, for as long as mc dev runs. */
+async function startKitMenu() {
+  const port = Number(process.env.PORT ?? 8080);
+  try {
+    await run("npx", ["vite", "build", "--logLevel", "warn", "--config", "web/vite.config.js"], { cwd: ROOT });
+  } catch (error) {
+    return note(`✗ The kit menu for the iPad didn't build: ${String(error.stderr || error.message).trim().split("\n")[0]}`);
+  }
+  webChild = spawn(process.execPath, ["tools/web.mjs"], { cwd: ROOT, stdio: ["ignore", "ignore", "pipe"], env: { ...process.env, PORT: String(port) } });
+  let said = "";
+  webChild.stderr?.on("data", (chunk) => (said += chunk));
+  webChild.on("exit", (code) => {
+    if (code) note(`✗ The kit menu for the iPad stopped: ${said.trim().split("\n")[0] || `exit ${code}`}`);
+    webUrl = "";
+    webChild = undefined;
+    draw();
+  });
+  webUrl = lanUrls(port)[0] ?? `http://localhost:${port}`;
+  note(`✓ Kit menu for the iPad: ${webUrl} (Share → Add to Home Screen)`);
+  draw();
+}
+
 function quit() {
   queue.length = 0;
+  webChild?.kill();
   action?.child.kill();
   follower?.kill();
   out.write("\x1b[?1000l\x1b[?1006l\x1b[?25h\x1b[?1049l");
@@ -948,6 +964,7 @@ process.on("uncaughtException", (e) => {
 });
 setInterval(refreshStatus, 2000);
 refreshStatus();
+startKitMenu();
 
 mc(["start"], (ok) => {
   if (!ok) return note("✗ The server didn't start. Fix what it says above, then run mc dev again.");

@@ -56,15 +56,15 @@ export const TOOLS_EMOJI = "💎";
  */
 export const CATEGORIES = { materials: "🏠", tools: "🔨", armor: "🦺", weapons: "🏹", mods: "🧩", more: "🎒" };
 
-/** @typedef {{ name: string, emoji: string, label?: string, category: string, types?: string[] }} MenuKit */
+/** @typedef {{ name: string, emoji: string, label?: string, about?: string, category: string, types?: string[], craft?: boolean }} MenuKit */
 
 /** Every kit for mc dev's kit menu, the diamond tools first: what it shows, its category, and its types (for kits like wood). @returns {MenuKit[]} */
 export function menuKits() {
   return [
-    { name: "tools", emoji: TOOLS_EMOJI, label: "diamond tools", category: "tools" },
+    { name: "tools", emoji: TOOLS_EMOJI, label: "diamond tools", about: "A diamond sword, pickaxe, axe, shovel and hoe.", category: "tools" },
     ...kitFiles().map(({ name, path }) => {
-      const { emoji = "  ", label, category, types } = read(path);
-      return { name, emoji, label, category: category ?? (path.startsWith(KITS_DIR) ? "more" : "mods"), types: types && Object.keys(types) };
+      const { emoji = "  ", label, about, category, types, craft } = read(path);
+      return { name, emoji, label, about, craft: Boolean(craft), category: category ?? (path.startsWith(KITS_DIR) ? "more" : "mods"), types: types && Object.keys(types) };
     }),
   ];
 }

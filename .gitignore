@@ -12,3 +12,4 @@ server/npc-history.json
 
 # Agent notes (plans, handoffs) stay on this computer
 .agent/
+web/dist/

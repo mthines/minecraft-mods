@@ -44,6 +44,7 @@ Worlds (each one is saved; switch back any time)
   world delete <name>    Delete a world for good
 
 In the game
+  web                    Kit menu for touch screens (an iPad): kits, day, enemies, find a place. Add to Home Screen to use it as an app
   kit                    Pick a kit from a list and give it to everyone online
   kit tools [player]     Give diamond tools (to everyone online, or one player)
   kit <kit> [player]     Give what you need to try a mod (its kit.json), one of its extra kits, like weapons-ammo,
@@ -366,6 +367,10 @@ case "${1:-help}" in
     exec npm run --silent watch
     ;;
   doctor) shift; exec node tools/doctor.mjs "$@" ;;
+  web)
+    # A touch-screen kit menu for the iPad on the same wifi (tools/web.mjs, web/).
+    exec npm run --silent web
+    ;;
   stop) docker compose -p server stop ;;
   restart)
     ensure_beta_apis

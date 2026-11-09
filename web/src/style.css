@@ -1,0 +1,56 @@
+:root { color-scheme: dark; --bg: #2b2b2b; --card: #3c3c3c; --hi: #5b8731; --text: #fff; --dim: #aaa; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 18px/1.3 ui-rounded, system-ui, sans-serif; -webkit-user-select: none; user-select: none; overscroll-behavior: none; }
+.app { min-height: 100dvh; padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) calc(110px + env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); }
+header { position: sticky; top: 0; background: var(--bg); padding: 12px 0 8px; z-index: 1; display: grid; gap: 10px; }
+.row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+h1 { margin: 0; font-size: 28px; text-transform: capitalize; flex: 1 1 auto; }
+input { flex: 0 1 260px; font: inherit; padding: 12px 16px; border-radius: 14px; border: 2px solid #555; background: #222; color: var(--text); -webkit-user-select: text; user-select: text; }
+button { font: inherit; color: inherit; border: 0; cursor: pointer; touch-action: manipulation; }
+.back { width: 56px; height: 56px; border-radius: 16px; background: var(--card); font-size: 28px; }
+.chips { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+.label, .dim { color: var(--dim); white-space: nowrap; }
+.chip { padding: 12px 18px; border-radius: 999px; background: var(--card); white-space: nowrap; min-height: 48px; }
+.chip.on { background: var(--hi); font-weight: 700; }
+.craft { margin-left: auto; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; padding-top: 8px; }
+.tile { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 150px; padding: 14px; border-radius: 22px; background: var(--card); text-align: center; transition: transform .08s; }
+.tile:active { transform: scale(.94); background: var(--hi); }
+.emoji { font-size: 54px; line-height: 1.1; }
+.name { font-size: 20px; font-weight: 700; text-transform: capitalize; overflow-wrap: anywhere; }
+.sub { font-size: 14px; color: var(--dim); overflow-wrap: anywhere; }
+.more { position: absolute; top: 8px; right: 14px; font-size: 26px; color: var(--dim); }
+.empty { text-align: center; color: var(--dim); margin-top: 60px; }
+.toast { position: fixed; left: 50%; bottom: calc(100px + env(safe-area-inset-bottom)); transform: translateX(-50%); max-width: calc(100vw - 32px); padding: 16px 26px; border-radius: 18px; background: var(--hi); font-weight: 700; box-shadow: 0 6px 24px #0008; }
+.toast.bad { background: #a33; }
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } }
+.tile.danger { background: #a33; }
+nav { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 8px; padding: 8px max(16px, env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)); background: #1e1e1e; z-index: 2; }
+nav button { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px; min-height: 64px; border-radius: 16px; background: transparent; color: var(--dim); font-weight: 700; }
+nav button span { font-size: 28px; }
+nav button.on { background: var(--card); color: var(--text); }
+.shape { display: block; width: var(--icon, 56px); height: var(--icon, 56px); }
+.emoji { white-space: nowrap; }
+
+/* Phones: the header scrolls away with the tiles (more room for kits), smaller tiles, two to a row. */
+@media (max-width: 600px) {
+  :root { --icon: 44px; }
+  html, body { font-size: 16px; }
+  header { position: static; padding-top: 8px; gap: 8px; }
+  h1 { font-size: 24px; flex: 1 1 auto; min-width: 0; }
+  input { flex: 1 1 100%; padding: 10px 14px; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .tile { min-height: 124px; padding: 10px; border-radius: 18px; }
+  .name { font-size: 18px; }
+  .sub { font-size: 13px; }
+  .more { top: 6px; right: 10px; }
+  .chip { padding: 10px 14px; min-height: 44px; }
+  .craft { margin-left: 0; }
+  nav button { min-height: 58px; padding: 4px; }
+  nav button span { font-size: 24px; }
+}
+.section { grid-column: 1 / -1; margin: 10px 0 0; font-size: 22px; }
+.tile.on { background: #3f5a25; outline: 3px solid var(--hi); }
+.tile.here { outline: 3px solid #e6c34a; }
+.badge { position: absolute; top: 8px; left: 10px; font-size: 13px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: #555; }
+.tile.on .badge { background: var(--hi); }
