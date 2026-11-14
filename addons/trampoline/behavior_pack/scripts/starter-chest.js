@@ -45,8 +45,8 @@ function putInSlot(container, item, from) {
   return false;
 }
 
-// The first time each player joins: power tools in item bar slots 1-3, the hand lantern in the shield hand, golden feathers in the backpack (the double-jump mod puts those there),
-// and a chest next to them with the heavy machines, weapons and ammo.
+// The first time each player joins: power tools and the fill bucket in the item bar, the hand lantern in the shield hand, golden feathers in the backpack (the double-jump mod puts those there),
+// and a chest next to them with the heavy machines, a bed, weapons and ammo.
 world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
   if (!initialSpawn || !player?.isValid || player.getDynamicProperty(GOT_KIT)) return; // isValid: they may have left already
   if (player.hasTag("family:npc")) return; // NPCs (the npc mod) don't need one
@@ -68,11 +68,11 @@ world.afterEvents.playerSpawn.subscribe(({ player, initialSpawn }) => {
     spot.dimension.setBlockType(spot.location, "minecraft:chest");
     const chest = spot.getComponent("minecraft:inventory")?.container;
     for (const item of items) chest?.addItem(item);
-    player.sendMessage("§aYou start with §epower tools in slots 1-3, a lantern in your shield hand§a (and golden feathers in your backpack). A chest appeared next to you with §eheavy machines, weapons and ammo§a!");
+    player.sendMessage("§aYou start with §epower tools and a fill bucket in your item bar, a lantern in your shield hand§a (and golden feathers in your backpack). A chest appeared next to you with §eheavy machines, a bed, weapons and ammo§a!");
   } else {
     // Nowhere flat to put a chest (in water, say): straight into their pockets instead.
     for (const item of items) inventory?.addItem(item);
-    player.sendMessage("§aYou start with §epower tools in slots 1-3, a lantern in your shield hand§a (and golden feathers in your backpack), and you got §eheavy machines, weapons and ammo§a too!");
+    player.sendMessage("§aYou start with §epower tools and a fill bucket in your item bar, a lantern in your shield hand§a (and golden feathers in your backpack), and you got §eheavy machines, a bed, weapons and ammo§a too!");
   }
   player.setDynamicProperty(GOT_KIT, true);
   emit("starter_chest.given", { "minecraft.player.name": player.name, "minecraft.starter_chest.placed": Boolean(spot) });

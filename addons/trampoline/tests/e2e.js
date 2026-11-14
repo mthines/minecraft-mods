@@ -51,14 +51,15 @@ export async function aNewPlayerGetsTheirStartingItemsAndAChest(t) {
     const item = container?.getItem(slot);
     if (item) inside.add(item.typeId);
   }
-  const missing = ["family:drill_rig", "family:tree_cutter", "family:pistol", "family:bullet", "family:grenade"].filter((item) => !inside.has(item));
+  const missing = ["family:drill_rig", "family:tree_cutter", "minecraft:bed", "family:pistol", "family:bullet", "family:grenade"].filter((item) => !inside.has(item));
   t.assert(missing.length === 0, `The starter chest is missing ${missing.join(", ")}`);
-  const unwanted = ["minecraft:slime", "family:drill", "family:golden_feather", "family:hand_lantern"].filter((item) => inside.has(item));
+  const unwanted = ["minecraft:slime", "family:drill", "family:fill_bucket", "family:golden_feather", "family:hand_lantern"].filter((item) => inside.has(item));
   t.assert(unwanted.length === 0, `The starter chest should not have ${unwanted.join(", ")}`);
 
   const inventory = player.getComponent("minecraft:inventory").container;
   const at = (slot) => inventory.getItem(slot)?.typeId;
-  t.assert(at(0) === "family:drill" && at(1) === "family:chainsaw" && at(2) === "family:power_shovel", `Item bar slots 1-3 are ${[0, 1, 2].map(at).join(", ")}`);
+  const bar = [0, 1, 2, 3].map(at);
+  t.assert(["family:drill", "family:chainsaw", "family:power_shovel", "family:fill_bucket"].every((item) => bar.includes(item)), `The item bar has ${bar.join(", ")}`);
   let feathers = 0;
   for (let slot = 0; slot < inventory.size; slot++) {
     if (at(slot) !== "family:golden_feather") continue;

@@ -126,14 +126,14 @@ test("the starter chest has no trampoline blocks", () => {
 });
 
 test("a new player starts with the other mods' items, each in its own place, and the chest fits", () => {
-  const kits = ["heavy-machines/kit.json", "weapons/kit.json", "weapons/kit-ammo.json"];
+  const kits = ["heavy-machines/kit.json", "../kits/bed.json", "weapons/kit.json", "weapons/kit-ammo.json"];
   const names = (/** @type {[string, number][]} */ items) => [...new Set(items.map(([item]) => item))].sort();
   const read = (kit) => {
     const { items, types } = JSON.parse(readFileSync(new URL(`../../${kit}`, import.meta.url), "utf8"));
     return items ?? Object.values(types)[0]; // a kit with types gives its first type
   };
   assert.deepEqual(names(CHEST_KIT), names(kits.flatMap(read)));
-  assert.deepEqual(names(HOTBAR_KIT), names(read("power-tools/kit.json")));
+  assert.deepEqual(names(HOTBAR_KIT), names([...read("power-tools/kit.json"), ...read("fill-bucket/kit.json")]));
   assert.deepEqual(names([[OFFHAND_ITEM, 1]]), names(read("lantern/kit.json")));
   const chest = starterChest();
   assert.ok(chest.every(({ amount }) => amount <= 64), "each slot holds at most one stack");

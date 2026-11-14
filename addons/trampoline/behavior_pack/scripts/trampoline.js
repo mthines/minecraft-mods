@@ -131,13 +131,14 @@ export function isOverBed(t, x, z) {
 
 /**
  * What a new player gets, and where it goes (trampoline.test.mjs checks the kits stay the same as the mods' kits):
- * power tools in item bar slots 1-3, the hand lantern in the shield hand (golden feathers go in the backpack: the double-jump mod does that),
- * and in the chest the heavy machines, weapons and ammo. No trampoline blocks: they build those themselves.
+ * power tools and the fill bucket in the item bar, the hand lantern in the shield hand (golden feathers go in the backpack: the double-jump mod does that),
+ * and in the chest the heavy machines, a bed, weapons and ammo. No trampoline blocks: they build those themselves.
  */
 export const HOTBAR_KIT = [
   ["family:drill", 1],
   ["family:chainsaw", 1],
   ["family:power_shovel", 1],
+  ["family:fill_bucket", 1],
 ];
 export const OFFHAND_ITEM = "family:hand_lantern";
 export const CHEST_KIT = [
@@ -145,6 +146,7 @@ export const CHEST_KIT = [
   ["family:tree_cutter", 1],
   ["family:big_drill_head", 1],
   ["family:giant_drill_head", 1],
+  ["minecraft:bed", 1],
   ["family:pistol", 1],
   ["family:rifle", 1],
   ["family:machine_gun", 1],

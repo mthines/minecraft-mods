@@ -9,13 +9,14 @@ Bigger trampolines bounce you higher.
 
 The first time you join a world with this mod you get:
 
-- **in the item bar, slots 1-3:** a drill, a chainsaw, and a power shovel
+- **in the item bar:** a drill, a chainsaw, a power shovel (slots 1-3), and the fill bucket
 - **in your shield hand:** a hand lantern
 - **in your backpack:** 10 golden feathers to fly (from the double-jump mod, which also tops them up when you respawn)
 
-And a chest appears next to you with the same things as the kits of heavy-machines and weapons:
+And a chest appears next to you with the same things as the kits of heavy-machines, bed and weapons:
 
 - heavy machines: a drill rig, a tree cutter, and the big and giant drill heads
+- a bed
 - weapons: a pistol, a rifle, and a machine gun, with 320 bullets and 64 grenades
 - missiles and a magazine
 
