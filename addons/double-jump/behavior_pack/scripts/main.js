@@ -119,7 +119,15 @@ world.afterEvents.playerSpawn.subscribe(({ player }) => {
   if (!player?.isValid || player.hasTag("family:npc")) return; // isValid: they may have left already
   const missing = SPAWN_FEATHERS - feathers(player);
   if (missing <= 0) return;
-  player.getComponent("minecraft:inventory")?.container?.addItem(new ItemStack(FEATHER, missing));
+  const inventory = player.getComponent("minecraft:inventory")?.container;
+  if (inventory) {
+    // Into the backpack (slots 9 and up), so the item bar stays free for tools; the item bar only if the backpack is full.
+    const stack = new ItemStack(FEATHER, missing);
+    let slot = 9;
+    while (slot < inventory.size && inventory.getItem(slot)) slot++;
+    if (slot < inventory.size) inventory.setItem(slot, stack);
+    else inventory.addItem(stack);
+  }
   player.onScreenDisplay.setActionBar(`§6${SPAWN_FEATHERS} golden feathers: jump in the air to fly!`);
   emit("double_jump.spawn_feathers", { "minecraft.player.name": player.name, "minecraft.feathers.given": missing });
 });

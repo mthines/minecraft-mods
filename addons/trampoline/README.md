@@ -5,23 +5,23 @@ Bigger trampolines bounce you higher.
 
 ![The four trampoline patterns, from 2×2 to 5×5, and how high each one bounces](./patterns.png)
 
-## The starter chest
+## What new players start with
 
-The first time you join a world with this mod, a chest appears next to you with:
+The first time you join a world with this mod you get:
 
-- 100 slime blocks
-- 40 planks: oak, birch, spruce, and dark oak
-- an iron shovel to dig the hole
+- **in the item bar, slots 1-3:** a drill, a chainsaw, and a power shovel
+- **in your shield hand:** a hand lantern
+- **in your backpack:** 10 golden feathers to fly (from the double-jump mod, which also tops them up when you respawn)
 
-And to try the other mods right away (the same as their kits):
+And a chest appears next to you with the same things as the kits of heavy-machines and weapons:
 
-- power tools: a drill, a chainsaw, and a power shovel
-- 10 golden feathers to fly
+- heavy machines: a drill rig, a tree cutter, and the big and giant drill heads
 - weapons: a pistol, a rifle, and a machine gun, with 320 bullets and 64 grenades
+- missiles and a magazine
 
-That's enough for the biggest 10×10 trampoline, or lots of small ones.
-Everyone gets their own chest, once per world.
-If there's no flat spot next to you, everything goes straight into your inventory. A mod that isn't installed just leaves its things out.
+There are no trampoline blocks: gather slime and planks and build your own.
+Everyone gets their own, once per world.
+If there's no flat spot next to you, the chest's things go straight into your inventory. A mod that isn't installed just leaves its things out.
 
 ## How to build one
 

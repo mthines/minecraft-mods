@@ -35,7 +35,7 @@ export async function theBlackTrampolineStillBounces(t) {
   await t.until(() => player.location.y > startY + 2, "The player didn't bounce on the black trampoline");
 }
 
-export async function aNewPlayerGetsAStarterChestWithTheOtherModsToo(t) {
+export async function aNewPlayerGetsTheirStartingItemsAndAChest(t) {
   const player = t.player("Newcomer", -4, -4);
   const chest = () => {
     const { x, y, z } = player.location;
@@ -51,6 +51,21 @@ export async function aNewPlayerGetsAStarterChestWithTheOtherModsToo(t) {
     const item = container?.getItem(slot);
     if (item) inside.add(item.typeId);
   }
-  const missing = ["minecraft:slime", "family:drill", "family:golden_feather", "family:pistol", "family:bullet", "family:grenade"].filter((item) => !inside.has(item));
+  const missing = ["family:drill_rig", "family:tree_cutter", "family:pistol", "family:bullet", "family:grenade"].filter((item) => !inside.has(item));
   t.assert(missing.length === 0, `The starter chest is missing ${missing.join(", ")}`);
+  const unwanted = ["minecraft:slime", "family:drill", "family:golden_feather", "family:hand_lantern"].filter((item) => inside.has(item));
+  t.assert(unwanted.length === 0, `The starter chest should not have ${unwanted.join(", ")}`);
+
+  const inventory = player.getComponent("minecraft:inventory").container;
+  const at = (slot) => inventory.getItem(slot)?.typeId;
+  t.assert(at(0) === "family:drill" && at(1) === "family:chainsaw" && at(2) === "family:power_shovel", `Item bar slots 1-3 are ${[0, 1, 2].map(at).join(", ")}`);
+  let feathers = 0;
+  for (let slot = 0; slot < inventory.size; slot++) {
+    if (at(slot) !== "family:golden_feather") continue;
+    t.assert(slot >= 9, `Golden feathers are in item bar slot ${slot + 1}`);
+    feathers += inventory.getItem(slot).amount;
+  }
+  t.assert(feathers > 0, "No golden feathers in the backpack");
+  const offhand = player.getComponent("minecraft:equippable").getEquipment("Offhand");
+  t.assert(offhand?.typeId === "family:hand_lantern", `The shield hand holds ${offhand?.typeId}`);
 }

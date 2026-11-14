@@ -129,31 +129,22 @@ export function isOverBed(t, x, z) {
   return x >= t.x && x < t.x + t.size && z >= t.z && z < t.z + t.size;
 }
 
-const WOODS = ["oak", "birch", "spruce", "dark_oak"];
-
 /**
- * What's in the starter chest: enough slime and planks for the biggest trampoline, and a shovel to dig the hole.
- * @returns {{ item: string, amount: number }[]}
+ * What a new player gets, and where it goes (trampoline.test.mjs checks the kits stay the same as the mods' kits):
+ * power tools in item bar slots 1-3, the hand lantern in the shield hand (golden feathers go in the backpack: the double-jump mod does that),
+ * and in the chest the heavy machines, weapons and ammo. No trampoline blocks: they build those themselves.
  */
-export function starterKit() {
-  const biggest = Math.max(...Object.keys(SIZES).map(Number));
-  return [
-    ...stacks("minecraft:slime", biggest * biggest),
-    // One kind of wood per side of the edge.
-    ...WOODS.flatMap((wood) => stacks(`minecraft:${wood}_planks`, biggest)),
-    { item: "minecraft:iron_shovel", amount: 1 },
-  ];
-}
-
-/**
- * The rest of the starter chest: the same as the kits of power-tools, double-jump, weapons, and weapons-ammo
- * (trampoline.test.mjs checks they stay the same), so a new player can try those mods right away.
- */
-export const OTHER_MODS_KIT = [
+export const HOTBAR_KIT = [
   ["family:drill", 1],
   ["family:chainsaw", 1],
   ["family:power_shovel", 1],
-  ["family:golden_feather", 10],
+];
+export const OFFHAND_ITEM = "family:hand_lantern";
+export const CHEST_KIT = [
+  ["family:drill_rig", 1],
+  ["family:tree_cutter", 1],
+  ["family:big_drill_head", 1],
+  ["family:giant_drill_head", 1],
   ["family:pistol", 1],
   ["family:rifle", 1],
   ["family:machine_gun", 1],
@@ -163,8 +154,8 @@ export const OTHER_MODS_KIT = [
   ["family:missile", 64],
 ];
 
-/** Everything in the starter chest, in stacks. */
-export const starterChest = () => [...starterKit(), ...OTHER_MODS_KIT.flatMap(([item, amount]) => stacks(item, amount))];
+/** Everything that goes in the starter chest, in stacks. */
+export const starterChest = () => CHEST_KIT.flatMap(([item, amount]) => stacks(item, amount));
 
 /**
  * A chest slot holds at most 64 blocks, so split big amounts into full stacks.

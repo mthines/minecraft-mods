@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { FINISHED_EDGE, OTHER_MODS_KIT, SIZES, covers, edgeBlocks, findTrampoline, starterChest, starterKit } from "../behavior_pack/scripts/trampoline.js";
+import { CHEST_KIT, FINISHED_EDGE, HOTBAR_KIT, OFFHAND_ITEM, SIZES, covers, edgeBlocks, findTrampoline, starterChest } from "../behavior_pack/scripts/trampoline.js";
 
 /** A pretend world: a map from "x,y,z" to block type. */
 function world() {
@@ -118,30 +118,25 @@ test("a finished trampoline's black edge still counts as a trampoline", () => {
   assert.equal(findTrampoline(w.getType, 10, 64, 20)?.size, size);
 });
 
-test("the starter chest holds enough to build the biggest trampoline", () => {
-  const biggest = Math.max(...Object.keys(SIZES).map(Number));
-  const kit = starterKit();
-  const count = (match) => kit.filter(({ item }) => match(item)).reduce((n, { amount }) => n + amount, 0);
-  assert.equal(count((item) => item === "minecraft:slime"), biggest * biggest);
-  assert.ok(count((item) => item.endsWith("_planks")) >= 4 * biggest);
-  assert.ok(kit.every(({ amount }) => amount <= 64), "each slot holds at most one stack");
-  assert.ok(kit.length <= 27, "everything fits in one chest");
+test("the starter chest has no trampoline blocks", () => {
+  const items = starterChest().map(({ item }) => item);
+  assert.ok(!items.includes("minecraft:slime"));
+  assert.ok(!items.some((item) => item.endsWith("_planks")));
+  assert.ok(!items.includes("minecraft:iron_shovel"));
 });
 
-test("the starter chest also has the power-tools, double-jump, weapons and weapons-ammo kits, and it all fits", () => {
-  const kits = ["power-tools/kit.json", "double-jump/kit.json", "weapons/kit.json", "weapons/kit-ammo.json"];
-  const total = (/** @type {[string, number][]} */ items) => {
-    const sums = new Map();
-    for (const [item, amount] of items) sums.set(item, (sums.get(item) ?? 0) + amount);
-    return Object.fromEntries([...sums].sort());
-  };
-  // A kit with types (weapons-ammo) gives its first type, all of them, by default.
-  const fromKits = kits.flatMap((kit) => {
+test("a new player starts with the other mods' items, each in its own place, and the chest fits", () => {
+  const kits = ["heavy-machines/kit.json", "weapons/kit.json", "weapons/kit-ammo.json"];
+  const names = (/** @type {[string, number][]} */ items) => [...new Set(items.map(([item]) => item))].sort();
+  const read = (kit) => {
     const { items, types } = JSON.parse(readFileSync(new URL(`../../${kit}`, import.meta.url), "utf8"));
-    return items ?? Object.values(types)[0];
-  });
-  assert.deepEqual(total(OTHER_MODS_KIT), total(fromKits));
+    return items ?? Object.values(types)[0]; // a kit with types gives its first type
+  };
+  assert.deepEqual(names(CHEST_KIT), names(kits.flatMap(read)));
+  assert.deepEqual(names(HOTBAR_KIT), names(read("power-tools/kit.json")));
+  assert.deepEqual(names([[OFFHAND_ITEM, 1]]), names(read("lantern/kit.json")));
   const chest = starterChest();
   assert.ok(chest.every(({ amount }) => amount <= 64), "each slot holds at most one stack");
   assert.ok(chest.length <= 27, `everything fits in one chest (${chest.length} slots)`);
+  for (const [item] of [...HOTBAR_KIT, ["family:golden_feather"], [OFFHAND_ITEM]]) assert.ok(!chest.some((c) => c.item === item), `${item} is not in the chest too`);
 });
