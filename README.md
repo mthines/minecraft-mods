@@ -86,6 +86,13 @@ A wand that turns a creeper into a tame wolf. A pirate ship your friends sail wi
       <sub>Be tiny enough for a 1-block hole, or a giant, for 30 seconds.</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" width="33%" valign="top">
+      <img src="docs/images/items/horde_horn.png" width="64" height="64" alt=""><br>
+      <b><a href="./addons/horde-rounds">Horde rounds</a></b><br>
+      <sub>Blow the horn: a horde marches in. Find the nest it comes from and destroy it to reach the next round.</sub>
+    </td>
+  </tr>
 </table>
 
 And more: [NPCs](./addons/npc) you boss around in plain words (`./mc npc "build a tower next to me"`), [trampolines](./addons/trampoline) you build like a Nether portal, [party commands](./addons/party-commands), a [welcome](./addons/welcome) message, and [game stats](./addons/game-stats) for the family dashboard. The full list is in [What's inside](#whats-inside).

@@ -1,0 +1,14 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": { "identifier": "family:horde_horn" },
+    "tags": ["crafting_table"],
+    "unlock": [{ "item": "minecraft:bone" }],
+    "ingredients": [
+      { "item": "minecraft:bone" },
+      { "item": "minecraft:iron_ingot" },
+      { "item": "minecraft:gunpowder" }
+    ],
+    "result": { "item": "family:horde_horn", "count": 1 }
+  }
+}

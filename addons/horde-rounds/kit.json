@@ -1,0 +1,13 @@
+{
+  "about": "What mc kit horde-rounds gives you: the Horde Horn. Blow it to start round 1: a Horde Nest appears far away and the horde marches in. Hold the horn to sense the nest, destroy it to win the round. Blow again to stop. With --craft, also what crafts another horn.",
+  "emoji": "🧟",
+  "items": [
+    ["family:horde_horn", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:bone", 1],
+    ["minecraft:iron_ingot", 1],
+    ["minecraft:gunpowder", 1]
+  ]
+}

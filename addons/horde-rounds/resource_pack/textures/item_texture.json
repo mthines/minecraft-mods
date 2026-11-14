@@ -1,0 +1,7 @@
+{
+  "resource_pack_name": "horde_rounds",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_horde_horn": { "textures": "textures/items/horde_horn" }
+  }
+}

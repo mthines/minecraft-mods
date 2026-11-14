@@ -1,0 +1,12 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:horde_nest",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/horde_nest" },
+      "geometry": { "default": "geometry.family_horde_nest" },
+      "render_controllers": ["controller.render.default"]
+    }
+  }
+}

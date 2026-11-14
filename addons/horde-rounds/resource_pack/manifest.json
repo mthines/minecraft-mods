@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Horde Rounds Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "9895d0e5-92f7-4b37-91e7-153384e452ba",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "b9872098-ef3f-497c-9d97-8c659a5fdb32",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}
