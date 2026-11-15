@@ -17,6 +17,33 @@ const STAIR_SIDE = 64; // how far along a staircase the bucket looks for the blo
 const STAIR_MAX_NEW = 40; // the most blocks one stair fill adds
 const STAIR_MAX_STEPS = 80; // the most steps it walks, counting blocks that are already there
 
+// The mode says what a click does. Sneak and use the bucket in the air to change it; it is kept per player.
+const MODES = ["auto", "stairs", "wall", "floor"];
+const LABEL = { auto: "Auto", stairs: "Stairs", wall: "Wall", floor: "Floor" };
+const ABOUT = { auto: "guesses: the staircase or the hole", stairs: "builds the staircase on", wall: "fills a wall", floor: "fills a floor or ceiling" };
+const MODE_KEY = "family:bucket_mode";
+/** @type {Map<string, string>} */
+const modes = new Map();
+
+/** @param {import("@minecraft/server").Player} player */
+function modeOf(player) {
+  let mode = modes.get(player.id);
+  if (mode === undefined) {
+    const saved = player.getDynamicProperty(MODE_KEY);
+    mode = typeof saved === "string" && MODES.includes(saved) ? saved : "auto";
+    modes.set(player.id, mode);
+  }
+  return mode;
+}
+
+/** @param {import("@minecraft/server").Player} player */
+function nextMode(player) {
+  const mode = MODES[(MODES.indexOf(modeOf(player)) + 1) % MODES.length];
+  modes.set(player.id, mode);
+  player.setDynamicProperty(MODE_KEY, mode);
+  say(player, `§bFill Bucket mode: §f${LABEL[mode]} §7(${ABOUT[mode]})`);
+}
+
 /** @typedef {{ x: number, y: number, z: number }} Pos */
 /** @typedef {{ cells: Pos[], next: number, place: import("@minecraft/server").BlockPermutation | undefined, dimension: import("@minecraft/server").Dimension, typeId: string, doneAt: number }} Job */
 
@@ -187,6 +214,14 @@ function planStairs(player, block) {
   return { cells, place: last.permutation, typeId: last.typeId, message: `§aBuilt ${cells.length} more blocks of the staircase (stopped: ${why}). Use it in the air within 3 seconds to undo.` };
 }
 
+/** The wall layers to try, best first. @param {number} faceAxis @param {import("@minecraft/server").Player} player @returns {(0 | 2)[]} */
+function wallAxes(faceAxis, player) {
+  if (faceAxis === 0) return [2, 0];
+  if (faceAxis === 2) return [0, 2];
+  const look = player.getViewDirection();
+  return Math.abs(look.x) > Math.abs(look.z) ? [0, 2] : [2, 0];
+}
+
 function ensureTicker() {
   if (ticker !== undefined) return;
   ticker = system.runInterval(() => {
@@ -225,14 +260,16 @@ function fill(player, block, face) {
     return;
   }
   const dimension = block.dimension;
-  const stairs = planStairs(player, block);
+  const mode = modeOf(player);
+  const stairs = mode === "auto" || mode === "stairs" ? planStairs(player, block) : undefined;
   const seed = { x: block.x + normal[0], y: block.y + normal[1], z: block.z + normal[2] };
   const start = dimension.getBlock(seed);
   /** @type {Pos[][]} */
   const closed = [];
-  if (start?.isAir) {
+  if (start?.isAir && mode !== "stairs") {
     const faceAxis = normal.findIndex((v) => v !== 0);
-    for (const axis of layerAxes(faceAxis, player)) {
+    const axes = mode === "floor" ? [1] : mode === "wall" ? wallAxes(faceAxis, player) : layerAxes(faceAxis, player);
+    for (const axis of axes) {
       const cells = flood(dimension, seed, axis);
       if (cells) closed.push(cells);
     }
@@ -240,17 +277,17 @@ function fill(player, block, face) {
   // Two things the bucket could do: build the staircase on, or fill the closed hole. A click does the staircase when there is one;
   // sneaking and clicking does the other. With only one possible, it does that.
   if (!stairs?.cells && closed.length === 0) {
-    say(player, stairs?.message ?? (start?.isAir ? `§eThe hole isn't closed (more than ${MAX_BLOCKS} blocks): close the gaps first` : "§eUse the bucket on the side of a block that faces an empty hole"));
+    say(player, stairs?.message ?? (mode === "stairs" ? "§eThat isn't a staircase: use the bucket on a stair block, or on a staircase you started" : mode === "wall" || mode === "floor" ? `§eThe ${mode} isn't closed (more than ${MAX_BLOCKS} blocks), or you clicked the wrong way: close the gaps first` : start?.isAir ? `§eThe hole isn't closed (more than ${MAX_BLOCKS} blocks): close the gaps first` : "§eUse the bucket on the side of a block that faces an empty hole"));
     return;
   }
-  if (stairs?.cells && stairs.place && stairs.typeId && !(closed.length > 0 && player.isSneaking)) {
+  if (stairs?.cells && stairs.place && stairs.typeId && !(mode === "auto" && closed.length > 0 && player.isSneaking)) {
     const other = closed.length > 0 ? " Sneak and use it to fill the hole instead." : "";
-    queue(player, dimension, stairs.cells, stairs.place, stairs.typeId, block.location, stairs.message + other);
+    queue(player, dimension, stairs.cells, stairs.place, stairs.typeId, block.location, stairs.message + other + ` §7[${LABEL[mode]}]`);
     return;
   }
   const cells = !stairs?.cells && closed.length > 1 && player.isSneaking ? closed[1] : closed[0];
   const other = stairs?.cells ? " Sneak and use it for the staircase." : closed.length > 1 ? " Sneak and use it for the other way." : "";
-  queue(player, dimension, cells, block.permutation, block.typeId, block.location, `§aFilled ${cells.length} blocks! Use it in the air within 3 seconds to undo.${other}`);
+  queue(player, dimension, cells, block.permutation, block.typeId, block.location, `§aFilled ${cells.length} blocks! Use it in the air within 3 seconds to undo.${other} §7[${LABEL[mode]}]`);
 }
 
 /** Puts the blocks to place in the queue, remembered for undo. @param {import("@minecraft/server").Player} player @param {import("@minecraft/server").Dimension} dimension @param {Pos[]} cells @param {import("@minecraft/server").BlockPermutation} place @param {string} typeId @param {Pos} sound @param {string} message */
@@ -288,10 +325,12 @@ world.beforeEvents.playerInteractWithBlock.subscribe(({ player, block, blockFace
 world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
   if (!player || itemStack?.typeId !== BUCKET) return;
   if (system.currentTick - (lastClick.get(player.id) ?? -100) < CLICK_GAP) return; // that was the click on a block
-  undo(player);
+  if (player.isSneaking) nextMode(player); // sneak and use in the air: the next mode
+  else undo(player);
 });
 
 world.afterEvents.playerLeave.subscribe(({ playerId }) => {
   lastFill.delete(playerId);
   lastClick.delete(playerId);
+  modes.delete(playerId);
 });

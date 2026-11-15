@@ -169,3 +169,64 @@ export async function sneakingPicksTheHoleFillInsteadOfTheStairs(t) {
   t.assert(player.useItemInSlotOnBlock(0, t.at(0, 0, 3), Direction.Up), "Couldn't use the bucket");
   await t.until(() => holeBlocks(t).every((b) => b === "minecraft:oak_stairs"), () => `Sneaking should fill the hole: ${holeBlocks(t).join(", ")}`, 40);
 }
+
+/** A 5×5 ring of blocks on the ground in front of the player: a floor with a 3×3 hole. */
+function ring(t) {
+  for (let x = -2; x <= 2; x++) for (let z = 1; z <= 5; z++) if (x === -2 || x === 2 || z === 1 || z === 5) t.place(WALL, x, 0, z);
+}
+const floorHole = (t) => [-1, 0, 1].flatMap((x) => [2, 3, 4].map((z) => typeAt(t, x, 0, z)));
+
+/** Sneak and use in the air `times`: the bucket's mode moves on. */
+async function changeMode(t, player, times) {
+  t.hold(player, "family:fill_bucket");
+  player.isSneaking = true;
+  for (let i = 0; i < times; i++) {
+    await t.wait(10);
+    t.assert(player.useItemInSlot(0), "Couldn't use the bucket in the air");
+  }
+  await t.wait(10);
+  player.isSneaking = false;
+}
+
+async function clickRing(t, player) {
+  player.lookAtBlock(t.at(-2, 0, 3));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(-2, 0, 3), Direction.East), "Couldn't use the bucket on the ring");
+}
+
+export async function floorModeFillsTheFloorRing(t) {
+  ring(t);
+  const player = t.player("Builder");
+  await changeMode(t, player, 3); // auto, stairs, wall, floor
+  await clickRing(t, player);
+  await t.until(() => floorHole(t).every((b) => b === WALL), () => `Floor mode should fill the ring: ${floorHole(t).join(", ")}`, 40);
+}
+
+export async function wallModeDoesNotFillAFloorRing(t) {
+  ring(t);
+  const player = t.player("Builder");
+  await changeMode(t, player, 2); // auto, stairs, wall
+  await clickRing(t, player);
+  await t.wait(40);
+  t.assert(floorHole(t).every((b) => b === "minecraft:air"), `Wall mode filled the floor: ${floorHole(t).join(", ")}`);
+}
+
+export async function stairsModeDoesNotFillAHole(t) {
+  frame(t, false);
+  const player = t.player("Builder");
+  await changeMode(t, player, 1); // auto, stairs
+  await click(t, player);
+  await t.wait(40);
+  t.assert(holeBlocks(t).every((b) => b === "minecraft:air"), `Stairs mode filled the hole: ${holeBlocks(t).join(", ")}`);
+}
+
+export async function sneakAndUseInTheAirDoesNotUndoTheFill(t) {
+  frame(t, false);
+  const player = t.player("Builder");
+  await click(t, player);
+  await t.until(() => holeBlocks(t).every((b) => b === WALL), "The hole wasn't filled", 40);
+  await t.wait(10);
+  player.isSneaking = true;
+  t.assert(player.useItemInSlot(0), "Couldn't use the bucket in the air");
+  await t.wait(30);
+  t.assert(holeBlocks(t).every((b) => b === WALL), "Sneak and use in the air undid the fill: it should change the mode");
+}
