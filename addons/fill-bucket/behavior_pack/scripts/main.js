@@ -1,4 +1,4 @@
-import { BlockPermutation, ItemStack, world, system } from "@minecraft/server";
+import { ItemStack, Player, world, system } from "@minecraft/server";
 
 // Use the Fill Bucket on the inside of a block: the hole it faces is filled with that block, like the paint bucket in Paint.
 // The hole is one flat layer: a wall frame, a floor or ceiling ring, or a line between two posts.
@@ -8,7 +8,7 @@ const BUCKET = "family:fill_bucket";
 const MAX_BLOCKS = 500; // bigger than this is a leak, not a hole: a 20×20 wall is 400
 const RADIUS = 64; // how far from the click the search may go
 const PER_TICK = 25; // blocks placed per tick: a whole fill takes up to 1 second and never lags the server
-const UNDO_TICKS = 60; // 3 seconds, from the last block placed
+const UNDO_TICKS = 200; // 10 seconds, from the last block placed
 const CLICK_GAP = 6; // ticks: one click can arrive as several events
 
 const NORMALS = { Up: [0, 1, 0], Down: [0, -1, 0], North: [0, 0, -1], South: [0, 0, 1], East: [1, 0, 0], West: [-1, 0, 0] };
@@ -18,14 +18,14 @@ const STAIR_MAX_NEW = 40; // the most blocks one stair fill adds
 const STAIR_MAX_STEPS = 80; // the most steps it walks, counting blocks that are already there
 
 // The mode says what a click does, and it is the item in your hand: each mode is its own bucket with its own picture
-// (the plain bucket is Auto; green steps, a blue wall, an orange floor, a purple fence and a teal line are the others), so you can see it without reading.
+// (the plain bucket is Auto; green steps, a blue wall, an orange floor and a teal line are the others), so you can see it without reading.
 // Sneak and use the bucket in the air to swap it for the next one.
-const MODES = ["auto", "stairs", "wall", "floor", "fence", "line"];
-const BUCKETS = { auto: BUCKET, stairs: "family:fill_bucket_stairs", wall: "family:fill_bucket_wall", floor: "family:fill_bucket_floor", fence: "family:fill_bucket_fence", line: "family:fill_bucket_line" };
+const MODES = ["auto", "stairs", "wall", "floor", "line"];
+const BUCKETS = { auto: BUCKET, stairs: "family:fill_bucket_stairs", wall: "family:fill_bucket_wall", floor: "family:fill_bucket_floor", line: "family:fill_bucket_line" };
 /** @type {Record<string, string>} item id → mode */
 const MODE_OF = Object.fromEntries(Object.entries(BUCKETS).map(([mode, id]) => [id, mode]));
-const LABEL = { auto: "Auto", stairs: "Stairs", wall: "Wall", floor: "Floor", fence: "Fence", line: "Line" };
-const ABOUT = { auto: "guesses: the staircase or the hole", stairs: "builds the staircase on", wall: "fills a wall", floor: "fills a floor or ceiling", fence: "builds a fence along the edge", line: "fills a straight line to the next block" };
+const LABEL = { auto: "Auto", stairs: "Stairs", wall: "Wall", floor: "Floor", line: "Line" };
+const ABOUT = { auto: "guesses: the staircase or the hole", stairs: "builds the staircase on", wall: "fills a wall", floor: "fills a floor or ceiling", line: "fills a straight line to the next block" };
 
 /** Swaps the bucket in the player's hand for the next mode's. @param {import("@minecraft/server").Player} player @param {string} mode the mode it is in now */
 function nextMode(player, mode) {
@@ -201,7 +201,7 @@ function planStairs(player, block) {
     if (cells.length >= STAIR_MAX_NEW) { why = `the limit of ${STAIR_MAX_NEW} blocks`; break; }
   }
   if (cells.length === 0) return { message: `§eNothing to add: ${why}` };
-  return { cells, place: last.permutation, typeId: last.typeId, message: `§aBuilt ${cells.length} more blocks of the staircase (stopped: ${why}). Use it in the air within 3 seconds to undo.` };
+  return { cells, place: last.permutation, typeId: last.typeId, message: `§aBuilt ${cells.length} more blocks of the staircase (stopped: ${why}). Hit with it within 10 seconds to undo.` };
 }
 
 /** The wall layers to try, best first. @param {number} faceAxis @param {import("@minecraft/server").Player} player @returns {(0 | 2)[]} */
@@ -210,69 +210,6 @@ function wallAxes(faceAxis, player) {
   if (faceAxis === 2) return [0, 2];
   const look = player.getViewDirection();
   return Math.abs(look.x) > Math.abs(look.z) ? [0, 2] : [2, 0];
-}
-
-const WOODS = /^minecraft:(dark_oak|oak|spruce|birch|jungle|acacia|mangrove|cherry|bamboo|crimson|warped)_/;
-
-/** The fence that goes with a block: spruce planks get a spruce fence, anything else the oak one. @param {string} typeId */
-function fenceFor(typeId) {
-  const wood = WOODS.exec(typeId)?.[1];
-  const id = !wood || wood === "oak" ? "minecraft:fence" : `minecraft:${wood}_fence`;
-  try { return { id, permutation: BlockPermutation.resolve(id) }; } catch { return { id: "minecraft:fence", permutation: BlockPermutation.resolve("minecraft:fence") }; }
-}
-
-/**
- * Fence mode: the blocks of the clicked block's type that are joined to it (side by side, or one step up or down, so a staircase
- * counts) are the area. A fence goes on top of every block that has an open side: around a deck's edge, along both sides of
- * a one block line like a stair line. Blocks with something on top are left out.
- * @param {import("@minecraft/server").Block} block
- * @returns {{ message: string, cells?: Pos[], place?: import("@minecraft/server").BlockPermutation, typeId?: string }}
- */
-function planFence(block) {
-  const dimension = block.dimension;
-  const { typeId } = block;
-  const origin = block.location;
-  const keyOf = (/** @type {Pos} */ c) => ((c.x - origin.x + RADIUS) * SIDE + (c.y - origin.y + RADIUS)) * SIDE + (c.z - origin.z + RADIUS);
-  /** @type {Map<number, boolean>} */
-  const memo = new Map();
-  /** Part of the area: the same kind of block, with free air on top. @param {Pos} c */
-  const member = (c) => {
-    const key = keyOf(c);
-    let known = memo.get(key);
-    if (known === undefined) {
-      try {
-        const here = dimension.getBlock(c);
-        const above = dimension.getBlock({ x: c.x, y: c.y + 1, z: c.z });
-        known = !!here && alike(here.typeId, typeId) && !!above?.isAir;
-      } catch { known = false; }
-      memo.set(key, known);
-    }
-    return known;
-  };
-  const SIDES = [{ x: 1, z: 0 }, { x: -1, z: 0 }, { x: 0, z: 1 }, { x: 0, z: -1 }];
-  /** The area blocks next to `c`, on the same level or one step up or down. @param {Pos} c */
-  const around = (c) => SIDES.map((d) => [0, 1, -1].map((dy) => ({ x: c.x + d.x, y: c.y + dy, z: c.z + d.z })).filter(member));
-
-  if (!member(origin)) return { message: "§eNothing to fence: there is something on top of that block, or it isn't solid" };
-  /** @type {Pos[]} */
-  const area = [origin];
-  const seen = new Set([keyOf(origin)]);
-  for (let head = 0; head < area.length; head++) {
-    for (const side of around(area[head])) {
-      for (const next of side) {
-        if (Math.abs(next.x - origin.x) > RADIUS || Math.abs(next.z - origin.z) > RADIUS) return { message: "§eThat area is too big to fence" };
-        const key = keyOf(next);
-        if (seen.has(key)) continue;
-        seen.add(key);
-        if (area.length >= MAX_BLOCKS) return { message: `§eThat area is too big to fence (more than ${MAX_BLOCKS} blocks)` };
-        area.push(next);
-      }
-    }
-  }
-  const cells = area.filter((c) => around(c).some((side) => side.length === 0)).map((c) => ({ x: c.x, y: c.y + 1, z: c.z }));
-  if (cells.length === 0) return { message: "§eNo edge to fence: the area has no open side" };
-  const fence = fenceFor(typeId);
-  return { cells, place: fence.permutation, typeId: fence.permutation.type.id, message: `§aBuilt ${cells.length} fence posts along the edge. Use it in the air within 3 seconds to undo. §7[Fence]` };
 }
 
 const LINE_MAX = 64; // how far from the clicked block the other end can be
@@ -297,7 +234,7 @@ function planLine(block, normal) {
     }
     if (there.isLiquid) return { message: "§eThere is water or lava in the way: no block at the other end" };
     if (cells.length === 0) return { message: "§eNothing between: the two blocks touch. Use the bucket on the side facing the gap" };
-    return { cells, place: block.permutation, typeId: block.typeId, message: `§aFilled a line of ${cells.length} blocks. Use it in the air within 3 seconds to undo. §7[Line]` };
+    return { cells, place: block.permutation, typeId: block.typeId, message: `§aFilled a line of ${cells.length} blocks. Hit with it within 10 seconds to undo. §7[Line]` };
   }
   return { message: `§eNo block at the other end within ${LINE_MAX} blocks` };
 }
@@ -346,12 +283,6 @@ function fill(player, block, face, mode) {
     else say(player, plan.message);
     return;
   }
-  if (mode === "fence") {
-    const plan = planFence(block);
-    if (plan.cells && plan.place && plan.typeId) queue(player, dimension, plan.cells, plan.place, plan.typeId, block.location, plan.message);
-    else say(player, plan.message);
-    return;
-  }
   const stairs = mode === "auto" || mode === "stairs" ? planStairs(player, block) : undefined;
   const seed = { x: block.x + normal[0], y: block.y + normal[1], z: block.z + normal[2] };
   const start = dimension.getBlock(seed);
@@ -378,7 +309,7 @@ function fill(player, block, face, mode) {
   }
   const cells = !stairs?.cells && closed.length > 1 && player.isSneaking ? closed[1] : closed[0];
   const other = stairs?.cells ? " Sneak and use it for the staircase." : closed.length > 1 ? " Sneak and use it for the other way." : "";
-  queue(player, dimension, cells, block.permutation, block.typeId, block.location, `§aFilled ${cells.length} blocks! Use it in the air within 3 seconds to undo.${other} §7[${LABEL[mode]}]`);
+  queue(player, dimension, cells, block.permutation, block.typeId, block.location, `§aFilled ${cells.length} blocks! Hit with it within 10 seconds to undo.${other} §7[${LABEL[mode]}]`);
 }
 
 /** Puts the blocks to place in the queue, remembered for undo. @param {import("@minecraft/server").Player} player @param {import("@minecraft/server").Dimension} dimension @param {Pos[]} cells @param {import("@minecraft/server").BlockPermutation} place @param {string} typeId @param {Pos} sound @param {string} message */
@@ -395,9 +326,9 @@ function queue(player, dimension, cells, place, typeId, sound, message) {
 /** @param {import("@minecraft/server").Player} player */
 function undo(player) {
   const job = lastFill.get(player.id);
-  if (!job) return;
+  if (!job || job.doneAt === Infinity) return; // nothing to undo, or still filling (doneAt is Infinity then): the next hit undoes it
   lastFill.delete(player.id);
-  if (system.currentTick - job.doneAt > UNDO_TICKS) return; // doneAt is Infinity while still filling: no undo yet
+  if (system.currentTick - job.doneAt > UNDO_TICKS) return;
   jobs.push({ cells: job.cells, next: 0, place: undefined, dimension: job.dimension, typeId: job.typeId, doneAt: Infinity });
   ensureTicker();
   say(player, "§bUndone!");
@@ -413,13 +344,25 @@ world.beforeEvents.playerInteractWithBlock.subscribe(({ player, block, blockFace
 
 });
 
-// Using it in the air (not on a block) undoes the last fill, for 3 seconds after it.
+// Sneak and use it in the air (not on a block) changes the mode.
 world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
   const mode = itemStack ? MODE_OF[itemStack.typeId] : undefined;
   if (!player || !mode) return;
   if (system.currentTick - (lastClick.get(player.id) ?? -100) < CLICK_GAP) return; // that was the click on a block
   if (player.isSneaking) nextMode(player, mode); // sneak and use in the air: the next mode
-  else undo(player);
+});
+
+// Hitting a block or a mob with the bucket undoes the last fill, for 10 seconds after it. (The API has no event for swinging at the air.)
+const heldMode = (/** @type {Player} */ player) => MODE_OF[player.getComponent("minecraft:inventory")?.container?.getItem(player.selectedSlotIndex)?.typeId ?? ""];
+for (const hit of [world.afterEvents.entityHitBlock, world.afterEvents.entityHitEntity]) {
+  hit.subscribe(({ damagingEntity: player }) => {
+    if (player instanceof Player && heldMode(player)) undo(player); // NPCs come through as undefined in other mods: instanceof leaves them out
+  });
+}
+
+// The bucket doesn't break blocks: hitting your build to undo it must not take pieces out of it.
+world.beforeEvents.playerBreakBlock.subscribe((event) => {
+  if (event.itemStack && MODE_OF[event.itemStack.typeId]) event.cancel = true;
 });
 
 world.afterEvents.playerLeave.subscribe(({ playerId }) => {
