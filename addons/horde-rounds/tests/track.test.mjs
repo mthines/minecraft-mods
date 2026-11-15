@@ -1,7 +1,7 @@
 // node --test: which horde enemies get brought back or nudged toward the players.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { LOST, planTracking } from "../behavior_pack/scripts/track.js";
+import { LOST, NEST_HOME, planTracking } from "../behavior_pack/scripts/track.js";
 
 const mob = (id, x, z, guard = false) => ({ id, x, z, guard });
 const nobody = new Map();
@@ -39,4 +39,12 @@ test("a new enemy is not idle: nothing to compare with yet", () => {
 test("with no players nobody is lost", () => {
   const { lost } = planTracking([mob("a", 500, 0)], [], nobody);
   assert.equal(lost.length, 0);
+});
+
+test("an enemy at the nest is not lost, however far the players are: it waits there for them", () => {
+  const nest = { x: 300, z: 0 };
+  const atNest = planTracking([mob("a", 300 + NEST_HOME - 5, 0)], [{ x: 0, z: 0 }], nobody, nest);
+  assert.equal(atNest.lost.length, 0);
+  const strayed = planTracking([mob("b", 300 + NEST_HOME + 5, 0)], [{ x: 0, z: 0 }], nobody, nest);
+  assert.deepEqual(strayed.lost.map((m) => m.id), ["b"]);
 });

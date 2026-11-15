@@ -19,12 +19,16 @@ const WAVE_EVERY = 5 * SECONDS;
 const BREAK = 15 * SECONDS; // between rounds
 const RING_MIN = 18; // a wave appears this far from a player: inside the 35 blocks where a husk notices you
 const RING_MAX = 26;
-const MAX_ALIVE = 40; // the most horde enemies alive at once, so one script thread can keep up
+const MAX_ALIVE = 50; // the most horde enemies alive at once, so one script thread can keep up
+const FINAL_ROUND = 10; // clearing this round wins the game
+const NEST_SPAWN_RANGE = 64; // while a player is this close to the nest, most of each wave appears at the nest (a hostile mob far from every player despawns at once)
+const NEST_SHARE = 0.7; // that most: the rest still comes at the players, from the nest side
+const NEST_RADIUS = 8; // blocks around the nest where its enemies appear
 const GUARD_TAG = "family:horde_guard"; // the enemies that stand at the nest: they stay there
 const GUARD_RANGE = 40; // the guards appear when a player comes this close to the nest: far from every player, a hostile mob despawns at once
 const TRACK_EVERY = 2 * SECONDS; // how often the horde is checked for enemies that lost the players
 const TRACK_BUDGET = 8; // the most enemies moved or nudged per check
-const MAX_PER_WAVE = 8; // the most spawned in one tick: a bigger wave comes over the next waves
+const MAX_PER_WAVE = 10; // the most spawned in one tick: a bigger wave comes over the next waves
 
 const ARROWS = ["↑", "↗", "→", "↘", "↓", "↙", "←", "↖"];
 const COMPASS = ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"];
@@ -236,7 +240,8 @@ function spawnGuards(g) {
     guard?.addTag(GUARD_TAG);
     guard?.addEffect("resistance", 600 * SECONDS, { amplifier: 0, showParticles: false });
   }
-  if (g.round % 5 === 0) spawnHorde("minecraft:ravager", g.nest, 4)?.addTag(GUARD_TAG);
+  // A boss every 5th round, and two in the last one.
+  if (g.round % 5 === 0) for (let i = 0; i < (g.round >= FINAL_ROUND ? 2 : 1); i++) spawnHorde("minecraft:ravager", g.nest, 4)?.addTag(GUARD_TAG);
 }
 
 /** When the fight of this round began: the longer it takes to find the nest, the more of the horde there can be. */
@@ -283,6 +288,13 @@ function roundCleared(by) {
       // a full backpack just means no apple
     }
   }
+  if (g.round >= FINAL_ROUND) {
+    // The last round: the game is won, nothing comes next.
+    announce("§6You won!", `${by ? `${by} destroyed` : "You destroyed"} the last nest: all ${FINAL_ROUND} rounds cleared`, "random.totem");
+    emit("horde.game_won", { "minecraft.horde.round": g.round, "minecraft.player.name": by ?? "nobody" });
+    save(null);
+    return;
+  }
   announce(`§aRound ${g.round} cleared!`, `${by ? `${by} destroyed the nest. ` : ""}Next round in ${BREAK / SECONDS} seconds (blow the horn to start now)`, "random.totem");
   emit("horde.round_cleared", { "minecraft.horde.round": g.round, "minecraft.player.name": by ?? "nobody" });
   scheduleNext(g);
@@ -312,20 +324,38 @@ function nextRound(g) {
   startRound(g);
 }
 
-/** Stops the game and clears the nest and the horde. @param {string} [by] */
-function endGame(by) {
-  const g = current();
-  if (!g) return;
-  save(null);
+/** Clears the nest and the horde of the round that was going. */
+function clearField() {
   removeArea();
-  const nests = overworld().getEntities({ type: NEST });
-  for (const entity of [...nests, ...hordeMobs()]) {
+  for (const entity of [...overworld().getEntities({ type: NEST }), ...hordeMobs()]) {
     try {
       entity.remove();
     } catch {
       // already gone
     }
   }
+}
+
+// scriptevent family:horde round <n>: skips the game to round n (1 to the last), with a new nest. To see the last rounds without playing the rest, and for tests.
+system.afterEvents.scriptEventReceive.subscribe(({ id, message }) => {
+  if (id !== "family:horde") return;
+  const [what, value] = message.trim().split(/\s+/);
+  const g = current();
+  if (what !== "round" || !g) return;
+  breakId++; // a countdown to the next round that was running is void
+  counting = null;
+  clearField();
+  g.round = Math.min(FINAL_ROUND, Math.max(1, Math.floor(Number(value)) || 1));
+  g.state = "placing"; // the 1 second check starts the round again, a moment after the old area let go
+  save(g);
+}, { namespaces: ["family"] });
+
+/** Stops the game and clears the nest and the horde. @param {string} [by] */
+function endGame(by) {
+  const g = current();
+  if (!g) return;
+  save(null);
+  clearField();
   announce("§eGame over", `You reached round ${g.round}`, "random.toast");
   emit("horde.game_ended", { "minecraft.horde.round": g.round, "minecraft.player.name": by ?? "nobody" });
 }
@@ -397,10 +427,16 @@ system.runInterval(() => {
   if (here.length === 0) return;
   const alive = hordeMobs().filter((m) => !m.hasTag(GUARD_TAG)).length;
   const minutes = Math.floor((system.currentTick - fightStart) / (20 * SECONDS)); // +2 enemies the horde may have every 20 seconds
-  const cap = Math.min(MAX_ALIVE, 6 + 2 * g.round + 3 * (here.length - 1) + 2 * minutes);
-  const count = Math.min(cap - alive, MAX_PER_WAVE, 2 + Math.ceil(g.round / 2) + here.length);
+  const cap = Math.min(MAX_ALIVE, 8 + 3 * g.round + 3 * (here.length - 1) + 2 * minutes);
+  const count = Math.min(cap - alive, MAX_PER_WAVE, 3 + g.round + here.length);
+  // Near the nest, most of the wave comes out of it: the horde is thickest where it lives.
+  const atNest = here.some((player) => flat(player.location, g.nest) <= NEST_SPAWN_RANGE) ? Math.ceil(count * NEST_SHARE) : 0;
   let spawned = 0;
   for (let i = 0; i < count; i++) {
+    if (i < atNest) {
+      if (spawnHorde(pickKind(g.round), g.nest, NEST_RADIUS)) spawned++;
+      continue;
+    }
     const spot = ringSpot(here[i % here.length], g.nest);
     if (!spot) continue; // no ground here (water, a cliff): the next wave tries again
     try {
@@ -436,6 +472,7 @@ system.runInterval(() => {
     horde.map((mob) => ({ id: mob.id, x: mob.location.x, z: mob.location.z, guard: mob.hasTag(GUARD_TAG) })),
     here.map((player) => ({ x: player.location.x, z: player.location.z })),
     lastSpot,
+    g.nest,
   );
   const seen = new Set(byId.keys());
   for (const mob of horde) lastSpot.set(mob.id, { x: mob.location.x, z: mob.location.z });
@@ -463,7 +500,7 @@ system.runInterval(() => {
     if (held?.typeId !== HORN) continue;
     player.onScreenDisplay.setActionBar(
       g.state === "fight"
-        ? `§cNest §f${arrow(player, g.nest)} §e${Math.round(flat(player.location, g.nest) / 5) * 5} blocks §7(round ${g.round})`
+        ? `§cNest §f${arrow(player, g.nest)} §e${Math.round(flat(player.location, g.nest) / 5) * 5} blocks §7(round ${g.round} of ${FINAL_ROUND})`
         : `§aRound ${g.round} §7${g.state === "break" ? "cleared! " : ""}Get ready...`,
     );
   }

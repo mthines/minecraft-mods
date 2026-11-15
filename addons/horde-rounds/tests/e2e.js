@@ -120,3 +120,63 @@ export async function theNestNeverStandsOnWater(t) {
   t.assert(over(1, 9) === undefined, "A spot in the middle of the pond counts as dry land");
   t.assert(over(-6, -6) !== undefined, "Dry land next to the pond doesn't count as dry land");
 }
+
+const ravagers = (t) => t.dimension.getEntities({ type: "minecraft:ravager" }).filter((r) => r.hasTag("family:horde_guard"));
+
+export async function mostOfTheHordeAppearsAtTheNestWhileAPlayerIsNearIt(t) {
+  const player = t.player("Hero");
+  await blow(t, player);
+  try {
+    const nest = await newNest(t, [], "No Horde Nest appeared");
+    // 50 blocks from the nest: too far for its enemies to notice the player, close enough for them to come out of it.
+    player.teleport({ x: nest.location.x + 50, y: nest.location.y + 1, z: nest.location.z });
+    const wave = () => horde(t).filter((m) => !m.hasTag("family:horde_guard"));
+    const aroundNest = () => wave().filter((m) => far(m.location, nest.location) < 20).length;
+    const aroundPlayer = () => wave().filter((m) => far(m.location, player.location) < 30).length;
+    await t.until(() => aroundNest() + aroundPlayer() >= 6, "The horde never came while a player was near the nest", 400);
+    t.assert(aroundNest() > aroundPlayer(), `${aroundNest()} enemies at the nest but ${aroundPlayer()} at the player: the nest should have more`);
+  } finally {
+    await stop(t, player);
+  }
+}
+
+/** Skips the game to `round`, with a new nest (scriptevent family:horde round <n>). */
+async function skipTo(t, known, round) {
+  t.dimension.runCommand(`scriptevent family:horde round ${round}`);
+  const nest = await newNest(t, known, `Round ${round} never put up a nest`);
+  known.push(nest.id);
+  await assertRound(t, t.player("Hero"), nest, round);
+  return nest;
+}
+
+export async function round5HasOneBossAndRound4None(t) {
+  const player = t.player("Hero");
+  await blow(t, player);
+  try {
+    const known = [(await newNest(t, [], "No Horde Nest appeared")).id];
+    await skipTo(t, known, 4);
+    t.assert(ravagers(t).length === 0, "Round 4 has a boss");
+    await skipTo(t, known, 5);
+    await t.until(() => ravagers(t).length === 1, () => `Round 5 should have one boss, but has ${ravagers(t).length}`, 60);
+  } finally {
+    await stop(t, player);
+  }
+}
+
+export async function round10IsTheLastWithTwoBossesAndClearingItWins(t) {
+  const player = t.player("Hero");
+  await blow(t, player);
+  try {
+    const known = [(await newNest(t, [], "No Horde Nest appeared")).id];
+    const nest = await skipTo(t, known, 10);
+    await t.until(() => ravagers(t).length === 2, () => `The last round should have two bosses, but has ${ravagers(t).length}`, 60);
+    nest.kill();
+    await t.until(() => horde(t).length === 0, "The horde stayed after the last nest was destroyed", 80);
+    // Won: no round 11 follows. (The break between rounds is 15 seconds: a test can't wait that long, so this only sees the first 3.)
+    await t.wait(60);
+    t.assert(nests(t).length === 0, "A nest appeared after the last round was cleared: there should be no round 11");
+    t.assert(horde(t).length === 0, "The horde came back after the game was won");
+  } finally {
+    if (nests(t).length) await stop(t, player);
+  }
+}
