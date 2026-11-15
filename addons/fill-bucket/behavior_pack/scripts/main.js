@@ -1,4 +1,4 @@
-import { world, system } from "@minecraft/server";
+import { ItemStack, world, system } from "@minecraft/server";
 
 // Use the Fill Bucket on the inside of a block: the hole it faces is filled with that block, like the paint bucket in Paint.
 // The hole is one flat layer: a wall frame, a floor or ceiling ring, or a line between two posts.
@@ -17,31 +17,21 @@ const STAIR_SIDE = 64; // how far along a staircase the bucket looks for the blo
 const STAIR_MAX_NEW = 40; // the most blocks one stair fill adds
 const STAIR_MAX_STEPS = 80; // the most steps it walks, counting blocks that are already there
 
-// The mode says what a click does. Sneak and use the bucket in the air to change it; it is kept per player.
+// The mode says what a click does, and it is the item in your hand: each mode is its own bucket with its own picture
+// (the plain bucket is Auto; green steps, a blue wall and an orange floor are the others), so you can see it without reading.
+// Sneak and use the bucket in the air to swap it for the next one.
 const MODES = ["auto", "stairs", "wall", "floor"];
+const BUCKETS = { auto: BUCKET, stairs: "family:fill_bucket_stairs", wall: "family:fill_bucket_wall", floor: "family:fill_bucket_floor" };
+/** @type {Record<string, string>} item id → mode */
+const MODE_OF = Object.fromEntries(Object.entries(BUCKETS).map(([mode, id]) => [id, mode]));
 const LABEL = { auto: "Auto", stairs: "Stairs", wall: "Wall", floor: "Floor" };
 const ABOUT = { auto: "guesses: the staircase or the hole", stairs: "builds the staircase on", wall: "fills a wall", floor: "fills a floor or ceiling" };
-const MODE_KEY = "family:bucket_mode";
-/** @type {Map<string, string>} */
-const modes = new Map();
 
-/** @param {import("@minecraft/server").Player} player */
-function modeOf(player) {
-  let mode = modes.get(player.id);
-  if (mode === undefined) {
-    const saved = player.getDynamicProperty(MODE_KEY);
-    mode = typeof saved === "string" && MODES.includes(saved) ? saved : "auto";
-    modes.set(player.id, mode);
-  }
-  return mode;
-}
-
-/** @param {import("@minecraft/server").Player} player */
-function nextMode(player) {
-  const mode = MODES[(MODES.indexOf(modeOf(player)) + 1) % MODES.length];
-  modes.set(player.id, mode);
-  player.setDynamicProperty(MODE_KEY, mode);
-  say(player, `§bFill Bucket mode: §f${LABEL[mode]} §7(${ABOUT[mode]})`);
+/** Swaps the bucket in the player's hand for the next mode's. @param {import("@minecraft/server").Player} player @param {string} mode the mode it is in now */
+function nextMode(player, mode) {
+  const next = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
+  player.getComponent("minecraft:inventory")?.container?.setItem(player.selectedSlotIndex, new ItemStack(BUCKETS[next], 1));
+  say(player, `§bFill Bucket mode: §f${LABEL[next]} §7(${ABOUT[next]})`);
 }
 
 /** @typedef {{ x: number, y: number, z: number }} Pos */
@@ -251,8 +241,8 @@ function ensureTicker() {
   }, 1);
 }
 
-/** @param {import("@minecraft/server").Player} player @param {import("@minecraft/server").Block} block @param {string} face */
-function fill(player, block, face) {
+/** @param {import("@minecraft/server").Player} player @param {import("@minecraft/server").Block} block @param {string} face @param {string} mode */
+function fill(player, block, face, mode) {
   const normal = NORMALS[face];
   if (!normal) return;
   if (block.isAir || block.isLiquid || block.getComponent("minecraft:inventory")) {
@@ -260,7 +250,6 @@ function fill(player, block, face) {
     return;
   }
   const dimension = block.dimension;
-  const mode = modeOf(player);
   const stairs = mode === "auto" || mode === "stairs" ? planStairs(player, block) : undefined;
   const seed = { x: block.x + normal[0], y: block.y + normal[1], z: block.z + normal[2] };
   const start = dimension.getBlock(seed);
@@ -313,24 +302,25 @@ function undo(player) {
 }
 
 world.beforeEvents.playerInteractWithBlock.subscribe(({ player, block, blockFace, itemStack }) => {
-  if (!player || itemStack?.typeId !== BUCKET) return;
+  const mode = itemStack ? MODE_OF[itemStack.typeId] : undefined;
+  if (!player || !mode) return;
   const now = system.currentTick;
   if (now - (lastClick.get(player.id) ?? -100) < CLICK_GAP) return;
   lastClick.set(player.id, now);
-  system.run(() => { if (block.isValid) fill(player, block, blockFace); }); // a before event can't change the world
+  system.run(() => { if (block.isValid) fill(player, block, blockFace, mode); }); // a before event can't change the world
 
 });
 
 // Using it in the air (not on a block) undoes the last fill, for 3 seconds after it.
 world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
-  if (!player || itemStack?.typeId !== BUCKET) return;
+  const mode = itemStack ? MODE_OF[itemStack.typeId] : undefined;
+  if (!player || !mode) return;
   if (system.currentTick - (lastClick.get(player.id) ?? -100) < CLICK_GAP) return; // that was the click on a block
-  if (player.isSneaking) nextMode(player); // sneak and use in the air: the next mode
+  if (player.isSneaking) nextMode(player, mode); // sneak and use in the air: the next mode
   else undo(player);
 });
 
 world.afterEvents.playerLeave.subscribe(({ playerId }) => {
   lastFill.delete(playerId);
   lastClick.delete(playerId);
-  modes.delete(playerId);
 });

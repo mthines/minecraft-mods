@@ -16,8 +16,8 @@ const typeAt = (t, x, y, z) => t.dimension.getBlock(t.at(x, y, z))?.typeId;
 const holeBlocks = (t) => [-1, 0, 1].flatMap((x) => [1, 2, 3].map((y) => typeAt(t, x, y, 3)));
 
 /** Stands a player with the bucket and clicks the top of the bottom beam: the inside of the frame. */
-async function click(t, player) {
-  t.hold(player, "family:fill_bucket");
+async function click(t, player, item = "family:fill_bucket") {
+  t.hold(player, item);
   await t.wait(5);
   player.lookAtBlock(t.at(0, 0, 3));
   t.assert(player.useItemInSlotOnBlock(0, t.at(0, 0, 3), Direction.Up), "Couldn't use the bucket on the frame");
@@ -178,7 +178,7 @@ const floorHole = (t) => [-1, 0, 1].flatMap((x) => [2, 3, 4].map((z) => typeAt(t
 
 /** Sneak and use in the air `times`: the bucket's mode moves on. */
 async function changeMode(t, player, times) {
-  t.hold(player, "family:fill_bucket");
+  if (!player.getComponent("minecraft:inventory").container.getItem(0)?.typeId.startsWith("family:fill_bucket")) t.hold(player, "family:fill_bucket");
   player.isSneaking = true;
   for (let i = 0; i < times; i++) {
     await t.wait(10);
@@ -214,7 +214,10 @@ export async function stairsModeDoesNotFillAHole(t) {
   frame(t, false);
   const player = t.player("Builder");
   await changeMode(t, player, 1); // auto, stairs
-  await click(t, player);
+  const held = () => player.getComponent("minecraft:inventory").container.getItem(0)?.typeId;
+  t.assert(held() === "family:fill_bucket_stairs", `Sneak and use should swap in the stairs bucket, but the player holds ${held()}`);
+  player.lookAtBlock(t.at(0, 0, 3));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(0, 0, 3), Direction.Up), "Couldn't use the bucket on the frame");
   await t.wait(40);
   t.assert(holeBlocks(t).every((b) => b === "minecraft:air"), `Stairs mode filled the hole: ${holeBlocks(t).join(", ")}`);
 }
@@ -229,4 +232,19 @@ export async function sneakAndUseInTheAirDoesNotUndoTheFill(t) {
   t.assert(player.useItemInSlot(0), "Couldn't use the bucket in the air");
   await t.wait(30);
   t.assert(holeBlocks(t).every((b) => b === WALL), "Sneak and use in the air undid the fill: it should change the mode");
+}
+
+export async function eachModeIsItsOwnBucketWithItsOwnPicture(t) {
+  const player = t.player("Builder");
+  const held = () => player.getComponent("minecraft:inventory").container.getItem(0)?.typeId;
+  t.hold(player, "family:fill_bucket");
+  const seen = [held()];
+  for (let i = 0; i < 4; i++) {
+    await changeMode(t, player, 1);
+    seen.push(held());
+  }
+  t.assert(
+    seen.join(" ") === "family:fill_bucket family:fill_bucket_stairs family:fill_bucket_wall family:fill_bucket_floor family:fill_bucket",
+    `The buckets should go plain, stairs, wall, floor, plain: ${seen.join(", ")}`,
+  );
 }

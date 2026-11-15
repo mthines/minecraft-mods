@@ -4,6 +4,15 @@
   "texture_data": {
     "family_fill_bucket": {
       "textures": "textures/items/fill_bucket"
+    },
+    "family_fill_bucket_stairs": {
+      "textures": "textures/items/fill_bucket_stairs"
+    },
+    "family_fill_bucket_wall": {
+      "textures": "textures/items/fill_bucket_wall"
+    },
+    "family_fill_bucket_floor": {
+      "textures": "textures/items/fill_bucket_floor"
     }
   }
 }
