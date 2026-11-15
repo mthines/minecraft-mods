@@ -174,7 +174,10 @@ To turn it off, delete `server/.env` and run `./mc start` again.
 | --- | --- | --- |
 | `minecraft.admin.kit_given` | A kit was given (`mc kit`, a kit from either menu, any item) | `minecraft.kit.name` (`tools` for the diamond tools), `minecraft.kit.target` (`@a` or a name), `minecraft.kit.craft`, `minecraft.kit.item_types`, `minecraft.kit.items` (everything added, summed) |
 | `minecraft.admin.option_changed` | Peace, PvP, fall damage, invincible, keep inventory or show coordinates was set | `minecraft.option.name`, `minecraft.option.state` (`on` or `off`) |
-| `minecraft.admin.action` | Day or night (`cmd time set …`), kill enemies, clear inventory, find a place, a world played, made or deleted, a restart or stop | `minecraft.action.name`, and `minecraft.action.detail` (the place, the world, or what was cleared) |
+| `minecraft.admin.action` | Day or night (`cmd time set …`), kill enemies, clear inventory, find a place, a world played, made or deleted, start, stop, restart, update, a mod installed or removed, and saved files reaching the server (`save-reload` or `save-restart`, from the watcher) | `minecraft.action.name`, `minecraft.action.detail` (the place, the world, the mod, or what was cleared), and `minecraft.players_online` on everything that kicks people (restart, stop, world play and new, update, install, remove, `save-restart`; `-1` when the server couldn't say) |
+| `minecraft.admin.failed` | A command that changes something gave up | `minecraft.action.name`, `minecraft.failure.reason` (`nobody-online`, `server-not-running`, `server-did-not-answer`, `deploy-failed`, `start-failed`, `not-joinable`, or `error`) |
+
+A restart with someone online: `event_name="minecraft.admin.action"` with `minecraft.action.name` `restart` and `minecraft.players_online` above 0.
 
 Typed server commands only send their first word (`cmd say`), since what follows can be something a player said. NPC changes (`mc npc`) and test runs aren't counted.
 

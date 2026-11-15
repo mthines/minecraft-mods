@@ -3,6 +3,9 @@
 // the kit menu on the iPad both run ./mc, so they are counted too. MC_SOURCE says which one ("mc-dev", "web", else "cli").
 // Never in the way: no Collector running (telemetry off) or a slow one only costs a moment, and nothing is ever printed.
 
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
 export const ENDPOINT = "http://127.0.0.1:4318/v1/logs";
 const TIMEOUT_MS = 1000;
 
@@ -84,5 +87,22 @@ export async function emit(name, attributes = {}, { env = process.env, url = env
     return response.ok;
   } catch {
     return false;
+  }
+}
+
+/**
+ * How many players are online, for events about things that kick them; -1 when the server can't say.
+ * @param {string} container
+ */
+export async function onlineCount(container) {
+  const run = promisify(execFile);
+  try {
+    const since = new Date().toISOString();
+    await run("docker", ["exec", container, "send-command", "list"]);
+    await new Promise((done) => setTimeout(done, 800));
+    const { stdout, stderr } = await run("docker", ["logs", "--since", since, container]);
+    return Number(`${stdout}\n${stderr}`.match(/There are (\d+)\/\d+ players online/)?.[1] ?? -1);
+  } catch {
+    return -1;
   }
 }

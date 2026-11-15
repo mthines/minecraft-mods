@@ -87,6 +87,7 @@ wait_until_joinable() {
   done
   echo
   echo "Not accepting joins yet. It restarts itself if this lasts; see ./mc logs." >&2
+  fail_reason="not-joinable"
   return 1
 }
 
@@ -94,8 +95,11 @@ wait_until_joinable() {
 deploy_and_restart() {
   npm run --silent deploy | grep -v "Restart the server" || return 1
   if [[ "$(docker inspect -f '{{.State.Running}}' "$SERVER" 2>/dev/null)" == "true" ]]; then
+    local online
+    online="$(online_count)"
     docker restart "$SERVER" >/dev/null
     wait_until_joinable
+    emit admin.action minecraft.action.name=restart "minecraft.action.detail=$1" "minecraft.players_online:int=$online"
   else
     echo "The server isn't running. Start it with: mc start"
   fi
@@ -111,6 +115,17 @@ kit_names() { node tools/kits.mjs names; }
 # emit <event> [key=text | key:int=5 | key:bool=true]...: tells the OpenTelemetry Collector what was just done, so Dash0 can show
 # it afterwards (tools/lib/telemetry.mjs). Never fails and never prints; mc dev and the kit menu set MC_SOURCE.
 emit() { node tools/telemetry.mjs "$@" >/dev/null 2>&1 || true; }
+# online_count: how many players are online right now, or -1 when the server can't say. For events about things that kick people.
+online_count() {
+  local since n
+  since="$(date -u +%Y-%m-%dT%H:%M:%S.000000000Z)"
+  docker exec "$SERVER" send-command "list" >/dev/null 2>&1 || { echo -1; return; }
+  sleep 1
+  n="$(docker logs --since "$since" "$SERVER" 2>&1 | sed -nE 's/.*There are ([0-9]+)\/[0-9]+ players online.*/\1/p' | tail -1)"
+  echo "${n:--1}"
+}
+# Set before a command gives up, so the failure event says why (otherwise it says "error").
+fail_reason=""
 
 # First ./mc kidex on a new computer: Kidex itself, the tools it hears and talks with, and its speech model.
 install_kidex() {
@@ -164,6 +179,7 @@ switch_rule() {
   local rule="$1" cmd="$2" arg="$3" name="$4" said_on="$5" said_off="$6" send="${7:-gamerule}" value now since
   if [[ "$(docker inspect -f '{{.State.Running}}' "$SERVER" 2>/dev/null)" != "true" ]]; then
     echo "The server isn't running. Start it with: mc start" >&2
+    fail_reason="server-not-running"
     exit 1
   fi
   case "$arg" in
@@ -186,6 +202,7 @@ switch_rule() {
     true:true) echo "$said_on"; emit admin.option_changed "minecraft.option.name=$cmd" minecraft.option.state=on ;;
     false:false) echo "$said_off"; emit admin.option_changed "minecraft.option.name=$cmd" minecraft.option.state=off ;;
     *)
+      fail_reason="server-did-not-answer"
       if [[ "$send" == "gamerule" ]]; then echo "The server didn't answer. Try again, or see: mc logs" >&2
       else echo "The $cmd mod didn't answer: a new mod only loads when the server restarts (mc mods lists what's loaded). Or see: mc logs" >&2; fi
       exit 1 ;;
@@ -199,6 +216,14 @@ choose_world() {
 world_name_ok() {
   [[ "$1" =~ ^[A-Za-z0-9][A-Za-z0-9\ _-]*$ ]] || { echo "Use letters, numbers, spaces, - and _ in a world name, like: mc world new \"Cherry Land\" 42" >&2; exit 1; }
 }
+
+# A command that fails tells telemetry which one and why. Only the ones that change something: doctor and test fail on purpose,
+# and logs, console and dev run until Ctrl+C.
+case "${1:-help}" in
+  kit | peace | fall-damage | pvp | invincible | keep-inventory | show-coordinates | kill-enemies | clear-inventory | locate | world | start | stop | restart | update | cmd | install | remove)
+    trap 'rc=$?; [[ $rc -eq 0 ]] || emit admin.failed "minecraft.action.name=$1" "minecraft.failure.reason=${fail_reason:-error}"' EXIT
+    ;;
+esac
 
 case "${1:-help}" in
   world)
@@ -221,6 +246,7 @@ case "${1:-help}" in
         [[ ! -d "$worlds/$name" ]] || { echo "There's already a world called $name. Play it with: mc world play \"$name\"" >&2; exit 1; }
         # No seed: pick a random one here. An empty LEVEL_SEED doesn't clear the server's level-seed,
         # so the new world would quietly get the last world's seed and look just like it.
+        online="$(online_count)"
         seed="${4:-$(node -e 'console.log(require("node:crypto").randomBytes(8).readBigInt64LE().toString())')}"
         choose_world "$name" "$seed"
         echo "Making $name from seed $seed (make the same world again with: mc world new <name> $seed). The other worlds stay saved."
@@ -234,18 +260,19 @@ case "${1:-help}" in
         wait_until_joinable
         docker exec "$SERVER" send-command "gamerule falldamage true"
         echo "$name has monsters and fall damage. Change that with: mc peace on, mc fall-damage off"
-        emit admin.action minecraft.action.name=world-new "minecraft.action.detail=$name"
+        emit admin.action minecraft.action.name=world-new "minecraft.action.detail=$name" "minecraft.players_online:int=$online"
         ;;
       play)
         world_name_ok "$name"
         [[ -d "$worlds/$name" ]] || { echo "No world called $name. See them with: mc world" >&2; exit 1; }
+        online="$(online_count)"
         choose_world "$name"
-        out="$(npm run --silent deploy 2>&1)" || { echo "$out"; exit 1; }
+        out="$(npm run --silent deploy 2>&1)" || { echo "$out"; fail_reason="deploy-failed"; exit 1; }
         ensure_beta_apis
         ./server/start.sh >/dev/null
         echo "Playing $name."
         wait_until_joinable
-        emit admin.action minecraft.action.name=world-play "minecraft.action.detail=$name"
+        emit admin.action minecraft.action.name=world-play "minecraft.action.detail=$name" "minecraft.players_online:int=$online"
         ;;
       rename)
         new="${4:-}"
@@ -287,7 +314,8 @@ case "${1:-help}" in
   install)
     [[ -n "${2:-}" ]] || { echo "Usage: mc install <file.mcaddon | file.mcpack | folder> [name]" >&2; exit 1; }
     node tools/install.mjs "$(cd "$CALLER_DIR" && realpath "$2")" "${3:-}"
-    deploy_and_restart
+    deploy_and_restart install
+    emit admin.action minecraft.action.name=install
     ;;
   remove)
     name="${2:-}"
@@ -296,7 +324,8 @@ case "${1:-help}" in
     [[ "$answer" =~ ^[yY] ]] || { echo "Kept $name."; exit 0; }
     rm -rf "addons/$name"
     echo "Removed $name. (If it was committed, git checkout addons/$name brings it back.)"
-    deploy_and_restart
+    emit admin.action minecraft.action.name=remove "minecraft.action.detail=$name"
+    deploy_and_restart remove
     ;;
   kit)
     # mc kit: pick from a list. mc kit tools [player]: diamond tools. mc kit <kit> [player]: a kit from kit_names.
@@ -330,6 +359,7 @@ case "${1:-help}" in
     sleep 1
     if docker logs --since "$since" "$SERVER" 2>&1 | grep -q "No targets matched"; then
       echo "Nobody to give it to: ${who/#@a/no one is online}. Join the server, then run it again." >&2
+      fail_reason="nobody-online"
       exit 1
     fi
     echo "Gave ${who/#@a/everyone online}: $(echo "$items" | awk '{printf "%s%s ×%s", (NR>1 ? ", " : ""), $1, $2}')"
@@ -347,6 +377,7 @@ case "${1:-help}" in
   update)
     # Devices update Minecraft by themselves, and the server must run the same version or nobody can join.
     before="$(server_version)"
+    online="$(online_count)"
     docker compose -p server -f server/docker-compose.yml pull --quiet bedrock autoheal
     BEDROCK_VERSION=LATEST ./server/start.sh >/dev/null
     docker restart "$SERVER" >/dev/null # downloads the newest Minecraft server as it starts
@@ -356,9 +387,10 @@ case "${1:-help}" in
     wait_until_joinable
     after="$(server_version)"
     if [[ "$before" == "$after" ]]; then echo "Already up to date: Minecraft $after"; else echo "Updated Minecraft from $before to $after"; fi
+    emit admin.action minecraft.action.name=update "minecraft.action.detail=$before -> $after" "minecraft.players_online:int=$online"
     ;;
   start)
-    out="$(npm run --silent deploy 2>&1)" || { echo "$out"; exit 1; }
+    out="$(npm run --silent deploy 2>&1)" || { echo "$out"; fail_reason="deploy-failed"; exit 1; }
     # A running server stays up (mc dev opened again just reconnects); only new settings or Beta APIs restart it.
     running_since() { docker inspect -f '{{if .State.Running}}{{.State.StartedAt}}{{end}}' "$SERVER" 2>/dev/null || true; }
     before="$(running_since)"
@@ -366,7 +398,7 @@ case "${1:-help}" in
     if [[ -z "$before" ]]; then
       ./server/start.sh
     else
-      out="$(./server/start.sh 2>&1)" || { echo "$out"; exit 1; }
+      out="$(./server/start.sh 2>&1)" || { echo "$out"; fail_reason="start-failed"; exit 1; }
       if [[ "$(running_since)" == "$before" ]]; then
         echo "The server was already running, so it kept going: nobody got kicked."
       else
@@ -374,6 +406,7 @@ case "${1:-help}" in
       fi
     fi
     wait_until_joinable
+    emit admin.action minecraft.action.name=start
     ;;
   dev)
     # In a terminal: a screen with the server's state and keys for kits, tests, and more (tools/dev.mjs).
@@ -386,14 +419,19 @@ case "${1:-help}" in
     # A touch-screen kit menu for the iPad on the same wifi (tools/web.mjs, web/).
     exec npm run --silent web
     ;;
-  stop) docker compose -p server stop; emit admin.action minecraft.action.name=stop ;;
+  stop)
+    online="$(online_count)"
+    docker compose -p server stop
+    emit admin.action minecraft.action.name=stop "minecraft.players_online:int=$online"
+    ;;
   restart)
+    online="$(online_count)"
     ensure_beta_apis
     # Copies the add-ons first: a new mod only reaches the server by deploy, which the watcher does only when Send saved files is on.
     npm run --silent deploy | grep -v "Restart the server" || exit 1
     docker restart "$SERVER" >/dev/null
     wait_until_joinable
-    emit admin.action minecraft.action.name=restart
+    emit admin.action minecraft.action.name=restart "minecraft.players_online:int=$online"
     ;;
   status) docker compose -p server ps --format "table {{.Name}}\t{{.Status}}" ;;
   mods)
@@ -517,7 +555,7 @@ case "${1:-help}" in
       players=()
       while read -r player; do [[ -n "$player" ]] && players+=("$player"); done <<<"${online//, /$'\n'}"
     fi
-    [[ ${#players[@]} -gt 0 ]] || { echo "Nobody online to look for a $name for." >&2; exit 1; }
+    [[ ${#players[@]} -gt 0 ]] || { echo "Nobody online to look for a $name for." >&2; fail_reason="nobody-online"; exit 1; }
     for player in "${players[@]}"; do
       since="$(date -u +%Y-%m-%dT%H:%M:%S.000000000Z)"
       docker exec "$SERVER" send-command "execute as \"$player\" at @s run locate structure $place"
@@ -559,6 +597,7 @@ case "${1:-help}" in
     sleep 1
     if docker logs --since "$since" "$SERVER" 2>&1 | grep -q "No targets matched"; then
       echo "Nobody to clear: ${who/#@a/no one is online}." >&2
+      fail_reason="nobody-online"
       exit 1
     fi
     echo "Emptied the $what of ${who/#@a/everyone online}."

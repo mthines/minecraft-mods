@@ -8,6 +8,7 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ADDONS_DIR, ROOT } from "./lib/addons.mjs";
 import { deploy } from "./lib/deploy.mjs";
+import { emit, onlineCount } from "./lib/telemetry.mjs";
 import { validate } from "./lib/validate.mjs";
 import { currentWorld } from "./lib/world.mjs";
 
@@ -76,6 +77,7 @@ async function apply() {
     deploy(DATA_DIR, currentWorld()); // read each time: ./mc world play can switch it
     const since = new Date().toISOString();
     const reloaded = !onSave.alwaysRestart && files.every((f) => RELOADABLE.test(f));
+    const online = reloaded ? -1 : await onlineCount(CONTAINER); // asked before a restart kicks them: only a restart needs it
     if (reloaded) {
       await run("docker", ["exec", CONTAINER, "send-command", "reload"]);
       log(`\n[${time}] ↻ Reloaded ${describe(files)}. Try it in the game now.`);
@@ -86,6 +88,7 @@ async function apply() {
         log("  Changed a picture? Raise the resource pack's version in manifest.json, or devices keep the old one.");
       }
     }
+    emit("admin.action", { "minecraft.action.name": reloaded ? "save-reload" : "save-restart", "minecraft.action.detail": describe(files), "minecraft.players_online": online });
     await showScriptErrors(since, reloaded ? "reloaded" : "Server started");
     if (!reloaded) await reportJoinable();
   } catch (e) {

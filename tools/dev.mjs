@@ -733,6 +733,25 @@ const onOff = (/** @type {boolean | undefined} */ on) => (on === undefined ? ["?
  * Each also has a key of its own outside the menu (s, h, i, p, f, b, u, v, z, j, c, m), except updating Minecraft.
  * @param {number} [index]
  */
+/** Reads the rules back from the server (each ./mc rule command with no on/off says its value), for the status row. @param {() => void} [then] */
+function readRules(then) {
+  mc(["fall-damage"], () => mc(["keep-inventory"], () => mc(["show-coordinates"], () => mc(["pvp"], () => mc(["invincible"], then)))));
+}
+
+/** mc start: a running server just keeps going (nobody is kicked); a stopped one comes up and the rules are read again. */
+function startServer() {
+  mc(["start"], (ok) => (ok ? readRules() : note("✗ The server didn't start. See what it says above.")));
+}
+
+/** mc stop, after asking: it disconnects whoever is playing. The saved files keep reaching it when it starts again. */
+function stopServer() {
+  const who = [...server.players];
+  confirm = {
+    question: who.length ? `Stop the server? ${who.join(", ")} ${who.length > 1 ? "are" : "is"} playing and get${who.length > 1 ? "" : "s"} kicked.` : "Stop the server?",
+    then: () => mc(["stop"]),
+  };
+}
+
 function optionsMenu(index = 0) {
   /** @type {[string, Choice["state"], () => void, boolean?][]} label, state, what it does, whether the menu opens again */
   const options = [
@@ -750,6 +769,8 @@ function optionsMenu(index = 0) {
     ["Mods", undefined, () => commands.m()],
     ["Doctor: what's wrong? (checks Colima, Docker, the server)", undefined, () => mc(["doctor"], (ok) => ok || askDoctorFix())],
     ["Doctor: let Claude fix it", undefined, () => void (confirm = { question: "Let Claude fix what the doctor finds? It may restart Colima or the server, which kicks everyone.", then: () => mc(["doctor", "--fix"]) })],
+    ["Start the server", undefined, startServer],
+    ["Stop the server", undefined, stopServer],
     ["Update Minecraft (so updated devices can join)", undefined, () => void (confirm = { question: `Update the server to the newest Minecraft? It restarts twice. ${KICK}`, then: () => mc(["update"]) })],
   ];
   pick(
@@ -983,6 +1004,6 @@ mc(["start"], (ok) => {
   if (!ok) return note("✗ The server didn't start. Fix what it says above, then run mc dev again.");
   watchAddons((message) => message.split("\n").filter(Boolean).forEach((line) => push(activity, line)));
   watching = true;
-  mc(["fall-damage"], () => mc(["keep-inventory"], () => mc(["show-coordinates"], () => mc(["pvp"], () => mc(["invincible"])))));
+  readRules();
   note("✓ Watching addons/: save a file and it reaches the server. Scripts reload without kicking anyone.");
 });
