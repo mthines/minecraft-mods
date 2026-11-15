@@ -60,7 +60,11 @@ world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
 world.afterEvents.playerSpawn.subscribe(({ player }) => {
   if (!player?.isValid || player.hasTag("family:npc") || player.hasTag("family:e2e")) return; // isValid: they may have left already
   if (carriesLantern(player)) return;
-  player.getComponent("minecraft:inventory")?.container?.addItem(new ItemStack(LANTERN, 1));
+  // Shield hand first, so the item bar stays free (and the starter chest sees it taken); a pocket only if that hand is busy.
+  const equipment = player.getComponent("minecraft:equippable");
+  const lantern = new ItemStack(LANTERN, 1);
+  if (equipment && !equipment.getEquipment(EquipmentSlot.Offhand)) equipment.setEquipment(EquipmentSlot.Offhand, lantern);
+  else player.getComponent("minecraft:inventory")?.container?.addItem(lantern);
   emit("lantern.spawn_lantern", { "minecraft.player.name": player.name });
 });
 
