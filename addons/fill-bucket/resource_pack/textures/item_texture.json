@@ -16,6 +16,9 @@
     },
     "family_fill_bucket_fence": {
       "textures": "textures/items/fill_bucket_fence"
+    },
+    "family_fill_bucket_line": {
+      "textures": "textures/items/fill_bucket_line"
     }
   }
 }

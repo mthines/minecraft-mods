@@ -239,13 +239,13 @@ export async function eachModeIsItsOwnBucketWithItsOwnPicture(t) {
   const held = () => player.getComponent("minecraft:inventory").container.getItem(0)?.typeId;
   t.hold(player, "family:fill_bucket");
   const seen = [held()];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     await changeMode(t, player, 1);
     seen.push(held());
   }
   t.assert(
-    seen.join(" ") === "family:fill_bucket family:fill_bucket_stairs family:fill_bucket_wall family:fill_bucket_floor family:fill_bucket_fence family:fill_bucket",
-    `The buckets should go plain, stairs, wall, floor, fence, plain: ${seen.join(", ")}`,
+    seen.join(" ") === "family:fill_bucket family:fill_bucket_stairs family:fill_bucket_wall family:fill_bucket_floor family:fill_bucket_fence family:fill_bucket_line family:fill_bucket",
+    `The buckets should go plain, stairs, wall, floor, fence, line, plain: ${seen.join(", ")}`,
   );
 }
 
@@ -277,4 +277,42 @@ export async function fenceModeFollowsALineOfBlocksUpAStaircase(t) {
   t.assert(player.useItemInSlot(0), "Couldn't use the bucket in the air");
   await t.until(() => line.every(([x, y]) => typeAt(t, x, y + 1, 3) === "minecraft:air"), () => `Undo left fence: ${line.map(([x, y]) => typeAt(t, x, y + 1, 3)).join(", ")}`, 60);
   t.assert(line.every(([x, y]) => typeAt(t, x, y, 3) === "minecraft:cobblestone"), "Undo took the stair line away too");
+}
+
+/** A player holding the line bucket clicks the side of the block at `at` (dx, dy, dz) facing `face`. */
+async function lineClick(t, at, face) {
+  const player = t.player("Liner", at[0], at[2] - 3);
+  t.hold(player, "family:fill_bucket_line");
+  await t.wait(5);
+  player.lookAtBlock(t.at(...at));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(...at), face), "Couldn't use the line bucket");
+  return player;
+}
+const row = (t, from, to, y = 1, z = 3) => Array.from({ length: to - from + 1 }, (_, i) => typeAt(t, from + i, y, z));
+
+export async function lineModeFillsTheGapBetweenTwoPosts(t) {
+  t.place(STEP, -3, 1, 3);
+  t.place(STEP, 3, 1, 3);
+  const player = await lineClick(t, [-3, 1, 3], Direction.East);
+  await t.until(() => row(t, -2, 2).every((b) => b === STEP), () => `The gap between the posts wasn't filled: ${row(t, -2, 2).join(", ")}`, 40);
+  t.assert(typeAt(t, -4, 1, 3) === "minecraft:air" && typeAt(t, 4, 1, 3) === "minecraft:air", "The line went past the posts");
+  // Using the bucket in the air undoes it.
+  await t.wait(10);
+  t.assert(player.useItemInSlot(0), "Couldn't use the bucket in the air");
+  await t.until(() => row(t, -2, 2).every((b) => b === "minecraft:air"), () => `Undo left: ${row(t, -2, 2).join(", ")}`, 40);
+  t.assert(typeAt(t, -3, 1, 3) === STEP && typeAt(t, 3, 1, 3) === STEP, "Undo took a post away");
+}
+
+export async function lineModeFillsUpwardsBetweenAFloorAndACeiling(t) {
+  t.place(STEP, 0, 1, 3);
+  t.place(STEP, 0, 6, 3);
+  await lineClick(t, [0, 1, 3], Direction.Up);
+  await t.until(() => [2, 3, 4, 5].every((y) => typeAt(t, 0, y, 3) === STEP), "The gap between the floor block and the ceiling block wasn't filled", 40);
+}
+
+export async function lineModeDoesNothingWithoutABlockAtTheOtherEnd(t) {
+  t.place(STEP, -3, 1, 3);
+  await lineClick(t, [-3, 1, 3], Direction.East);
+  await t.wait(40);
+  t.assert(row(t, -2, 14).every((b) => b === "minecraft:air"), `The bucket filled a line with no block at the other end: ${row(t, -2, 14).join(", ")}`);
 }

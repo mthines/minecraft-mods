@@ -18,14 +18,14 @@ const STAIR_MAX_NEW = 40; // the most blocks one stair fill adds
 const STAIR_MAX_STEPS = 80; // the most steps it walks, counting blocks that are already there
 
 // The mode says what a click does, and it is the item in your hand: each mode is its own bucket with its own picture
-// (the plain bucket is Auto; green steps, a blue wall, an orange floor and a purple fence are the others), so you can see it without reading.
+// (the plain bucket is Auto; green steps, a blue wall, an orange floor, a purple fence and a teal line are the others), so you can see it without reading.
 // Sneak and use the bucket in the air to swap it for the next one.
-const MODES = ["auto", "stairs", "wall", "floor", "fence"];
-const BUCKETS = { auto: BUCKET, stairs: "family:fill_bucket_stairs", wall: "family:fill_bucket_wall", floor: "family:fill_bucket_floor", fence: "family:fill_bucket_fence" };
+const MODES = ["auto", "stairs", "wall", "floor", "fence", "line"];
+const BUCKETS = { auto: BUCKET, stairs: "family:fill_bucket_stairs", wall: "family:fill_bucket_wall", floor: "family:fill_bucket_floor", fence: "family:fill_bucket_fence", line: "family:fill_bucket_line" };
 /** @type {Record<string, string>} item id → mode */
 const MODE_OF = Object.fromEntries(Object.entries(BUCKETS).map(([mode, id]) => [id, mode]));
-const LABEL = { auto: "Auto", stairs: "Stairs", wall: "Wall", floor: "Floor", fence: "Fence" };
-const ABOUT = { auto: "guesses: the staircase or the hole", stairs: "builds the staircase on", wall: "fills a wall", floor: "fills a floor or ceiling", fence: "builds a fence along the edge" };
+const LABEL = { auto: "Auto", stairs: "Stairs", wall: "Wall", floor: "Floor", fence: "Fence", line: "Line" };
+const ABOUT = { auto: "guesses: the staircase or the hole", stairs: "builds the staircase on", wall: "fills a wall", floor: "fills a floor or ceiling", fence: "builds a fence along the edge", line: "fills a straight line to the next block" };
 
 /** Swaps the bucket in the player's hand for the next mode's. @param {import("@minecraft/server").Player} player @param {string} mode the mode it is in now */
 function nextMode(player, mode) {
@@ -275,6 +275,33 @@ function planFence(block) {
   return { cells, place: fence.permutation, typeId: fence.permutation.type.id, message: `§aBuilt ${cells.length} fence posts along the edge. Use it in the air within 3 seconds to undo. §7[Fence]` };
 }
 
+const LINE_MAX = 64; // how far from the clicked block the other end can be
+
+/**
+ * Line mode: from the face you clicked, straight ahead until the next solid block; the empty blocks between the two are filled.
+ * @param {import("@minecraft/server").Block} block @param {number[]} normal the clicked face's direction
+ * @returns {{ message: string, cells?: Pos[], place?: import("@minecraft/server").BlockPermutation, typeId?: string }}
+ */
+function planLine(block, normal) {
+  const dimension = block.dimension;
+  /** @type {Pos[]} */
+  const cells = [];
+  for (let step = 1; step <= LINE_MAX; step++) {
+    const at = { x: block.x + normal[0] * step, y: block.y + normal[1] * step, z: block.z + normal[2] * step };
+    let there;
+    try { there = dimension.getBlock(at); } catch { there = undefined; }
+    if (!there) return { message: "§eThe other end isn't loaded: stand closer" };
+    if (there.isAir) {
+      cells.push(at);
+      continue;
+    }
+    if (there.isLiquid) return { message: "§eThere is water or lava in the way: no block at the other end" };
+    if (cells.length === 0) return { message: "§eNothing between: the two blocks touch. Use the bucket on the side facing the gap" };
+    return { cells, place: block.permutation, typeId: block.typeId, message: `§aFilled a line of ${cells.length} blocks. Use it in the air within 3 seconds to undo. §7[Line]` };
+  }
+  return { message: `§eNo block at the other end within ${LINE_MAX} blocks` };
+}
+
 function ensureTicker() {
   if (ticker !== undefined) return;
   ticker = system.runInterval(() => {
@@ -313,6 +340,12 @@ function fill(player, block, face, mode) {
     return;
   }
   const dimension = block.dimension;
+  if (mode === "line") {
+    const plan = planLine(block, normal);
+    if (plan.cells && plan.place && plan.typeId) queue(player, dimension, plan.cells, plan.place, plan.typeId, block.location, plan.message);
+    else say(player, plan.message);
+    return;
+  }
   if (mode === "fence") {
     const plan = planFence(block);
     if (plan.cells && plan.place && plan.typeId) queue(player, dimension, plan.cells, plan.place, plan.typeId, block.location, plan.message);
