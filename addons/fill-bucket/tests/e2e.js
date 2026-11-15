@@ -155,3 +155,17 @@ export async function stairBlocksOfDifferentTypesAreOneStaircase(t) {
   t.assert(player.useItemInSlotOnBlock(0, t.at(-1, 2, 3), Direction.Up), "Couldn't use the bucket on the stairs");
   await t.until(() => [[0, 3], [1, 4]].every(([x, y]) => stairAt(t, x, y)), () => `Mixed stairs weren't one staircase: ${[[0, 3], [1, 4]].map(([x, y]) => typeAt(t, x, y, 3)).join(", ")}`, 40);
 }
+
+export async function sneakingPicksTheHoleFillInsteadOfTheStairs(t) {
+  // A stair block inside a closed 3x3 frame: a click builds stairs, sneaking fills the frame's hole.
+  frame(t, false);
+  const stair = BlockPermutation.resolve("minecraft:oak_stairs", { weirdo_direction: 0, upside_down_bit: false });
+  t.dimension.getBlock(t.at(0, 0, 3)).setPermutation(stair); // the frame's bottom middle is a stair
+  const player = t.player("Builder", 0, 0);
+  player.isSneaking = true;
+  t.hold(player, "family:fill_bucket");
+  await t.wait(5);
+  player.lookAtBlock(t.at(0, 0, 3));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(0, 0, 3), Direction.Up), "Couldn't use the bucket");
+  await t.until(() => holeBlocks(t).every((b) => b === "minecraft:oak_stairs"), () => `Sneaking should fill the hole: ${holeBlocks(t).join(", ")}`, 40);
+}

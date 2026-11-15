@@ -2,7 +2,7 @@ import { world, system } from "@minecraft/server";
 
 // Use the Fill Bucket on the inside of a block: the hole it faces is filled with that block, like the paint bucket in Paint.
 // The hole is one flat layer: a wall frame, a floor or ceiling ring, or a line between two posts.
-// Use it on a staircase you started (up, straight, up, straight, ...) and it keeps building that pattern, see stairFill.
+// Use it on a staircase you started (up, straight, up, straight, ...) and it keeps building that pattern, see planStairs.
 
 const BUCKET = "family:fill_bucket";
 const MAX_BLOCKS = 500; // bigger than this is a leak, not a hole: a 20×20 wall is 400
@@ -126,10 +126,11 @@ function patternOf(steps) {
  * The bucket reads the pattern (up, straight, up, straight, ...) and keeps building it ahead of you.
  * It stops at something in the way, where the line you built goes another way (like two straights in a row), or at the length limit.
  * A stair block climbs the way it faces, and a lone stair block is enough: it continues as a plain staircase going up.
- * Returns false when the clicked block isn't part of a staircase, so the hole fill can try.
+ * Returns undefined when the clicked block isn't part of a staircase. Otherwise a plan: the blocks to add, or just a message when there is nothing to add.
  * @param {import("@minecraft/server").Player} player @param {import("@minecraft/server").Block} block
+ * @returns {{ message: string, cells?: Pos[], place?: import("@minecraft/server").BlockPermutation, typeId?: string } | undefined}
  */
-function stairFill(player, block) {
+function planStairs(player, block) {
   const dimension = block.dimension;
   const { typeId } = block;
   const look = player.getViewDirection();
@@ -146,7 +147,7 @@ function stairFill(player, block) {
     const score = line.length + looking * 0.1; // the longer line wins, and a tie goes to the way you look
     if (!best || score > best.score) best = { axis, line, score };
   }
-  if (!best) return false;
+  if (!best) return undefined;
 
   // Build ahead of you: the end of the line that is in the direction you look.
   const forward = facing ? facing.sign : (best.axis === 0 ? look.x : look.z) >= 0 ? 1 : -1;
@@ -154,13 +155,12 @@ function stairFill(player, block) {
   const steps = ordered.slice(1).map((p, i) => p.y - ordered[i].y);
   const pattern = steps.length === 0 ? [1] : patternOf(steps); // a lone stair block: up, up, up
   if (!pattern) {
-    say(player, "§eBuild one more step of the staircase so the bucket can see the pattern");
-    return true;
+    return { message: "§eBuild one more step of the staircase so the bucket can see the pattern" };
   }
   const dir = best.axis === 0 ? { x: forward, z: 0 } : { x: 0, z: forward };
   const end = ordered[ordered.length - 1];
   const last = dimension.getBlock(end);
-  if (!last) return true;
+  if (!last) return undefined;
 
   /** @type {Pos[]} */
   const cells = [];
@@ -183,12 +183,8 @@ function stairFill(player, block) {
     pos = target;
     if (cells.length >= STAIR_MAX_NEW) { why = `the limit of ${STAIR_MAX_NEW} blocks`; break; }
   }
-  if (cells.length === 0) {
-    say(player, `§eNothing to add: ${why}`);
-    return true;
-  }
-  queue(player, dimension, cells, last.permutation, last.typeId, block.location, `§aBuilt ${cells.length} more blocks of the staircase (stopped: ${why}). Use it in the air within 3 seconds to undo.`);
-  return true;
+  if (cells.length === 0) return { message: `§eNothing to add: ${why}` };
+  return { cells, place: last.permutation, typeId: last.typeId, message: `§aBuilt ${cells.length} more blocks of the staircase (stopped: ${why}). Use it in the air within 3 seconds to undo.` };
 }
 
 function ensureTicker() {
@@ -228,27 +224,32 @@ function fill(player, block, face) {
     say(player, "§eUse the bucket on the inside of a solid block");
     return;
   }
-  if (stairFill(player, block)) return;
-  const seed = { x: block.x + normal[0], y: block.y + normal[1], z: block.z + normal[2] };
   const dimension = block.dimension;
+  const stairs = planStairs(player, block);
+  const seed = { x: block.x + normal[0], y: block.y + normal[1], z: block.z + normal[2] };
   const start = dimension.getBlock(seed);
-  if (!start?.isAir) {
-    say(player, "§eUse the bucket on the side of a block that faces an empty hole");
-    return;
-  }
-  const faceAxis = normal.findIndex((v) => v !== 0);
   /** @type {Pos[][]} */
   const closed = [];
-  for (const axis of layerAxes(faceAxis, player)) {
-    const cells = flood(dimension, seed, axis);
-    if (cells) closed.push(cells);
+  if (start?.isAir) {
+    const faceAxis = normal.findIndex((v) => v !== 0);
+    for (const axis of layerAxes(faceAxis, player)) {
+      const cells = flood(dimension, seed, axis);
+      if (cells) closed.push(cells);
+    }
   }
-  if (closed.length === 0) {
-    say(player, `§eThe hole isn't closed (more than ${MAX_BLOCKS} blocks): close the gaps first`);
+  // Two things the bucket could do: build the staircase on, or fill the closed hole. A click does the staircase when there is one;
+  // sneaking and clicking does the other. With only one possible, it does that.
+  if (!stairs?.cells && closed.length === 0) {
+    say(player, stairs?.message ?? (start?.isAir ? `§eThe hole isn't closed (more than ${MAX_BLOCKS} blocks): close the gaps first` : "§eUse the bucket on the side of a block that faces an empty hole"));
     return;
   }
-  const cells = closed.length > 1 && player.isSneaking ? closed[1] : closed[0];
-  const other = closed.length > 1 ? " Sneak and use it for the other way." : "";
+  if (stairs?.cells && stairs.place && stairs.typeId && !(closed.length > 0 && player.isSneaking)) {
+    const other = closed.length > 0 ? " Sneak and use it to fill the hole instead." : "";
+    queue(player, dimension, stairs.cells, stairs.place, stairs.typeId, block.location, stairs.message + other);
+    return;
+  }
+  const cells = !stairs?.cells && closed.length > 1 && player.isSneaking ? closed[1] : closed[0];
+  const other = stairs?.cells ? " Sneak and use it for the staircase." : closed.length > 1 ? " Sneak and use it for the other way." : "";
   queue(player, dimension, cells, block.permutation, block.typeId, block.location, `§aFilled ${cells.length} blocks! Use it in the air within 3 seconds to undo.${other}`);
 }
 
