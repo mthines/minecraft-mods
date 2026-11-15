@@ -16,6 +16,11 @@ receivers:
     endpoint: unix:///var/run/docker.sock
     collection_interval: 30s
     api_version: "1.44"
+  # What the grown-ups do with ./mc (kits given, peace on, ...): tools/lib/telemetry.mjs posts OTLP/HTTP logs here.
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
 
 processors:
   memory_limiter:
@@ -102,6 +107,10 @@ service:
     logs/bedrock:
       receivers: [fluent_forward]
       processors: [memory_limiter, transform/bedrock_logs, resource/bedrock, resource/minecraft, batch]
+      exporters: [otlp_grpc/dash0]
+    logs/mc_tools:
+      receivers: [otlp]
+      processors: [memory_limiter, resource/minecraft, batch]
       exporters: [otlp_grpc/dash0]
     metrics/containers:
       receivers: [docker_stats]

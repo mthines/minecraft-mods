@@ -51,7 +51,7 @@ async function players() {
 let queue = Promise.resolve();
 /** @param {string[]} args @param {number} [timeout] */
 function mc(args, timeout = 60000) {
-  const job = queue.then(() => run(join(ROOT, "mc"), args, { cwd: ROOT, timeout }));
+  const job = queue.then(() => run(join(ROOT, "mc"), args, { cwd: ROOT, timeout, env: { ...process.env, MC_SOURCE: "web" } })); // MC_SOURCE: telemetry says which screen it came from
   queue = job.then(() => {}, () => {});
   return job;
 }

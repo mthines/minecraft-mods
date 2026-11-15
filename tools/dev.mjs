@@ -404,7 +404,7 @@ function mc(args, then, question = confirmed) {
   view = "activity";
   scroll = 0;
   note(`$ mc ${args.join(" ")}`);
-  const child = spawn(join(ROOT, "mc"), args, { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"] });
+  const child = spawn(join(ROOT, "mc"), args, { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, MC_SOURCE: "mc-dev" } }); // MC_SOURCE: telemetry says which screen it came from
   action = { name: args[0], child };
   child.stdout?.on("data", feed(activity, "    "));
   child.stderr?.on("data", feed(activity, "    "));

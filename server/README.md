@@ -166,6 +166,26 @@ To turn it off, delete `server/.env` and run `./mc start` again.
 | `minecraft.player.dimension_changed` | Someone goes through a portal | `minecraft.player.name`, `minecraft.dimension.from`, `minecraft.dimension.to` |
 | `minecraft.item.consumed` | Someone eats or drinks something | `minecraft.player.name`, `minecraft.item.type` (like `cooked_beef` or `potion`) |
 
+### What the grown-ups did
+
+`./mc` also sends an event for what it changes, so afterwards you can see how many items were given, when peace mode was on, and so on. `mc dev`, the kit menu on the iPad and the command line all go through `./mc`, so all three are counted; `minecraft.admin.source` says which (`mc-dev`, `web` or `cli`). They arrive with `service.name` `mc-tools`, through the Collector's port `4318` (only this computer can reach it). Without telemetry nothing is sent, and `MC_TELEMETRY=off` turns it off for one command.
+
+| `event.name` | When | Attributes |
+| --- | --- | --- |
+| `minecraft.admin.kit_given` | A kit was given (`mc kit`, a kit from either menu, any item) | `minecraft.kit.name` (`tools` for the diamond tools), `minecraft.kit.target` (`@a` or a name), `minecraft.kit.craft`, `minecraft.kit.item_types`, `minecraft.kit.items` (everything added, summed) |
+| `minecraft.admin.option_changed` | Peace, PvP, fall damage, invincible, keep inventory or show coordinates was set | `minecraft.option.name`, `minecraft.option.state` (`on` or `off`) |
+| `minecraft.admin.action` | Day or night (`cmd time set …`), kill enemies, clear inventory, find a place, a world played, made or deleted, a restart or stop | `minecraft.action.name`, and `minecraft.action.detail` (the place, the world, or what was cleared) |
+
+Typed server commands only send their first word (`cmd say`), since what follows can be something a player said. NPC changes (`mc npc`) and test runs aren't counted.
+
+Items given, per kit, over the last week (in Dash0, **Logs → SQL** or a dashboard panel; check the query against real data first):
+
+```promql
+sum by (minecraft_kit_name) (increase({otel_metric_name="dash0.logs", event_name="minecraft.admin.kit_given"}[7d]))
+```
+
+That counts kits given; for the items inside them, sum the `minecraft.kit.items` attribute of the same events.
+
 To add an event to your own mod, print one JSON line with an `event.name`:
 
 ```js

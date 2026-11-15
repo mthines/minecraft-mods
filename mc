@@ -108,6 +108,9 @@ server_version() {
 
 # Every kit's name, one a line, and what a kit gives: see tools/lib/kits.mjs.
 kit_names() { node tools/kits.mjs names; }
+# emit <event> [key=text | key:int=5 | key:bool=true]...: tells the OpenTelemetry Collector what was just done, so Dash0 can show
+# it afterwards (tools/lib/telemetry.mjs). Never fails and never prints; mc dev and the kit menu set MC_SOURCE.
+emit() { node tools/telemetry.mjs "$@" >/dev/null 2>&1 || true; }
 
 # First ./mc kidex on a new computer: Kidex itself, the tools it hears and talks with, and its speech model.
 install_kidex() {
@@ -180,8 +183,8 @@ switch_rule() {
   case "$now:$value" in
     true:) echo "$name is on. Turn it off with: mc $cmd off" ;;
     false:) echo "$name is off. Turn it on with: mc $cmd on" ;;
-    true:true) echo "$said_on" ;;
-    false:false) echo "$said_off" ;;
+    true:true) echo "$said_on"; emit admin.option_changed "minecraft.option.name=$cmd" minecraft.option.state=on ;;
+    false:false) echo "$said_off"; emit admin.option_changed "minecraft.option.name=$cmd" minecraft.option.state=off ;;
     *)
       if [[ "$send" == "gamerule" ]]; then echo "The server didn't answer. Try again, or see: mc logs" >&2
       else echo "The $cmd mod didn't answer: a new mod only loads when the server restarts (mc mods lists what's loaded). Or see: mc logs" >&2; fi
@@ -231,6 +234,7 @@ case "${1:-help}" in
         wait_until_joinable
         docker exec "$SERVER" send-command "gamerule falldamage true"
         echo "$name has monsters and fall damage. Change that with: mc peace on, mc fall-damage off"
+        emit admin.action minecraft.action.name=world-new "minecraft.action.detail=$name"
         ;;
       play)
         world_name_ok "$name"
@@ -241,6 +245,7 @@ case "${1:-help}" in
         ./server/start.sh >/dev/null
         echo "Playing $name."
         wait_until_joinable
+        emit admin.action minecraft.action.name=world-play "minecraft.action.detail=$name"
         ;;
       rename)
         new="${4:-}"
@@ -274,6 +279,7 @@ case "${1:-help}" in
         fi
         rm -rf "${worlds:?}/$name"
         echo "Deleted $name."
+        emit admin.action minecraft.action.name=world-delete "minecraft.action.detail=$name"
         ;;
       *) usage >&2; exit 1 ;;
     esac
@@ -327,6 +333,8 @@ case "${1:-help}" in
       exit 1
     fi
     echo "Gave ${who/#@a/everyone online}: $(echo "$items" | awk '{printf "%s%s ×%s", (NR>1 ? ", " : ""), $1, $2}')"
+    emit admin.kit_given "minecraft.kit.name=${mod:-tools}" "minecraft.kit.target=$who" "minecraft.kit.craft:bool=$craft" \
+      "minecraft.kit.item_types:int=$(awk 'END{print NR}' <<<"$items")" "minecraft.kit.items:int=$(awk '{n+=$2} END{print n+0}' <<<"$items")"
     [[ -n "$mod" ]] || echo "Other kits: $(kit_names | tr '\n' ' ')"
     [[ -z "$mod" || "$craft" == true ]] || ! node tools/kits.mjs has-craft "$mod" ||
       echo "For the crafting table and materials too: mc kit $mod ${3:+$3 }--craft"
@@ -378,13 +386,14 @@ case "${1:-help}" in
     # A touch-screen kit menu for the iPad on the same wifi (tools/web.mjs, web/).
     exec npm run --silent web
     ;;
-  stop) docker compose -p server stop ;;
+  stop) docker compose -p server stop; emit admin.action minecraft.action.name=stop ;;
   restart)
     ensure_beta_apis
     # Copies the add-ons first: a new mod only reaches the server by deploy, which the watcher does only when Send saved files is on.
     npm run --silent deploy | grep -v "Restart the server" || exit 1
     docker restart "$SERVER" >/dev/null
     wait_until_joinable
+    emit admin.action minecraft.action.name=restart
     ;;
   status) docker compose -p server ps --format "table {{.Name}}\t{{.Status}}" ;;
   mods)
@@ -409,6 +418,9 @@ case "${1:-help}" in
     shift
     since="$(date -u +%Y-%m-%dT%H:%M:%S.000000000Z)"
     docker exec "$SERVER" send-command "$*"
+    # Only the command's name goes to telemetry (two words for time, so day and night differ): what follows can be chat.
+    case "$*" in "time set "*) read -r w1 w2 w3 _ <<<"$*"; cmd_name="$w1 $w2 $w3" ;; *) cmd_name="${1%% *}" ;; esac
+    emit admin.action "minecraft.action.name=cmd $cmd_name"
     sleep 1
     docker logs --since "$since" "$SERVER" 2>&1 | grep -v '^\s*$' || true
     ;;
@@ -430,6 +442,7 @@ case "${1:-help}" in
       docker exec "$SERVER" send-command "difficulty $level"
     fi
     if [[ "$level" == "peaceful" ]]; then echo "Peace mode on: monsters are gone and won't spawn, and health refills."; else echo "Peace mode off: monsters are back (difficulty: easy)."; fi
+    emit admin.option_changed minecraft.option.name=peace "minecraft.option.state=${2}"
     ;;
   fall-damage) switch_rule falldamage fall-damage "${2:-}" "Fall damage" "Fall damage on: falling hurts again." "Fall damage off: fall as far as you like." ;;
   pvp) switch_rule pvp pvp "${2:-}" "PvP" "PvP on: players can hurt each other again." "PvP off: players can't hurt each other." ;;
@@ -484,6 +497,7 @@ case "${1:-help}" in
     sleep 1
     docker logs --since "$since" "$SERVER" 2>&1 | grep -qE "No targets matched" && echo "No enemies around." \
       || docker logs --since "$since" "$SERVER" 2>&1 | sed -n 's/.*INFO\] //p' | tr -d '\r'
+    emit admin.action minecraft.action.name=kill-enemies
     ;;
   show-coordinates) switch_rule showcoordinates show-coordinates "${2:-}" "Show coordinates" "Show coordinates on: everyone sees where they are at the top left." "Show coordinates off: the position is hidden again." ;;
   locate)
@@ -522,6 +536,7 @@ case "${1:-help}" in
         echo "The server didn't answer for $player: is \"$place\" a place /locate knows? See: mc logs" >&2; continue
       fi
       echo "$player: $said"
+      emit admin.action minecraft.action.name=locate "minecraft.action.detail=$place"
       docker exec "$SERVER" send-command "tellraw \"$player\" {\"rawtext\":[{\"text\":\"$tell\"}]}"
     done
     ;;
@@ -547,6 +562,7 @@ case "${1:-help}" in
       exit 1
     fi
     echo "Emptied the $what of ${who/#@a/everyone online}."
+    emit admin.action minecraft.action.name=clear-inventory "minecraft.action.detail=$what"
     ;;
   test)
     # Simulated players play each mod's tests/e2e.js on a separate test server (tools/e2e.mjs).

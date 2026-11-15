@@ -27,6 +27,8 @@ Two screens drive the same server: `mc dev` (keys, `tools/dev.mjs`) and the touc
 - Keep it fast on the iPad: show what's in files at once (worlds, peace) and let anything that asks the server (the rules) fill in after, like the Game tab does. One `send-command` can ask for several things.
 - `mc dev` needs a terminal and can't be tested without one, and the page needs a look at phone width (about 400px) in a browser: say which of those you couldn't check. Restart `mc dev` after changing `tools/web.mjs`; the page is rebuilt then.
 
+- `./mc` tells telemetry what it changed (`emit` in `mc`, `tools/lib/telemetry.mjs`; the events are in `server/README.md`), so mc dev, the iPad menu and the command line are counted without extra work. A new `./mc` command that changes something calls `emit` after it succeeds; never put chat text or other typed text in an event. The Collector needs a restart to open its port: `./mc start` recreates it, check first who is online.
+
 ## Performance (the server is one script thread, so one heavy tick lags everyone)
 
 - Budget a tick. Whatever runs every tick (`system.runInterval(fn)`, a per-player loop, a held button) must stay small: a few `getBlock` calls and one or two entity queries. Work that is big (a 7×7 drill face, 49 `setblock` commands and as many item drops, a 9×9×9 block scan, flood-filling a tree) never runs every tick: spread it over ticks, cap it per tick (like `FELL_PER_TICK` in heavy-machines), or run it less often.
