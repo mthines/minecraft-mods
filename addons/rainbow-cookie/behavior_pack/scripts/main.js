@@ -2,6 +2,7 @@ import { ItemStack, world } from "@minecraft/server";
 
 const COOKIE = "family:rainbow_cookie";
 const SPAWN_COOKIES = 10; // everyone has at least this many after joining or respawning
+const LAST_BAR_SLOT = 8; // item bar slot 9
 
 const SECONDS = 20; // Minecraft counts time in ticks: 20 ticks = 1 second.
 
@@ -34,6 +35,10 @@ world.afterEvents.playerSpawn.subscribe(({ player }) => {
   if (!player?.isValid || player.hasTag("family:npc") || player.hasTag("family:e2e")) return; // isValid: they may have left already
   const missing = SPAWN_COOKIES - cookies(player);
   if (missing <= 0) return;
-  player.getComponent("minecraft:inventory")?.container?.addItem(new ItemStack(COOKIE, missing));
+  // The last slot of the item bar (9), so the power tools the starter kit gives next get slots 1, 2 and 3.
+  const container = player.getComponent("minecraft:inventory")?.container;
+  const stack = new ItemStack(COOKIE, missing);
+  if (container && !container.getItem(LAST_BAR_SLOT)) container.setItem(LAST_BAR_SLOT, stack);
+  else container?.addItem(stack);
   console.log(JSON.stringify({ "event.name": "minecraft.rainbow_cookie.spawn_cookies", "minecraft.player.name": player.name, "minecraft.cookies.given": missing }));
 });

@@ -58,8 +58,9 @@ export async function aNewPlayerGetsTheirStartingItemsAndAChest(t) {
 
   const inventory = player.getComponent("minecraft:inventory").container;
   const at = (slot) => inventory.getItem(slot)?.typeId;
+  // The power tools are on keys 1, 2 and 3, the fill bucket on 4: the cookie mod keeps slot 9, not slot 1.
   const bar = [0, 1, 2, 3].map(at);
-  t.assert(["family:drill", "family:chainsaw", "family:power_shovel", "family:fill_bucket"].every((item) => bar.includes(item)), `The item bar has ${bar.join(", ")}`);
+  t.assert(bar.join() === ["family:drill", "family:chainsaw", "family:power_shovel", "family:fill_bucket"].join(), `The item bar has ${bar.join(", ")}`);
   let feathers = 0;
   for (let slot = 0; slot < inventory.size; slot++) {
     if (at(slot) !== "family:golden_feather") continue;
