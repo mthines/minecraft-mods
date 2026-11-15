@@ -60,3 +60,51 @@ export async function theFillCannotBeUndoneAfterThreeSeconds(t) {
   await t.wait(30);
   t.assert(holeBlocks(t).every((b) => b === WALL), "The fill was undone after more than 3 seconds");
 }
+
+const STEP = "minecraft:cobblestone";
+
+/** Builds the first blocks of a staircase along x in the plane z = 3 from `[dx, dy]` cells, and clicks the top of the last one from behind. */
+async function clickStairs(t, cells, from = -10) {
+  for (const [x, y] of cells) t.place(STEP, x, y, 3);
+  const player = t.player("Stairs", from, 3);
+  const [x, y] = cells[cells.length - 1];
+  t.hold(player, "family:fill_bucket");
+  await t.wait(5);
+  player.lookAtBlock(t.at(x, y, 3));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(x, y, 3), Direction.Up), "Couldn't use the bucket on the stairs");
+}
+const built = (t, cells) => cells.every(([x, y]) => typeAt(t, x, y, 3) === STEP);
+
+// up, straight, up, straight, up
+const UP_STRAIGHT = [[-6, 0], [-5, 1], [-4, 1], [-3, 2], [-2, 2], [-1, 3]];
+
+export async function theBucketKeepsBuildingAnUpStraightStaircaseUntilSomethingIsInTheWay(t) {
+  t.place("minecraft:glass", 3, 5, 3); // the pattern wants a block here
+  await clickStairs(t, UP_STRAIGHT);
+  const more = [[0, 3], [1, 4], [2, 4]];
+  await t.until(() => built(t, more), () => `The staircase wasn't continued: ${more.map(([x, y]) => typeAt(t, x, y, 3)).join(", ")}`, 40);
+  await t.wait(20);
+  t.assert(typeAt(t, 3, 5, 3) === "minecraft:glass", "The bucket built through the block in the way");
+  t.assert(typeAt(t, 4, 5, 3) === "minecraft:air" && typeAt(t, 3, 4, 3) === "minecraft:air", "The staircase kept going past the block in the way");
+}
+
+export async function theBucketKeepsBuildingADownStaircase(t) {
+  const down = [[-6, 6], [-5, 5], [-4, 5], [-3, 4], [-2, 4], [-1, 3]];
+  await clickStairs(t, down);
+  const more = [[0, 3], [1, 2], [2, 2], [3, 1], [4, 1], [5, 0]];
+  await t.until(() => built(t, more), () => `The down staircase wasn't continued: ${more.map(([x, y]) => typeAt(t, x, y, 3)).join(", ")}`, 60);
+}
+
+export async function theStaircaseStopsWhereTheLineYouBuiltGoesAnotherWay(t) {
+  t.place(STEP, 1, 3, 3); // two straights in a row: (0, 3) then (1, 3), where the pattern wants to go up
+  await clickStairs(t, UP_STRAIGHT);
+  await t.until(() => typeAt(t, 0, 3, 3) === STEP, "The bucket didn't add the block that joins the landing", 40);
+  await t.wait(20);
+  t.assert(typeAt(t, 1, 4, 3) === "minecraft:air", "The staircase went up where the line you built goes straight");
+}
+
+export async function twoStepsAreNotEnoughToSeeAPattern(t) {
+  await clickStairs(t, [[-6, 0], [-5, 1], [-4, 1]]);
+  await t.wait(40);
+  t.assert(typeAt(t, -3, 2, 3) === "minecraft:air" && typeAt(t, -3, 1, 3) === "minecraft:air", "The bucket guessed a pattern from up and straight");
+}
