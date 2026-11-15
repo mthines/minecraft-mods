@@ -6,6 +6,7 @@ const BALL = "family:football"; // the ball and the item that places it share th
 const WINNING_SCORE = 5;
 const NEARBY = 64; // blocks from the middle of a pitch that count as playing
 const KICK = 1.1;
+const ANNOUNCE_VOLUME = 0.25; // the kick-off horn and the goal sounds: full volume was painfully loud
 const SAVE_KEY = "family:football_games";
 
 /**
@@ -84,7 +85,7 @@ const scoreLine = (/** @type {Game} */ game) => `§9§lBlue ${game.blue_score} �
 function announce(game, title, subtitle, sound = "random.levelup") {
   for (const player of playersNear(game)) {
     player.onScreenDisplay.setTitle(title, { subtitle, fadeInDuration: 5, stayDuration: 50, fadeOutDuration: 15 });
-    player.playSound(sound);
+    player.playSound(sound, { volume: ANNOUNCE_VOLUME });
   }
 }
 

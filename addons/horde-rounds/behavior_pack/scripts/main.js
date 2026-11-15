@@ -8,6 +8,7 @@ const NEST = "family:horde_nest";
 const HORDE_TAG = "family:horde"; // on every enemy the nest sent
 const SAVE_KEY = "family:horde_game";
 const OVERWORLD = "minecraft:overworld";
+const ANNOUNCE_VOLUME = 0.25; // the horn and the round sounds: full volume was painfully loud
 
 const SECONDS = 20; // Minecraft counts time in ticks: 20 ticks = 1 second.
 const NEST_MIN = 150; // how far from the players a new nest appears, in blocks: far enough that it has to be found
@@ -124,7 +125,7 @@ function announce(title, subtitle, sound = "raid.horn") {
   for (const player of players()) {
     try {
       player.onScreenDisplay.setTitle(title, { subtitle, fadeInDuration: 5, stayDuration: 50, fadeOutDuration: 15 });
-      player.playSound(sound);
+      player.playSound(sound, { volume: ANNOUNCE_VOLUME });
     } catch {
       // they just left
     }
