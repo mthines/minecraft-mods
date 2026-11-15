@@ -353,9 +353,10 @@ case "${1:-help}" in
       items="$(printf 'minecraft:diamond_%s 1\n' sword pickaxe axe shovel hoe)"
     fi
     since="$(date -u +%Y-%m-%dT%H:%M:%S.000000000Z)"
-    while read -r item count; do
-      docker exec "$SERVER" send-command "give $who $item $count"
-    done <<<"$items"
+    # Armor and the like goes on if that slot is empty (tools/lib/wearables.mjs); everything else is a plain give.
+    while read -r command; do
+      docker exec "$SERVER" send-command "$command"
+    done < <(node tools/kits.mjs give "$who" <<<"$items")
     sleep 1
     if docker logs --since "$since" "$SERVER" 2>&1 | grep -q "No targets matched"; then
       echo "Nobody to give it to: ${who/#@a/no one is online}. Join the server, then run it again." >&2
