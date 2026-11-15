@@ -1,4 +1,6 @@
 import { ItemStack, Player, system, world } from "@minecraft/server";
+import { groundAt as dryGroundAt } from "./ground.js";
+import { planTracking } from "./track.js";
 import { emit } from "./telemetry.js";
 
 const HORN = "family:horde_horn";
@@ -14,8 +16,13 @@ const AREA = "horde_nest"; // the ticking area that keeps the nest's chunks load
 const LOAD_WAIT = 30 * SECONDS; // how long a far spot gets to load before another is tried
 const WAVE_EVERY = 5 * SECONDS;
 const BREAK = 15 * SECONDS; // between rounds
-const MARCH_FROM = 26; // a horde far from the nest appears this far from the nearest player, on the side of the nest
-const MAX_ALIVE = 32; // the most horde enemies alive at once, so one script thread can keep up
+const RING_MIN = 18; // a wave appears this far from a player: inside the 35 blocks where a husk notices you
+const RING_MAX = 26;
+const MAX_ALIVE = 40; // the most horde enemies alive at once, so one script thread can keep up
+const GUARD_TAG = "family:horde_guard"; // the enemies that stand at the nest: they stay there
+const GUARD_RANGE = 40; // the guards appear when a player comes this close to the nest: far from every player, a hostile mob despawns at once
+const TRACK_EVERY = 2 * SECONDS; // how often the horde is checked for enemies that lost the players
+const TRACK_BUDGET = 8; // the most enemies moved or nudged per check
 const MAX_PER_WAVE = 8; // the most spawned in one tick: a bigger wave comes over the next waves
 
 const ARROWS = ["↑", "↗", "→", "↘", "↓", "↙", "←", "↖"];
@@ -24,7 +31,8 @@ const COMPASS = ["north", "north-east", "east", "south-east", "south", "south-we
 /**
  * One game for the whole world. `nest` is where the Horde Nest stands, `nestId` its entity.
  * "placing" means the round is looking for a spot for its nest; "break" is the pause between rounds.
- * @typedef {{ round: number, state: "placing" | "fight" | "break", nest: import("@minecraft/server").Vector3, nestId: string }} Game
+ * `guarded` is true once the guards stand at the nest.
+ * @typedef {{ round: number, state: "placing" | "fight" | "break", nest: import("@minecraft/server").Vector3, nestId: string, guarded?: boolean }} Game
  */
 
 /** @type {Game | null | undefined} */
@@ -47,20 +55,52 @@ function save(next) {
 const overworld = () => world.getDimension(OVERWORLD);
 /** NPCs (simulated players from the npc mod) come through as undefined in other mods. */
 const players = () => world.getPlayers().filter((p) => p && p.dimension.id === OVERWORLD);
+const groundAt = (/** @type {number} */ x, /** @type {number} */ z) => dryGroundAt(overworld(), x, z);
 const hordeMobs = () => overworld().getEntities({ tags: [HORDE_TAG] });
 
-/** The y to stand at over x, z: the first free block above the ground, or undefined (not loaded, water, treetops). */
-function groundAt(x, z) {
+const spread = () => (Math.random() * 2 - 1);
+
+/**
+ * Where to stand at x, z near height `around`: the first solid block with two free blocks above it, looking down from a few
+ * blocks above. Unlike the top of the world it also finds ground under trees, on slopes and in caves.
+ * @param {number} x @param {number} z @param {number} around
+ */
+function groundNear(x, z, around) {
   try {
-    const top = overworld().getTopmostBlock({ x, z });
-    if (!top || top.isLiquid || top.typeId.includes("leaves")) return undefined;
-    return top.location.y + 1;
+    let free = 0;
+    for (let y = Math.floor(around) + 6; y >= Math.floor(around) - 8; y--) {
+      const block = overworld().getBlock({ x, y, z });
+      if (!block) return undefined; // not loaded
+      if (block.isAir) {
+        free++;
+        continue;
+      }
+      if (free >= 2 && !block.isLiquid && !block.typeId.includes("leaves")) return y + 1;
+      free = 0;
+    }
   } catch {
-    return undefined; // the chunk isn't loaded
+    // not loaded
   }
+  return undefined;
 }
 
-const spread = () => (Math.random() * 2 - 1);
+/**
+ * A spot 18 to 26 blocks from `player`, mostly on the side of the nest (so the way the horde comes shows where it is), sometimes anywhere.
+ * @param {Player} player @param {import("@minecraft/server").Vector3} nest
+ */
+function ringSpot(player, nest) {
+  const { x: px, y: py, z: pz } = player.location;
+  const toNest = Math.atan2(nest.z - pz, nest.x - px);
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const angle = Math.random() < 0.3 ? Math.random() * Math.PI * 2 : toNest + spread() * 1.2;
+    const far = RING_MIN + Math.random() * (RING_MAX - RING_MIN);
+    const x = px + Math.cos(angle) * far;
+    const z = pz + Math.sin(angle) * far;
+    const y = groundNear(x, z, py);
+    if (y !== undefined) return { x, y, z };
+  }
+  return undefined;
+}
 
 /** The compass word for where `to` is seen from `from`. */
 function compass(from, to) {
@@ -186,20 +226,32 @@ function placeNest(g, done) {
   }, 10);
 }
 
+/** Guards around the nest, and a boss every 5th round. Called when a player gets close, not when the nest is placed. @param {Game} g */
+function spawnGuards(g) {
+  g.guarded = true;
+  save(g);
+  for (let i = 0; i < Math.min(1 + g.round, 5); i++) {
+    const guard = spawnHorde("minecraft:husk", g.nest, 5);
+    guard?.addTag(GUARD_TAG);
+    guard?.addEffect("resistance", 600 * SECONDS, { amplifier: 0, showParticles: false });
+  }
+  if (g.round % 5 === 0) spawnHorde("minecraft:ravager", g.nest, 4)?.addTag(GUARD_TAG);
+}
+
+/** When the fight of this round began: the longer it takes to find the nest, the more of the horde there can be. */
+let fightStart = 0;
+
 /** Starts round `g.round`: a new nest far away, guards around it, and the title on screen. @param {Game} g */
 function startRound(g) {
   g.state = "placing";
+  g.guarded = false;
   save(g);
   for (const player of players()) player.onScreenDisplay.setActionBar("§7The horde is gathering...");
   placeNest(g, (placed) => {
     if (!placed) return; // the 1 second check below tries a new spot
     g.state = "fight";
     save(g);
-    for (let i = 0; i < Math.min(1 + g.round, 5); i++) {
-      const guard = spawnHorde("minecraft:husk", g.nest, 5);
-      guard?.addEffect("resistance", 600 * SECONDS, { amplifier: 0, showParticles: false });
-    }
-    if (g.round % 5 === 0) spawnHorde("minecraft:ravager", g.nest, 4); // a boss every 5th round
+    fightStart = system.currentTick;
     announce(`§cRound ${g.round}`, "Find the Horde Nest and destroy it!");
     emit("horde.round_started", { "minecraft.horde.round": g.round, "minecraft.horde.players": players().length });
   });
@@ -323,6 +375,7 @@ system.runInterval(() => {
   if (g.state === "break") return scheduleNext(g);
   const nest = world.getEntity(g.nestId);
   if (nest?.isValid) {
+    if (!g.guarded && players().some((p) => flat(p.location, g.nest) < GUARD_RANGE)) spawnGuards(g);
     try {
       nest.dimension.spawnParticle("minecraft:villager_angry", { x: g.nest.x, y: g.nest.y + 3.2, z: g.nest.z });
       if (Math.random() < 0.3) nest.dimension.playSound("mob.wither.ambient", g.nest, { volume: 0.4, pitch: 0.6 });
@@ -334,27 +387,71 @@ system.runInterval(() => {
   if (players().some((p) => flat(p.location, g.nest) < 32)) roundCleared(undefined);
 }, SECONDS);
 
-// A wave of the horde every 5 seconds. They come in from the side of the nest, so the way they come shows where it is.
+// A wave of the horde every 5 seconds, around every player, for as long as the nest stands. The longer it takes, the more there can be.
+// Most come in from the side of the nest, so the way they come shows where it is.
 system.runInterval(() => {
   const g = current();
   if (!g || g.state !== "fight") return;
   const here = players();
   if (here.length === 0) return;
-  const alive = hordeMobs().length;
-  const cap = Math.min(MAX_ALIVE, 6 + 2 * g.round + 3 * (here.length - 1));
+  const alive = hordeMobs().filter((m) => !m.hasTag(GUARD_TAG)).length;
+  const minutes = Math.floor((system.currentTick - fightStart) / (20 * SECONDS)); // +2 enemies the horde may have every 20 seconds
+  const cap = Math.min(MAX_ALIVE, 6 + 2 * g.round + 3 * (here.length - 1) + 2 * minutes);
   const count = Math.min(cap - alive, MAX_PER_WAVE, 2 + Math.ceil(g.round / 2) + here.length);
-  if (count <= 0) return;
-
-  const nearest = here.reduce((a, b) => (flat(a.location, g.nest) <= flat(b.location, g.nest) ? a : b));
-  const gap = flat(nearest.location, g.nest);
-  const at = gap <= MARCH_FROM + 4
-    ? g.nest
-    : { x: nearest.location.x + ((g.nest.x - nearest.location.x) / gap) * MARCH_FROM, z: nearest.location.z + ((g.nest.z - nearest.location.z) / gap) * MARCH_FROM };
-  for (let i = 0; i < count; i++) spawnHorde(pickKind(g.round), at, 6);
-  if (gap > MARCH_FROM + 4) {
-    for (const player of here) player.onScreenDisplay.setActionBar(`§cThe horde is coming from the ${compass(player.location, g.nest)}!`);
+  let spawned = 0;
+  for (let i = 0; i < count; i++) {
+    const spot = ringSpot(here[i % here.length], g.nest);
+    if (!spot) continue; // no ground here (water, a cliff): the next wave tries again
+    try {
+      overworld().spawnEntity(pickKind(g.round), spot).addTag(HORDE_TAG);
+      spawned++;
+    } catch {
+      // not loaded
+    }
+  }
+  if (spawned > 0) {
+    for (const player of here) {
+      if (flat(player.location, g.nest) > RING_MAX + 10) player.onScreenDisplay.setActionBar(`§cThe horde is coming from the ${compass(player.location, g.nest)}!`);
+    }
   }
 }, WAVE_EVERY);
+
+/** @type {Map<string, { x: number, z: number }>} horde enemy id → where it was at the last check */
+const lastSpot = new Map();
+
+// The horde finds the players, however far away: an enemy that lost them is brought back to a ring around the nearest one,
+// and one that stands still far from a player is nudged toward them. (A mob's own target can't be set from a script.)
+system.runInterval(() => {
+  const g = current();
+  if (!g || g.state !== "fight") {
+    lastSpot.clear();
+    return;
+  }
+  const here = players();
+  if (here.length === 0) return;
+  const horde = hordeMobs().filter((mob) => mob.isValid);
+  const byId = new Map(horde.map((mob) => [mob.id, mob]));
+  const { lost, idle } = planTracking(
+    horde.map((mob) => ({ id: mob.id, x: mob.location.x, z: mob.location.z, guard: mob.hasTag(GUARD_TAG) })),
+    here.map((player) => ({ x: player.location.x, z: player.location.z })),
+    lastSpot,
+  );
+  const seen = new Set(byId.keys());
+  for (const mob of horde) lastSpot.set(mob.id, { x: mob.location.x, z: mob.location.z });
+  // Enemies that lost the players come first: they are no use where they stand.
+  let budget = TRACK_BUDGET;
+  for (const { id, near } of lost) {
+    if (budget-- <= 0) break;
+    const spot = ringSpot(here[near], g.nest);
+    try { if (spot) byId.get(id)?.teleport(spot); } catch (error) { console.warn(`horde-rounds: couldn't bring an enemy back: ${error}`); }
+  }
+  for (const { id, near, gap } of idle) {
+    if (budget-- <= 0) break;
+    const mob = byId.get(id);
+    try { mob?.applyImpulse({ x: ((here[near].location.x - mob.location.x) / gap) * 0.5, y: 0.3, z: ((here[near].location.z - mob.location.z) / gap) * 0.5 }); } catch { /* removed */ }
+  }
+  for (const id of lastSpot.keys()) if (!seen.has(id)) lastSpot.delete(id);
+}, TRACK_EVERY);
 
 // Hold the horn to sense the nest: an arrow and how far away it is.
 system.runInterval(() => {

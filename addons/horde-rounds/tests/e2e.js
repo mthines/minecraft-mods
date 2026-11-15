@@ -1,4 +1,6 @@
 // Played by simulated players on the test server: mc test horde-rounds
+import { groundAt } from "../behavior_pack/scripts/ground.js";
+
 const HORN = "family:horde_horn";
 const NEST = "family:horde_nest";
 
@@ -10,6 +12,7 @@ const apples = (player) => {
   for (let i = 0; i < inventory.size; i++) if (inventory.getItem(i)?.typeId === "minecraft:golden_apple") n++;
   return n;
 };
+const guards = (t) => t.dimension.getEntities({ tags: ["family:horde_guard"] });
 const far = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 
 /** Blows the horn once. Blows come a second apart: one tap is one blow. */
@@ -28,7 +31,10 @@ async function assertRound(t, player, nest, round) {
   t.assert(nests(t).length === 1, `Round ${round} should have one nest, but there are ${nests(t).length}`);
   const away = far(nest.location, player.location);
   t.assert(away > 120, `Round ${round}'s nest should be far away so it has to be found, but it is ${Math.round(away)} blocks away`);
-  await t.until(() => horde(t).length > 0, `Round ${round} has a nest but no horde: there are no guards around it`, 100);
+  // The guards stand at the nest once a player is close (far from every player a hostile mob despawns at once).
+  t.assert(!guards(t).length, `Round ${round}'s guards are out before anyone came near the nest`);
+  player.teleport({ x: nest.location.x + 6, y: nest.location.y + 1, z: nest.location.z });
+  await t.until(() => guards(t).length > 0, `Round ${round} has a nest but no guards come out when a player gets close`, 100);
 }
 
 /** Destroys the nest, waits for the horde to go, and blows the horn to skip the break. */
@@ -87,4 +93,30 @@ export async function roundsOneToThreeAllWork(t) {
   } finally {
     await stop(t, player);
   }
+}
+
+/** Enemies of the horde that aren't guards at the nest, within `blocks` of the player. */
+const marching = (t, player, blocks = 45) => horde(t).filter((m) => !m.hasTag("family:horde_guard") && far(m.location, player.location) < blocks);
+
+export async function theHordeComesToThePlayersAndKeepsComing(t) {
+  const player = t.player("Hero");
+  await blow(t, player);
+  try {
+    await newNest(t, [], "No Horde Nest appeared");
+    await t.until(() => marching(t, player).length > 0, "No enemies came near the player: the nest is far away, the horde has to come to them", 400);
+    // They keep coming: killing them all doesn't end it, more arrive.
+    for (const mob of marching(t, player)) mob.remove();
+    await t.until(() => marching(t, player).length > 0, "The horde stopped coming after the first enemies were gone", 400);
+  } finally {
+    await stop(t, player);
+  }
+}
+
+export async function theNestNeverStandsOnWater(t) {
+  // A pond 4 blocks across and 2 deep over the ground, and dry land next to it.
+  for (let x = 0; x < 4; x++) for (let z = 0; z < 4; z++) for (const dy of [0, 1]) t.place("minecraft:water", x, dy, 8 + z);
+  const spot = (dx, dz) => t.at(dx, 0, dz);
+  const over = (dx, dz) => groundAt(t.dimension, spot(dx, dz).x, spot(dx, dz).z);
+  t.assert(over(1, 9) === undefined, "A spot in the middle of the pond counts as dry land");
+  t.assert(over(-6, -6) !== undefined, "Dry land next to the pond doesn't count as dry land");
 }
