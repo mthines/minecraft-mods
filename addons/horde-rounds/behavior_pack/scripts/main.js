@@ -8,8 +8,10 @@ const SAVE_KEY = "family:horde_game";
 const OVERWORLD = "minecraft:overworld";
 
 const SECONDS = 20; // Minecraft counts time in ticks: 20 ticks = 1 second.
-const NEST_MIN = 30; // how far from the players a new nest appears, in blocks
-const NEST_MAX = 50;
+const NEST_MIN = 150; // how far from the players a new nest appears, in blocks: far enough that it has to be found
+const NEST_MAX = 220;
+const AREA = "horde_nest"; // the ticking area that keeps the nest's chunks loaded while the round lasts
+const LOAD_WAIT = 30 * SECONDS; // how long a far spot gets to load before another is tried
 const WAVE_EVERY = 5 * SECONDS;
 const BREAK = 15 * SECONDS; // between rounds
 const MARCH_FROM = 26; // a horde far from the nest appears this far from the nearest player, on the side of the nest
@@ -112,47 +114,95 @@ function spawnHorde(type, around, radius) {
   }
 }
 
-/** Puts a new nest 30 to 50 blocks from the players. Returns false when no spot was found. @param {Game} g */
-function placeNest(g) {
-  const here = players();
-  if (here.length === 0) return false;
-  const anchor = here[Math.floor(Math.random() * here.length)].location;
-  for (let attempt = 0; attempt < 16; attempt++) {
-    const far = attempt < 12 ? NEST_MIN + Math.random() * (NEST_MAX - NEST_MIN) : 10 + Math.random() * 10; // last tries: whatever is loaded
-    const angle = Math.random() * Math.PI * 2;
-    const x = Math.floor(anchor.x + Math.cos(angle) * far) + 0.5;
-    const z = Math.floor(anchor.z + Math.sin(angle) * far) + 0.5;
+/** Lets go of the chunks around the nest. */
+function removeArea() {
+  try { overworld().runCommand(`tickingarea remove ${AREA}`); } catch { /* there was none */ }
+}
+
+/** @type {boolean} a nest is being placed: waiting for its far chunks to load */
+let placing = false;
+
+/** Tries a few spots around `cx, cz` once its chunks are loaded; true when the nest is placed. @param {Game} g @param {number} cx @param {number} cz */
+function spawnNestNear(g, cx, cz) {
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const x = Math.floor(cx + spread() * 12) + 0.5;
+    const z = Math.floor(cz + spread() * 12) + 0.5;
     const y = groundAt(x, z);
-    if (y === undefined) continue;
+    if (y === undefined) continue; // not loaded yet, or water or treetops
+    let nest;
     try {
-      const nest = overworld().spawnEntity(NEST, { x, y, z });
-      nest.addTag("family:horde_game");
-      // Tougher every round, up to the most the nest can hold.
-      nest.getComponent("minecraft:health")?.setCurrentValue(Math.min(400, 60 + 25 * g.round));
-      g.nest = { x, y, z };
-      g.nestId = nest.id;
-      return true;
-    } catch {
-      // not loaded after all: try another spot
+      nest = overworld().spawnEntity(NEST, { x, y, z });
+    } catch (error) {
+      console.warn(`horde-rounds: placing the nest failed: ${error}`);
+      continue;
     }
+    try {
+      nest.addTag("family:horde_game");
+      // Tougher every round. The nest starts at its most (400, see entities/horde_nest.json): health can only be set at or below that.
+      nest.getComponent("minecraft:health")?.setCurrentValue(Math.min(400, 60 + 25 * g.round));
+    } catch (error) {
+      console.warn(`horde-rounds: the nest's health couldn't be set: ${error}`);
+    }
+    g.nest = { x, y, z };
+    g.nestId = nest.id;
+    return true;
   }
   return false;
 }
 
-/** Starts round `g.round`: a new nest, guards around it, and the title on screen. @param {Game} g */
+/**
+ * Puts a new nest 150 to 220 blocks from the players. That far, its chunks aren't loaded, so a ticking area loads them first and
+ * the nest goes up when they are. One placement at a time. Calls `done(true)` when the nest stands, `done(false)` when nothing loaded in time.
+ * @param {Game} g @param {(placed: boolean) => void} done
+ */
+function placeNest(g, done) {
+  const here = players();
+  if (placing || here.length === 0) return;
+  placing = true;
+  for (const stale of overworld().getEntities({ type: NEST })) stale.remove(); // one nest at a time: whatever is left from before goes
+  removeArea();
+  const anchor = here[Math.floor(Math.random() * here.length)].location;
+  const far = NEST_MIN + Math.random() * (NEST_MAX - NEST_MIN);
+  const angle = Math.random() * Math.PI * 2;
+  const cx = Math.floor(anchor.x + Math.cos(angle) * far);
+  const cz = Math.floor(anchor.z + Math.sin(angle) * far);
+  try {
+    overworld().runCommand(`tickingarea add circle ${cx} 64 ${cz} 2 ${AREA} true`);
+  } catch (error) {
+    console.warn(`horde-rounds: couldn't load the chunks for the nest: ${error}`);
+    placing = false;
+    return;
+  }
+  let waited = 0;
+  const timer = system.runInterval(() => {
+    waited += 10;
+    const stopped = current() !== g; // the game ended while the chunks loaded
+    const placed = !stopped && spawnNestNear(g, cx, cz);
+    if (!placed && !stopped && waited < LOAD_WAIT) return;
+    system.clearRun(timer);
+    placing = false;
+    if (!placed) removeArea();
+    if (!stopped) done(placed);
+  }, 10);
+}
+
+/** Starts round `g.round`: a new nest far away, guards around it, and the title on screen. @param {Game} g */
 function startRound(g) {
   g.state = "placing";
   save(g);
-  if (!placeNest(g)) return; // nowhere loaded to put it: the 1 second check below tries again
-  g.state = "fight";
-  save(g);
-  for (let i = 0; i < Math.min(1 + g.round, 5); i++) {
-    const guard = spawnHorde("minecraft:husk", g.nest, 5);
-    guard?.addEffect("resistance", 600 * SECONDS, { amplifier: 0, showParticles: false });
-  }
-  if (g.round % 5 === 0) spawnHorde("minecraft:ravager", g.nest, 4); // a boss every 5th round
-  announce(`§cRound ${g.round}`, "Find the Horde Nest and destroy it!");
-  emit("horde.round_started", { "minecraft.horde.round": g.round, "minecraft.horde.players": players().length });
+  for (const player of players()) player.onScreenDisplay.setActionBar("§7The horde is gathering...");
+  placeNest(g, (placed) => {
+    if (!placed) return; // the 1 second check below tries a new spot
+    g.state = "fight";
+    save(g);
+    for (let i = 0; i < Math.min(1 + g.round, 5); i++) {
+      const guard = spawnHorde("minecraft:husk", g.nest, 5);
+      guard?.addEffect("resistance", 600 * SECONDS, { amplifier: 0, showParticles: false });
+    }
+    if (g.round % 5 === 0) spawnHorde("minecraft:ravager", g.nest, 4); // a boss every 5th round
+    announce(`§cRound ${g.round}`, "Find the Horde Nest and destroy it!");
+    emit("horde.round_started", { "minecraft.horde.round": g.round, "minecraft.horde.players": players().length });
+  });
 }
 
 /** Ends round, sends the horde away, heals everyone, and starts the next round after a break. @param {string} [by] */
@@ -161,6 +211,7 @@ function roundCleared(by) {
   if (!g || g.state !== "fight") return;
   g.state = "break";
   save(g);
+  removeArea();
   let n = 0;
   for (const mob of hordeMobs()) {
     try {
@@ -179,24 +230,33 @@ function roundCleared(by) {
       // a full backpack just means no apple
     }
   }
-  announce(`§aRound ${g.round} cleared!`, `${by ? `${by} destroyed the nest. ` : ""}Next round in ${BREAK / SECONDS} seconds`, "random.totem");
+  announce(`§aRound ${g.round} cleared!`, `${by ? `${by} destroyed the nest. ` : ""}Next round in ${BREAK / SECONDS} seconds (blow the horn to start now)`, "random.totem");
   emit("horde.round_cleared", { "minecraft.horde.round": g.round, "minecraft.player.name": by ?? "nobody" });
   scheduleNext(g);
 }
 
 /** @type {Game | null} the game whose next round is already counting down */
 let counting = null;
+let breakId = 0; // which countdown is the live one: skipping the break makes the old one a no-op
 
 /** After the break, the next round starts. The 1 second check calls this again after a /reload lost the timer. @param {Game} g */
 function scheduleNext(g) {
   if (counting === g) return;
   counting = g;
+  const id = ++breakId;
   system.runTimeout(() => {
-    counting = null;
-    if (current() !== g || g.state !== "break") return;
-    g.round += 1;
-    startRound(g);
+    if (id !== breakId) return; // skipped
+    nextRound(g);
   }, BREAK);
+}
+
+/** Starts the next round now, ending the break. @param {Game} g */
+function nextRound(g) {
+  breakId++;
+  counting = null;
+  if (current() !== g || g.state !== "break") return;
+  g.round += 1;
+  startRound(g);
 }
 
 /** Stops the game and clears the nest and the horde. @param {string} [by] */
@@ -204,6 +264,7 @@ function endGame(by) {
   const g = current();
   if (!g) return;
   save(null);
+  removeArea();
   const nests = overworld().getEntities({ type: NEST });
   for (const entity of [...nests, ...hordeMobs()]) {
     try {
@@ -228,7 +289,12 @@ world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
     player.onScreenDisplay.setActionBar("§cThe horde only comes in the overworld");
     return;
   }
-  if (current()) {
+  const running = current();
+  if (running?.state === "break") {
+    nextRound(running); // blowing the horn in the break starts the next round now
+    return;
+  }
+  if (running) {
     endGame(player.name);
     return;
   }
@@ -253,7 +319,7 @@ system.runInterval(() => {
   const g = current();
   if (!g) return;
   // A /reload loses timeouts: pick the game up again from where it was saved.
-  if (g.state === "placing") return startRound(g);
+  if (g.state === "placing") return placing ? undefined : startRound(g); // a /reload loses the wait for the chunks: start it again
   if (g.state === "break") return scheduleNext(g);
   const nest = world.getEntity(g.nestId);
   if (nest?.isValid) {

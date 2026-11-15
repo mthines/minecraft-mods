@@ -112,5 +112,11 @@ export async function respawningGivesALantern(t) {
   player.kill();
   await t.wait(20);
   player.respawn();
-  await t.until(() => lanterns(player) === 1, () => `After respawning the player should have 1 lantern, but has ${lanterns(player)}`, 60);
+  const equipment = player.getComponent("minecraft:equippable");
+  await t.until(
+    () => equipment.getEquipment(EquipmentSlot.Offhand)?.typeId === "family:hand_lantern",
+    "After respawning the lantern should be in the shield hand",
+    60,
+  );
+  t.assert(lanterns(player) === 0, "The lantern is in the shield hand, so it should not also be in the item bar or backpack");
 }
