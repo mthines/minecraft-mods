@@ -82,6 +82,13 @@ function layerAxes(faceAxis, player) {
   return Math.abs(look.x) > Math.abs(look.z) ? [0, 2] : [2, 0];
 }
 
+/** Every stair block (oak, stone, brick, ...) counts as a staircase block: they can be mixed. @param {string} typeId */
+const isStair = (typeId) => typeId.endsWith("_stairs");
+/** @param {string} a @param {string} b */
+const alike = (a, b) => a === b || (isStair(a) && isStair(b));
+/** A stair block's weirdo_direction is the way it climbs. */
+const CLIMBS = [{ axis: 0, sign: 1 }, { axis: 0, sign: -1 }, { axis: 2, sign: 1 }, { axis: 2, sign: -1 }];
+
 /**
  * The blocks of the same type that follow a line from `from`, one step at a time along `dir`:
  * straight on, one up, or one down. It stops when there isn't exactly one way to go on.
@@ -97,7 +104,7 @@ function follow(dimension, from, dir, typeId) {
     const ahead = [];
     for (const dy of [0, 1, -1]) {
       const at = { x: pos.x + dir.x, y: pos.y + dy, z: pos.z + dir.z };
-      try { if (dimension.getBlock(at)?.typeId === typeId) ahead.push(at); } catch { /* not loaded */ }
+      try { const there = dimension.getBlock(at); if (there && alike(there.typeId, typeId)) ahead.push(at); } catch { /* not loaded */ }
     }
     if (ahead.length !== 1) break;
     pos = ahead[0];
@@ -118,6 +125,7 @@ function patternOf(steps) {
  * A staircase you started: the blocks of the clicked block's type that go up and down along a line.
  * The bucket reads the pattern (up, straight, up, straight, ...) and keeps building it ahead of you.
  * It stops at something in the way, where the line you built goes another way (like two straights in a row), or at the length limit.
+ * A stair block climbs the way it faces, and a lone stair block is enough: it continues as a plain staircase going up.
  * Returns false when the clicked block isn't part of a staircase, so the hole fill can try.
  * @param {import("@minecraft/server").Player} player @param {import("@minecraft/server").Block} block
  */
@@ -125,13 +133,15 @@ function stairFill(player, block) {
   const dimension = block.dimension;
   const { typeId } = block;
   const look = player.getViewDirection();
+  const facing = isStair(typeId) ? CLIMBS[Number(block.permutation.getState("weirdo_direction") ?? 0)] : undefined;
   /** @type {{ axis: 0 | 2, line: Pos[], score: number } | undefined} */
   let best;
   for (const axis of /** @type {const} */ ([0, 2])) {
+    if (facing && axis !== facing.axis) continue;
     const dir = axis === 0 ? { x: 1, z: 0 } : { x: 0, z: 1 };
     const back = follow(dimension, block.location, { x: -dir.x, z: -dir.z }, typeId);
     const line = [...back.reverse(), block.location, ...follow(dimension, block.location, dir, typeId)];
-    if (line.every((p) => p.y === line[0].y)) continue; // a flat line is no staircase
+    if (line.every((p) => p.y === line[0].y) && !(facing && line.length === 1)) continue; // a flat line is no staircase
     const looking = Math.abs(axis === 0 ? look.x : look.z);
     const score = line.length + looking * 0.1; // the longer line wins, and a tie goes to the way you look
     if (!best || score > best.score) best = { axis, line, score };
@@ -139,10 +149,10 @@ function stairFill(player, block) {
   if (!best) return false;
 
   // Build ahead of you: the end of the line that is in the direction you look.
-  const forward = (best.axis === 0 ? look.x : look.z) >= 0 ? 1 : -1;
+  const forward = facing ? facing.sign : (best.axis === 0 ? look.x : look.z) >= 0 ? 1 : -1;
   const ordered = forward === 1 ? best.line : [...best.line].reverse();
   const steps = ordered.slice(1).map((p, i) => p.y - ordered[i].y);
-  const pattern = patternOf(steps);
+  const pattern = steps.length === 0 ? [1] : patternOf(steps); // a lone stair block: up, up, up
   if (!pattern) {
     say(player, "§eBuild one more step of the staircase so the bucket can see the pattern");
     return true;
@@ -162,11 +172,11 @@ function stairFill(player, block) {
     let there;
     try { there = dimension.getBlock(target); } catch { there = undefined; }
     if (!there) { why = "it reached the edge of what is loaded"; break; }
-    if (there.typeId === typeId) { pos = target; continue; } // already built: walk on
+    if (alike(there.typeId, typeId)) { pos = target; continue; } // already built: walk on
     if (!there.isAir) { why = "something is in the way"; break; }
     const turns = [-1, 0, 1].some((dy) => {
       if (dy === rise) return false;
-      try { return dimension.getBlock({ x: pos.x + dir.x, y: pos.y + dy, z: pos.z + dir.z })?.typeId === typeId; } catch { return false; }
+      try { const other = dimension.getBlock({ x: pos.x + dir.x, y: pos.y + dy, z: pos.z + dir.z }); return !!other && alike(other.typeId, typeId); } catch { return false; }
     });
     if (turns) { why = "the line you built goes another way here"; break; }
     cells.push(target);
@@ -177,7 +187,7 @@ function stairFill(player, block) {
     say(player, `§eNothing to add: ${why}`);
     return true;
   }
-  queue(player, dimension, cells, last.permutation, typeId, block.location, `§aBuilt ${cells.length} more blocks of the staircase (stopped: ${why}). Use it in the air within 3 seconds to undo.`);
+  queue(player, dimension, cells, last.permutation, last.typeId, block.location, `§aBuilt ${cells.length} more blocks of the staircase (stopped: ${why}). Use it in the air within 3 seconds to undo.`);
   return true;
 }
 

@@ -1,5 +1,5 @@
 // Played by simulated players on the test server: mc test fill-bucket
-import { Direction } from "@minecraft/server";
+import { BlockPermutation, Direction } from "@minecraft/server";
 
 const WALL = "minecraft:stone_bricks";
 
@@ -107,4 +107,51 @@ export async function twoStepsAreNotEnoughToSeeAPattern(t) {
   await clickStairs(t, [[-6, 0], [-5, 1], [-4, 1]]);
   await t.wait(40);
   t.assert(typeAt(t, -3, 2, 3) === "minecraft:air" && typeAt(t, -3, 1, 3) === "minecraft:air", "The bucket guessed a pattern from up and straight");
+}
+
+/** Real stair blocks: each faces up the stairs (weirdo_direction 0 = east). */
+function placeStairs(t, cells) {
+  const permutation = BlockPermutation.resolve("minecraft:oak_stairs", { weirdo_direction: 0, upside_down_bit: false });
+  for (const [x, y] of cells) t.dimension.getBlock(t.at(x, y, 3)).setPermutation(permutation);
+}
+const stairAt = (t, x, y) => typeAt(t, x, y, 3) === "minecraft:oak_stairs";
+
+export async function theBucketContinuesAStaircaseOfRealStairBlocks(t) {
+  const cells = [[-3, 0], [-2, 1], [-1, 2]];
+  placeStairs(t, cells);
+  t.place("minecraft:glass", 3, 6, 3);
+  const player = t.player("Stairs", -8, 3);
+  t.hold(player, "family:fill_bucket");
+  await t.wait(5);
+  player.lookAtBlock(t.at(-1, 2, 3));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(-1, 2, 3), Direction.Up), "Couldn't use the bucket on the stairs");
+  await t.wait(40);
+  const found = [[0, 3], [1, 4], [2, 5]].map(([x, y]) => typeAt(t, x, y, 3)).join(", ");
+  t.assert(found === "minecraft:oak_stairs, minecraft:oak_stairs, minecraft:oak_stairs", `The stairs weren't continued: ${found}`);
+}
+
+export async function aLoneStairBlockContinuesAsAStaircaseUpTheWayItFaces(t) {
+  placeStairs(t, [[-1, 0]]);
+  t.place("minecraft:glass", 3, 4, 3);
+  // Looking sideways: the stair's own direction decides, not where the player looks.
+  const player = t.player("Stairs", -3, 6);
+  t.hold(player, "family:fill_bucket");
+  await t.wait(5);
+  player.lookAtBlock(t.at(-1, 0, 3));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(-1, 0, 3), Direction.Up), "Couldn't use the bucket on the stair");
+  await t.until(() => [[0, 1], [1, 2], [2, 3]].every(([x, y]) => stairAt(t, x, y)), () => `The lone stair wasn't continued: ${[[0, 1], [1, 2], [2, 3]].map(([x, y]) => typeAt(t, x, y, 3)).join(", ")}`, 40);
+  await t.wait(20);
+  t.assert(typeAt(t, 3, 4, 3) === "minecraft:glass" && typeAt(t, 4, 4, 3) === "minecraft:air", "The staircase went through the block in the way");
+}
+
+export async function stairBlocksOfDifferentTypesAreOneStaircase(t) {
+  placeStairs(t, [[-3, 0], [-1, 2]]);
+  t.dimension.getBlock(t.at(-2, 1, 3)).setPermutation(BlockPermutation.resolve("minecraft:stone_stairs", { weirdo_direction: 0, upside_down_bit: false }));
+  t.place("minecraft:glass", 2, 5, 3);
+  const player = t.player("Stairs", -8, 3);
+  t.hold(player, "family:fill_bucket");
+  await t.wait(5);
+  player.lookAtBlock(t.at(-1, 2, 3));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(-1, 2, 3), Direction.Up), "Couldn't use the bucket on the stairs");
+  await t.until(() => [[0, 3], [1, 4]].every(([x, y]) => stairAt(t, x, y)), () => `Mixed stairs weren't one staircase: ${[[0, 3], [1, 4]].map(([x, y]) => typeAt(t, x, y, 3)).join(", ")}`, 40);
 }
