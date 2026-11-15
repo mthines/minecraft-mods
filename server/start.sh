@@ -9,6 +9,10 @@ if [[ "$(uname)" == "Darwin" ]] && command -v colima >/dev/null && ! colima stat
 fi
 
 # Play the newest Minecraft already downloaded, without looking up a newer one (mc update sets BEDROCK_VERSION=LATEST).
+PIN=data/version.pin # holds a version to stay on, like 1.26.62.1, when a device can't update yet; mc update removes it
+if [[ -z "${BEDROCK_VERSION:-}" && -s "$PIN" ]]; then
+  export BEDROCK_VERSION="$(tr -d '[:space:]' < "$PIN")"
+fi
 if [[ -z "${BEDROCK_VERSION:-}" ]]; then
   installed="$(ls -d data/bedrock_server-* 2>/dev/null | sed 's/.*bedrock_server-//' | sort -V | tail -1)"
   export BEDROCK_VERSION="${installed:-LATEST}"

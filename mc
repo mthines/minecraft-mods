@@ -378,6 +378,7 @@ case "${1:-help}" in
     # Devices update Minecraft by themselves, and the server must run the same version or nobody can join.
     before="$(server_version)"
     online="$(online_count)"
+    rm -f server/data/version.pin # updating ends a pin (see server/start.sh)
     docker compose -p server -f server/docker-compose.yml pull --quiet bedrock autoheal
     BEDROCK_VERSION=LATEST ./server/start.sh >/dev/null
     docker restart "$SERVER" >/dev/null # downloads the newest Minecraft server as it starts

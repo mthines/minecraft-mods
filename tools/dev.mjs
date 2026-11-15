@@ -503,11 +503,7 @@ function worldActions(world) {
           else rename();
         });
       if (playing) return tell(`The server plays ${world} now. Play another world first, then delete this one.`, S.yellow);
-      input = {
-        prompt: `Delete ${world} for good? It can't come back. Type its name to confirm:`,
-        text: "",
-        then: (typed) => (typed === world ? mc(["world", "delete", world, "--yes"]) : tell(`Kept ${world}.`)),
-      };
+      confirm = { question: `Delete ${world} for good? It can't come back.`, then: () => mc(["world", "delete", world, "--yes"]) };
     },
     { back: worldMenu },
   );
