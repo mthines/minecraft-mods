@@ -239,12 +239,42 @@ export async function eachModeIsItsOwnBucketWithItsOwnPicture(t) {
   const held = () => player.getComponent("minecraft:inventory").container.getItem(0)?.typeId;
   t.hold(player, "family:fill_bucket");
   const seen = [held()];
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 5; i++) {
     await changeMode(t, player, 1);
     seen.push(held());
   }
   t.assert(
-    seen.join(" ") === "family:fill_bucket family:fill_bucket_stairs family:fill_bucket_wall family:fill_bucket_floor family:fill_bucket",
-    `The buckets should go plain, stairs, wall, floor, plain: ${seen.join(", ")}`,
+    seen.join(" ") === "family:fill_bucket family:fill_bucket_stairs family:fill_bucket_wall family:fill_bucket_floor family:fill_bucket_fence family:fill_bucket",
+    `The buckets should go plain, stairs, wall, floor, fence, plain: ${seen.join(", ")}`,
   );
+}
+
+/** A player holding the fence bucket clicks the top of the block at `[dx, dy]` in the plane z = `dz`. */
+async function fenceClick(t, dx, dy, dz) {
+  const player = t.player("Fencer", dx, dz - 3);
+  t.hold(player, "family:fill_bucket_fence");
+  await t.wait(5);
+  player.lookAtBlock(t.at(dx, dy, dz));
+  t.assert(player.useItemInSlotOnBlock(0, t.at(dx, dy, dz), Direction.Up), "Couldn't use the fence bucket");
+  return player;
+}
+
+export async function fenceModeFencesTheEdgeOfADeckAndNotTheMiddle(t) {
+  for (let x = -2; x <= 2; x++) for (let z = 3; z <= 7; z++) t.place("minecraft:spruce_planks", x, 0, z);
+  await fenceClick(t, 0, 0, 5);
+  const edge = [[-2, 3], [2, 7], [0, 3], [-2, 5], [2, 5]];
+  await t.until(() => edge.every(([x, z]) => typeAt(t, x, 1, z) === "minecraft:spruce_fence"), () => `The deck's edge has no spruce fence: ${edge.map(([x, z]) => typeAt(t, x, 1, z)).join(", ")}`, 60);
+  t.assert(typeAt(t, 0, 1, 5) === "minecraft:air" && typeAt(t, 1, 1, 5) === "minecraft:air", "The fence also went in the middle of the deck");
+}
+
+export async function fenceModeFollowsALineOfBlocksUpAStaircase(t) {
+  const line = [[-1, 0], [0, 1], [1, 2]];
+  for (const [x, y] of line) t.place("minecraft:cobblestone", x, y, 3);
+  const player = await fenceClick(t, 0, 1, 3);
+  await t.until(() => line.every(([x, y]) => typeAt(t, x, y + 1, 3) === "minecraft:oak_fence"), () => `The stair line has no fence on top: ${line.map(([x, y]) => typeAt(t, x, y + 1, 3)).join(", ")}`, 60);
+  // Using the bucket in the air undoes the fence too.
+  await t.wait(10);
+  t.assert(player.useItemInSlot(0), "Couldn't use the bucket in the air");
+  await t.until(() => line.every(([x, y]) => typeAt(t, x, y + 1, 3) === "minecraft:air"), () => `Undo left fence: ${line.map(([x, y]) => typeAt(t, x, y + 1, 3)).join(", ")}`, 60);
+  t.assert(line.every(([x, y]) => typeAt(t, x, y, 3) === "minecraft:cobblestone"), "Undo took the stair line away too");
 }

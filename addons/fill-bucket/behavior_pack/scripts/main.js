@@ -1,4 +1,4 @@
-import { ItemStack, world, system } from "@minecraft/server";
+import { BlockPermutation, ItemStack, world, system } from "@minecraft/server";
 
 // Use the Fill Bucket on the inside of a block: the hole it faces is filled with that block, like the paint bucket in Paint.
 // The hole is one flat layer: a wall frame, a floor or ceiling ring, or a line between two posts.
@@ -18,14 +18,14 @@ const STAIR_MAX_NEW = 40; // the most blocks one stair fill adds
 const STAIR_MAX_STEPS = 80; // the most steps it walks, counting blocks that are already there
 
 // The mode says what a click does, and it is the item in your hand: each mode is its own bucket with its own picture
-// (the plain bucket is Auto; green steps, a blue wall and an orange floor are the others), so you can see it without reading.
+// (the plain bucket is Auto; green steps, a blue wall, an orange floor and a purple fence are the others), so you can see it without reading.
 // Sneak and use the bucket in the air to swap it for the next one.
-const MODES = ["auto", "stairs", "wall", "floor"];
-const BUCKETS = { auto: BUCKET, stairs: "family:fill_bucket_stairs", wall: "family:fill_bucket_wall", floor: "family:fill_bucket_floor" };
+const MODES = ["auto", "stairs", "wall", "floor", "fence"];
+const BUCKETS = { auto: BUCKET, stairs: "family:fill_bucket_stairs", wall: "family:fill_bucket_wall", floor: "family:fill_bucket_floor", fence: "family:fill_bucket_fence" };
 /** @type {Record<string, string>} item id → mode */
 const MODE_OF = Object.fromEntries(Object.entries(BUCKETS).map(([mode, id]) => [id, mode]));
-const LABEL = { auto: "Auto", stairs: "Stairs", wall: "Wall", floor: "Floor" };
-const ABOUT = { auto: "guesses: the staircase or the hole", stairs: "builds the staircase on", wall: "fills a wall", floor: "fills a floor or ceiling" };
+const LABEL = { auto: "Auto", stairs: "Stairs", wall: "Wall", floor: "Floor", fence: "Fence" };
+const ABOUT = { auto: "guesses: the staircase or the hole", stairs: "builds the staircase on", wall: "fills a wall", floor: "fills a floor or ceiling", fence: "builds a fence along the edge" };
 
 /** Swaps the bucket in the player's hand for the next mode's. @param {import("@minecraft/server").Player} player @param {string} mode the mode it is in now */
 function nextMode(player, mode) {
@@ -212,6 +212,69 @@ function wallAxes(faceAxis, player) {
   return Math.abs(look.x) > Math.abs(look.z) ? [0, 2] : [2, 0];
 }
 
+const WOODS = /^minecraft:(dark_oak|oak|spruce|birch|jungle|acacia|mangrove|cherry|bamboo|crimson|warped)_/;
+
+/** The fence that goes with a block: spruce planks get a spruce fence, anything else the oak one. @param {string} typeId */
+function fenceFor(typeId) {
+  const wood = WOODS.exec(typeId)?.[1];
+  const id = !wood || wood === "oak" ? "minecraft:fence" : `minecraft:${wood}_fence`;
+  try { return { id, permutation: BlockPermutation.resolve(id) }; } catch { return { id: "minecraft:fence", permutation: BlockPermutation.resolve("minecraft:fence") }; }
+}
+
+/**
+ * Fence mode: the blocks of the clicked block's type that are joined to it (side by side, or one step up or down, so a staircase
+ * counts) are the area. A fence goes on top of every block that has an open side: around a deck's edge, along both sides of
+ * a one block line like a stair line. Blocks with something on top are left out.
+ * @param {import("@minecraft/server").Block} block
+ * @returns {{ message: string, cells?: Pos[], place?: import("@minecraft/server").BlockPermutation, typeId?: string }}
+ */
+function planFence(block) {
+  const dimension = block.dimension;
+  const { typeId } = block;
+  const origin = block.location;
+  const keyOf = (/** @type {Pos} */ c) => ((c.x - origin.x + RADIUS) * SIDE + (c.y - origin.y + RADIUS)) * SIDE + (c.z - origin.z + RADIUS);
+  /** @type {Map<number, boolean>} */
+  const memo = new Map();
+  /** Part of the area: the same kind of block, with free air on top. @param {Pos} c */
+  const member = (c) => {
+    const key = keyOf(c);
+    let known = memo.get(key);
+    if (known === undefined) {
+      try {
+        const here = dimension.getBlock(c);
+        const above = dimension.getBlock({ x: c.x, y: c.y + 1, z: c.z });
+        known = !!here && alike(here.typeId, typeId) && !!above?.isAir;
+      } catch { known = false; }
+      memo.set(key, known);
+    }
+    return known;
+  };
+  const SIDES = [{ x: 1, z: 0 }, { x: -1, z: 0 }, { x: 0, z: 1 }, { x: 0, z: -1 }];
+  /** The area blocks next to `c`, on the same level or one step up or down. @param {Pos} c */
+  const around = (c) => SIDES.map((d) => [0, 1, -1].map((dy) => ({ x: c.x + d.x, y: c.y + dy, z: c.z + d.z })).filter(member));
+
+  if (!member(origin)) return { message: "§eNothing to fence: there is something on top of that block, or it isn't solid" };
+  /** @type {Pos[]} */
+  const area = [origin];
+  const seen = new Set([keyOf(origin)]);
+  for (let head = 0; head < area.length; head++) {
+    for (const side of around(area[head])) {
+      for (const next of side) {
+        if (Math.abs(next.x - origin.x) > RADIUS || Math.abs(next.z - origin.z) > RADIUS) return { message: "§eThat area is too big to fence" };
+        const key = keyOf(next);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        if (area.length >= MAX_BLOCKS) return { message: `§eThat area is too big to fence (more than ${MAX_BLOCKS} blocks)` };
+        area.push(next);
+      }
+    }
+  }
+  const cells = area.filter((c) => around(c).some((side) => side.length === 0)).map((c) => ({ x: c.x, y: c.y + 1, z: c.z }));
+  if (cells.length === 0) return { message: "§eNo edge to fence: the area has no open side" };
+  const fence = fenceFor(typeId);
+  return { cells, place: fence.permutation, typeId: fence.permutation.type.id, message: `§aBuilt ${cells.length} fence posts along the edge. Use it in the air within 3 seconds to undo. §7[Fence]` };
+}
+
 function ensureTicker() {
   if (ticker !== undefined) return;
   ticker = system.runInterval(() => {
@@ -250,6 +313,12 @@ function fill(player, block, face, mode) {
     return;
   }
   const dimension = block.dimension;
+  if (mode === "fence") {
+    const plan = planFence(block);
+    if (plan.cells && plan.place && plan.typeId) queue(player, dimension, plan.cells, plan.place, plan.typeId, block.location, plan.message);
+    else say(player, plan.message);
+    return;
+  }
   const stairs = mode === "auto" || mode === "stairs" ? planStairs(player, block) : undefined;
   const seed = { x: block.x + normal[0], y: block.y + normal[1], z: block.z + normal[2] };
   const start = dimension.getBlock(seed);
