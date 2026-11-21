@@ -1,0 +1,24 @@
+{
+  "about": "What mc kit nuke gives you: one nuke. Aim it at the ground: after a 10 second countdown it blows a big crater, spread over a few seconds so the server keeps up. With --craft, also what crafts it.",
+  "emoji": "🌋",
+  "items": [
+    [
+      "family:nuke",
+      1
+    ]
+  ],
+  "craft": [
+    [
+      "minecraft:crafting_table",
+      1
+    ],
+    [
+      "minecraft:tnt",
+      3
+    ],
+    [
+      "minecraft:netherite_ingot",
+      1
+    ]
+  ]
+}
