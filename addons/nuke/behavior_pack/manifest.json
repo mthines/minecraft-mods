@@ -2,7 +2,7 @@
   "format_version": 2,
   "header": {
     "name": "Nuke",
-    "description": "A nuke: aim, run for 10 seconds, and watch a big crater appear without lagging the server.",
+    "description": "A nuke: aim, run for 3 seconds, and watch a big crater appear without lagging the server.",
     "uuid": "fac1a515-9925-4003-a087-05f3c4d61699",
     "version": [
       1,

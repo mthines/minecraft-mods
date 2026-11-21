@@ -12,7 +12,7 @@
       "minecraft:display_name": {
         "value": "Nuke"
       },
-      "minecraft:max_stack_size": 1
+      "minecraft:max_stack_size": 16
     }
   }
 }
