@@ -1,0 +1,9 @@
+entity.family:toilet.name=Toilet
+item.spawn_egg.entity.family:toilet.name=Toilet Spawn Egg
+entity.family:sink.name=Sink
+item.spawn_egg.entity.family:sink.name=Sink Spawn Egg
+entity.family:shower.name=Shower
+item.spawn_egg.entity.family:shower.name=Shower Spawn Egg
+action.interact.family_sit=Sit
+action.interact.family_wash=Wash hands
+action.interact.family_shower=Shower

@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Bathroom",
+    "description": "A toilet, a sink and a shower with soft water sounds. Sit on the toilet for a while for a burst of speed.",
+    "uuid": "ee746a2d-ede7-4461-a526-766dc2cd7903",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "ed9163ae-64ea-4816-ac21-caa1a98a4ba0",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "e2a874f5-6258-43e2-b673-ab0708eb9e0a",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "38e60de3-09d7-4337-b57a-7a7608369ed2",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

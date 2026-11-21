@@ -1,0 +1,15 @@
+{
+  "resource_pack_name": "bathroom",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_toilet": {
+      "textures": "textures/items/toilet"
+    },
+    "family_sink": {
+      "textures": "textures/items/sink"
+    },
+    "family_shower": {
+      "textures": "textures/items/shower"
+    }
+  }
+}

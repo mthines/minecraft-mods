@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Bathroom Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "38e60de3-09d7-4337-b57a-7a7608369ed2",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "a720fc00-c7bd-4997-8826-e095a9a6b829",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

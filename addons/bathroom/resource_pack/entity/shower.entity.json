@@ -1,0 +1,24 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:shower",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "default": "textures/entity/bathroom"
+      },
+      "geometry": {
+        "default": "geometry.family_shower"
+      },
+      "render_controllers": [
+        "controller.render.default"
+      ],
+      "spawn_egg": {
+        "base_color": "#f6f6f6",
+        "overlay_color": "#4696e6"
+      }
+    }
+  }
+}

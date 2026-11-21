@@ -1,0 +1,31 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "family:shower"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "unlock": [
+      {
+        "item": "minecraft:iron_bars"
+      }
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:iron_bars"
+      },
+      {
+        "item": "minecraft:iron_ingot"
+      },
+      {
+        "item": "minecraft:cauldron"
+      }
+    ],
+    "result": {
+      "item": "family:shower",
+      "count": 1
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "about": "What mc kit bathroom gives you: a toilet (sit on it for a while, then flush for speed), a sink and a shower, with soft water sounds. With --craft, also what crafts them.",
+  "emoji": "🚽",
+  "items": [
+    [
+      "family:toilet",
+      1
+    ],
+    [
+      "family:sink",
+      1
+    ],
+    [
+      "family:shower",
+      1
+    ]
+  ],
+  "craft": [
+    [
+      "minecraft:crafting_table",
+      1
+    ],
+    [
+      "minecraft:quartz_block",
+      4
+    ],
+    [
+      "minecraft:cauldron",
+      3
+    ],
+    [
+      "minecraft:iron_nugget",
+      1
+    ],
+    [
+      "minecraft:iron_bars",
+      1
+    ],
+    [
+      "minecraft:iron_ingot",
+      1
+    ]
+  ]
+}
