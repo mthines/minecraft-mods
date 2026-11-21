@@ -1,0 +1,14 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:dannebrog" },
+    "tags": ["crafting_table"],
+    "pattern": ["RW", "S "],
+    "key": {
+      "R": { "item": "minecraft:red_wool" },
+      "W": { "item": "minecraft:white_wool" },
+      "S": { "item": "minecraft:stick" }
+    },
+    "result": { "item": "family:dannebrog", "count": 1 }
+  }
+}

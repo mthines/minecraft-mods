@@ -1,0 +1,24 @@
+{
+  "resource_pack_name": "birthday",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_birthday_cake": {
+      "textures": "textures/items/birthday_cake"
+    },
+    "family_dannebrog": {
+      "textures": "textures/items/dannebrog"
+    },
+    "family_birthday_hat": {
+      "textures": "textures/items/birthday_hat"
+    },
+    "family_birthday_shirt": {
+      "textures": "textures/items/birthday_shirt"
+    },
+    "family_birthday_trousers": {
+      "textures": "textures/items/birthday_trousers"
+    },
+    "family_birthday_boots": {
+      "textures": "textures/items/birthday_boots"
+    }
+  }
+}

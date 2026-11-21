@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Birthday Resources",
+    "description": "Birthday cake and flag pictures.",
+    "uuid": "1da8c8dd-144c-4cc5-981d-2bdf34e90385",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "51ed8ff8-9d87-4150-946a-352c5149cc2e",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

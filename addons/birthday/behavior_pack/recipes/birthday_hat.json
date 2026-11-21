@@ -1,0 +1,27 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shaped": {
+    "description": {
+      "identifier": "family:birthday_hat"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "pattern": [
+      "RWR",
+      "W W"
+    ],
+    "key": {
+      "R": {
+        "item": "minecraft:red_wool"
+      },
+      "W": {
+        "item": "minecraft:white_wool"
+      }
+    },
+    "result": {
+      "item": "family:birthday_hat",
+      "count": 1
+    }
+  }
+}

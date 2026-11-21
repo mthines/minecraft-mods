@@ -1,0 +1,68 @@
+{
+  "about": "What mc kit birthday gives you: birthday cakes to eat (a party for everyone), Dannebrog flags to put up, and a red and white birthday outfit. With --craft, also what crafts them.",
+  "emoji": "🎂",
+  "items": [
+    [
+      "family:birthday_cake",
+      4
+    ],
+    [
+      "family:dannebrog",
+      4
+    ],
+    [
+      "family:birthday_hat",
+      1
+    ],
+    [
+      "family:birthday_shirt",
+      1
+    ],
+    [
+      "family:birthday_trousers",
+      1
+    ],
+    [
+      "family:birthday_boots",
+      1
+    ]
+  ],
+  "craft": [
+    [
+      "minecraft:crafting_table",
+      1
+    ],
+    [
+      "minecraft:cake",
+      1
+    ],
+    [
+      "minecraft:red_dye",
+      1
+    ],
+    [
+      "minecraft:sugar",
+      1
+    ],
+    [
+      "minecraft:red_wool",
+      1
+    ],
+    [
+      "minecraft:white_wool",
+      1
+    ],
+    [
+      "minecraft:stick",
+      1
+    ],
+    [
+      "minecraft:red_wool",
+      4
+    ],
+    [
+      "minecraft:white_wool",
+      4
+    ]
+  ]
+}
