@@ -1,0 +1,24 @@
+{
+  "about": "What mc kit nuke-mega gives you: 1 Mega Nukes (10 times). Aim one at the ground and run: the bigger the nuke, the longer the countdown and the longer the crater takes to open. With --craft, also what crafts one.",
+  "emoji": "🌌",
+  "items": [
+    [
+      "family:mega_nuke",
+      1
+    ]
+  ],
+  "craft": [
+    [
+      "minecraft:crafting_table",
+      1
+    ],
+    [
+      "family:huge_nuke",
+      2
+    ],
+    [
+      "minecraft:netherite_block",
+      1
+    ]
+  ]
+}

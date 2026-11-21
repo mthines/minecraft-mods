@@ -1,0 +1,24 @@
+{
+  "about": "What mc kit nuke-big gives you: 4 Big Nukes (3 times the crater of the nuke). Aim one at the ground and run: the bigger the nuke, the longer the countdown and the longer the crater takes to open. With --craft, also what crafts one.",
+  "emoji": "🌍",
+  "items": [
+    [
+      "family:big_nuke",
+      4
+    ]
+  ],
+  "craft": [
+    [
+      "minecraft:crafting_table",
+      1
+    ],
+    [
+      "family:nuke",
+      4
+    ],
+    [
+      "minecraft:netherite_ingot",
+      1
+    ]
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": {
+      "identifier": "family:huge_nuke",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "minecraft:icon": "family_huge_nuke",
+      "minecraft:display_name": {
+        "value": "Huge Nuke (5x)"
+      },
+      "minecraft:max_stack_size": 16
+    }
+  }
+}

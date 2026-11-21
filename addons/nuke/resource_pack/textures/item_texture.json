@@ -4,6 +4,15 @@
   "texture_data": {
     "family_nuke": {
       "textures": "textures/items/nuke"
+    },
+    "family_big_nuke": {
+      "textures": "textures/items/big_nuke"
+    },
+    "family_huge_nuke": {
+      "textures": "textures/items/huge_nuke"
+    },
+    "family_mega_nuke": {
+      "textures": "textures/items/mega_nuke"
     }
   }
 }
