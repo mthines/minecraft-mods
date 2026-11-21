@@ -360,30 +360,6 @@
           }
         }
       },
-      "family:tiny": {
-        "minecraft:scale": {
-          "value": 0.25
-        },
-        "minecraft:movement": {
-          "value": 0.06
-        },
-        "minecraft:collision_box": {
-          "width": 0.15,
-          "height": 0.45
-        }
-      },
-      "family:giant": {
-        "minecraft:scale": {
-          "value": 2.5
-        },
-        "minecraft:movement": {
-          "value": 0.15
-        },
-        "minecraft:collision_box": {
-          "width": 1.5,
-          "height": 4.5
-        }
-      },
       "family:normal_size": {
         "minecraft:scale": {
           "value": 1
@@ -394,6 +370,78 @@
         "minecraft:collision_box": {
           "width": 0.6,
           "height": 1.8
+        }
+      },
+      "family:size_n3": {
+        "minecraft:scale": {
+          "value": 0.1
+        },
+        "minecraft:movement": {
+          "value": 0.032
+        },
+        "minecraft:collision_box": {
+          "width": 0.06,
+          "height": 0.18
+        }
+      },
+      "family:size_n2": {
+        "minecraft:scale": {
+          "value": 0.16
+        },
+        "minecraft:movement": {
+          "value": 0.04
+        },
+        "minecraft:collision_box": {
+          "width": 0.096,
+          "height": 0.288
+        }
+      },
+      "family:size_n1": {
+        "minecraft:scale": {
+          "value": 0.4
+        },
+        "minecraft:movement": {
+          "value": 0.063
+        },
+        "minecraft:collision_box": {
+          "width": 0.24,
+          "height": 0.72
+        }
+      },
+      "family:size_p1": {
+        "minecraft:scale": {
+          "value": 2.5
+        },
+        "minecraft:movement": {
+          "value": 0.158
+        },
+        "minecraft:collision_box": {
+          "width": 1.5,
+          "height": 4.5
+        }
+      },
+      "family:size_p2": {
+        "minecraft:scale": {
+          "value": 6.25
+        },
+        "minecraft:movement": {
+          "value": 0.25
+        },
+        "minecraft:collision_box": {
+          "width": 3.75,
+          "height": 11.25
+        }
+      },
+      "family:size_p3": {
+        "minecraft:scale": {
+          "value": 10
+        },
+        "minecraft:movement": {
+          "value": 0.316
+        },
+        "minecraft:collision_box": {
+          "width": 6.0,
+          "height": 18.0
         }
       }
     },
@@ -431,42 +479,122 @@
           ]
         }
       },
-      "family:shrink": {
-        "remove": {
-          "component_groups": [
-            "family:giant",
-            "family:normal_size"
-          ]
-        },
-        "add": {
-          "component_groups": [
-            "family:tiny"
-          ]
-        }
-      },
-      "family:grow": {
-        "remove": {
-          "component_groups": [
-            "family:tiny",
-            "family:normal_size"
-          ]
-        },
-        "add": {
-          "component_groups": [
-            "family:giant"
-          ]
-        }
-      },
       "family:normal_size": {
         "remove": {
           "component_groups": [
-            "family:tiny",
-            "family:giant"
+            "family:size_n3",
+            "family:size_n2",
+            "family:size_n1",
+            "family:size_p1",
+            "family:size_p2",
+            "family:size_p3"
           ]
         },
         "add": {
           "component_groups": [
             "family:normal_size"
+          ]
+        }
+      },
+      "family:size_n3": {
+        "remove": {
+          "component_groups": [
+            "family:normal_size",
+            "family:size_n2",
+            "family:size_n1",
+            "family:size_p1",
+            "family:size_p2",
+            "family:size_p3"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:size_n3"
+          ]
+        }
+      },
+      "family:size_n2": {
+        "remove": {
+          "component_groups": [
+            "family:normal_size",
+            "family:size_n3",
+            "family:size_n1",
+            "family:size_p1",
+            "family:size_p2",
+            "family:size_p3"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:size_n2"
+          ]
+        }
+      },
+      "family:size_n1": {
+        "remove": {
+          "component_groups": [
+            "family:normal_size",
+            "family:size_n3",
+            "family:size_n2",
+            "family:size_p1",
+            "family:size_p2",
+            "family:size_p3"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:size_n1"
+          ]
+        }
+      },
+      "family:size_p1": {
+        "remove": {
+          "component_groups": [
+            "family:normal_size",
+            "family:size_n3",
+            "family:size_n2",
+            "family:size_n1",
+            "family:size_p2",
+            "family:size_p3"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:size_p1"
+          ]
+        }
+      },
+      "family:size_p2": {
+        "remove": {
+          "component_groups": [
+            "family:normal_size",
+            "family:size_n3",
+            "family:size_n2",
+            "family:size_n1",
+            "family:size_p1",
+            "family:size_p3"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:size_p2"
+          ]
+        }
+      },
+      "family:size_p3": {
+        "remove": {
+          "component_groups": [
+            "family:normal_size",
+            "family:size_n3",
+            "family:size_n2",
+            "family:size_n1",
+            "family:size_p1",
+            "family:size_p2"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:size_p3"
           ]
         }
       }

@@ -146,7 +146,7 @@ flowchart LR
 | [`invincible`](./addons/invincible) | A switch for grown-ups: `./mc invincible on` (or `u` in `mc dev`) and nothing can hurt players | Code, with tests |
 | [`portal-gun`](./addons/portal-gun) | A portal gun: right-click puts a blue portal on the wall, floor, or ceiling you aim at, sneak + right-click an orange one. Players, mobs, and dropped items that walk into one come out of the other. | Item + picture + recipe + code, with tests |
 | [`grappling-hook`](./addons/grappling-hook) | A grappling hook that pulls you to the block you aim at, up to 40 blocks away, like a zipline across a valley, and you float down after with no fall damage. Hook a mob to yank it to you. | Item + picture + recipe + code, with tests |
-| [`size-potions`](./addons/size-potions) | A shrink potion that makes you tiny (and slow) enough for 1-block holes, and a grow potion that makes you a fast giant with big jumps, for 30 seconds each. The camera follows at your new height. | Items + pictures + recipes + player.json + code, with tests |
+| [`size-potions`](./addons/size-potions) | Shrink and grow potions that each make you 2.5 times smaller or bigger than you are now (a tenth up to 10 times normal): tiny enough for 1-block holes, or a fast giant with big jumps. 12 minutes, restarted by every potion, with a warning a minute before. The camera follows at your new height. | Items + pictures + recipes + player.json + code, with tests |
 
 Each add-on is a folder in `addons/` with up to two packs:
 

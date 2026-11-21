@@ -20,7 +20,7 @@ export async function aShrinkPotionMakesYouTinyThenYouPopBack(t) {
   const player = quickPlayer(t, "Tiny");
   await t.wait(5);
   await drink(t, player, "family:shrink_potion");
-  await t.until(() => scale(player) === 0.25, () => `After drinking the shrink potion the scale is ${scale(player)}, not 0.25`, 80);
+  await t.until(() => Math.abs(scale(player) - 0.4) < 0.001, () => `After drinking the shrink potion the scale is ${scale(player)}, not 0.4`, 80);
   const bottle = player.getComponent("minecraft:inventory")?.container?.getItem(0);
   t.assert(bottle?.typeId === "minecraft:glass_bottle", `Drinking should leave an empty bottle, not ${bottle?.typeId}`);
   t.assert(speed(player) < NORMAL_SPEED, `A tiny player should walk slower, but their speed is ${speed(player)}`);
@@ -39,14 +39,51 @@ export async function aGrowPotionMakesYouAGiantThatJumpsHigh(t) {
   t.assert(Math.abs(speed(player) - NORMAL_SPEED) < 0.001, `Back to normal size, but the speed is ${speed(player)}, not ${NORMAL_SPEED}`);
 }
 
-export async function growingWhileTinySwapsToGiant(t) {
+export async function growingWhileTinyMakesYouNormalSizeAgain(t) {
   const player = t.player("Swapper");
   await t.wait(5);
   await drink(t, player, "family:shrink_potion");
-  await t.until(() => scale(player) === 0.25, "The shrink potion didn't work", 80);
+  await t.until(() => Math.abs(scale(player) - 0.4) < 0.001, "The shrink potion didn't work", 80);
   await t.wait(5);
   await drink(t, player, "family:grow_potion");
-  await t.until(() => scale(player) === 2.5, () => `Drinking grow while tiny should make a giant, but the scale is ${scale(player)}`, 80);
+  await t.until(() => scale(player) === 1, () => `Grow while 0.4 times normal size should give normal size again, but the scale is ${scale(player)}`, 80);
+}
+
+export async function eachPotionGrowsYouFurtherUpToTenTimesAndNoMore(t) {
+  const player = t.player("Huge");
+  await t.wait(5);
+  for (const size of [2.5, 6.25, 10, 10]) {
+    await drink(t, player, "family:grow_potion");
+    await t.until(() => Math.abs(scale(player) - size) < 0.001, () => `The scale is ${scale(player)}, not ${size}`, 80);
+    await t.wait(5);
+  }
+  await t.wait(20); // a simulated player can't use an item again right away
+  await drink(t, player, "family:shrink_potion");
+  await t.until(() => scale(player) === 6.25, () => `Shrinking from 10 times should give 6.25, but the scale is ${scale(player)}`, 80);
+  t.assert(player.getEffect("jump_boost") && player.getEffect("strength"), "A giant should jump high and hit hard");
+}
+
+export async function eachShrinkPotionMakesYouSmallerDownToATenth(t) {
+  const player = t.player("Ant");
+  await t.wait(5);
+  for (const size of [0.4, 0.16, 0.1, 0.1]) {
+    await drink(t, player, "family:shrink_potion");
+    await t.until(() => Math.abs(scale(player) - size) < 0.001, () => `The scale is ${scale(player)}, not ${size}`, 80);
+    await t.wait(5);
+  }
+}
+
+export async function drinkingAnotherPotionStartsTheTimeOver(t) {
+  const player = quickPlayer(t, "Reset"); // 3 seconds per potion
+  await t.wait(5);
+  await drink(t, player, "family:grow_potion");
+  await t.until(() => scale(player) === 2.5, "The grow potion didn't work", 80);
+  await t.wait(10);
+  await drink(t, player, "family:grow_potion");
+  await t.until(() => scale(player) === 6.25, "The second potion didn't work", 80);
+  await t.wait(30); // more than three seconds since the first potion: it would have worn off by now without the second
+  t.assert(scale(player) === 6.25, `The second potion should have started the time over, but the scale is ${scale(player)}`);
+  await t.until(() => scale(player) === 1, () => `Still at scale ${scale(player)} after the potion ran out`, 120);
 }
 
 export async function dyingMakesYouNormalSizeAgain(t) {
@@ -72,7 +109,7 @@ export async function aTinyPlayerFitsThroughAOneBlockHole(t) {
   t.assert(player.location.z < wall, `A normal-size player got through the one-block hole (z ${player.location.z.toFixed(2)})`);
   player.stopMoving();
   await drink(t, player, "family:shrink_potion");
-  await t.until(() => scale(player) === 0.25, "The shrink potion didn't work", 80);
+  await t.until(() => Math.abs(scale(player) - 0.4) < 0.001, "The shrink potion didn't work", 80);
   player.moveToLocation(beyond);
   await t.until(() => player.location.z > wall + 1, () => `The tiny player didn't get through the hole (z ${player.location.z.toFixed(2)}, the wall at ${wall})`, 100);
   player.stopMoving();

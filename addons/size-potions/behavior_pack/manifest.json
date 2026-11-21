@@ -2,7 +2,7 @@
   "format_version": 2,
   "header": {
     "name": "Size Potions",
-    "description": "A shrink potion makes you tiny and a grow potion makes you a giant, for 30 seconds.",
+    "description": "A shrink potion makes you tiny and a grow potion makes you a giant, for 12 minutes. Each potion steps your size up or down, from a tenth to 10 times normal.",
     "uuid": "147e1d57-af48-4406-a363-03bfde6021de",
     "version": [
       1,
