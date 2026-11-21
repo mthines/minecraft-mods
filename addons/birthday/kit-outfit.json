@@ -1,0 +1,36 @@
+{
+  "about": "What mc kit birthday-outfit gives you: the red and white birthday hat, shirt, trousers and boots, put on when those slots are empty. With --craft, also the wool that crafts them.",
+  "emoji": "🥳",
+  "items": [
+    [
+      "family:birthday_hat",
+      1
+    ],
+    [
+      "family:birthday_shirt",
+      1
+    ],
+    [
+      "family:birthday_trousers",
+      1
+    ],
+    [
+      "family:birthday_boots",
+      1
+    ]
+  ],
+  "craft": [
+    [
+      "minecraft:crafting_table",
+      1
+    ],
+    [
+      "minecraft:red_wool",
+      8
+    ],
+    [
+      "minecraft:white_wool",
+      8
+    ]
+  ]
+}
