@@ -96,6 +96,9 @@ export async function aSeatDoesNotGoWhereAnotherPartStands(t) {
   player.lookAtLocation({ x: racer.location.x, y: racer.location.y + 1, z: racer.location.z });
   for (let i = 0; i < 6; i++) { player.interactWithEntity(racer); await t.wait(3); }
   t.assert(slot(racer, 0) === PART.body && [1, 2, 3, 4, 5].every((i) => slot(racer, i) !== PART.seat), `A seat went somewhere the driver would not sit: ${[0, 1, 2, 3, 4, 5].map((i) => slot(racer, i)).join(",")}`);
+  // Prove the refusal came from the rule, not from the use never arriving: with the spot free, the same use puts the seat there.
+  racer.setProperty("family:s0", 0);
+  await t.until(() => { if (slot(racer, 0) === 0) player.interactWithEntity(racer); return slot(racer, 0) === PART.seat; }, "With the first seat spot free, the seat should have gone there", 40);
 }
 
 export async function holdingForwardMovesTheVehicleAheadAndTheKeysSteer(t) {

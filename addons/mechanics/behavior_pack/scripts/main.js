@@ -257,8 +257,8 @@ function drive(/** @type {Player} */ player, /** @type {import("@minecraft/serve
   const keys = inputOf(player);
   const tick = system.currentTick;
   // A ride that stopped (everyone got off) starts from standing still the next time, not from the speed it had.
-  const known = speeds.get(vehicle.id);
-  const state = known && tick - known.last <= 2 ? known : { speed: 0, last: tick };
+  const prev = speeds.get(vehicle.id);
+  const state = prev && tick - prev.last <= 2 ? prev : { speed: 0, last: tick };
   state.last = tick;
   const heading = vehicle.getRotation().y;
 
