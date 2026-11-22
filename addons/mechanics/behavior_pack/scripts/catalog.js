@@ -155,13 +155,14 @@ export const PRESETS = {
   truck: {
     base: "hauler", paint: 11, name: "Truck", about: "A blue hauler with a cab for three and an open bed.",
     parts: [
-      [0, 0, 0, "seat"], [0, 1, 0, "seat"], [0, 2, 0, "seat"],
-      [1, 0, 0, "glass"], [1, 1, 0, "glass"], [1, 2, 0, "glass"],
-      [0, 0, 1, "body"], [0, 1, 1, "body"], [0, 2, 1, "body"],
-      [1, 0, 1, "body"], [1, 1, 1, "glass"], [1, 2, 1, "body"],
-      [2, 0, 0, "slab"], [2, 1, 0, "slab"], [2, 2, 0, "slab"], [2, 0, 1, "slab"], [2, 1, 1, "slab"], [2, 2, 1, "slab"],
-      [0, 0, 2, "body"], [0, 2, 2, "body"], [0, 0, 3, "body"], [0, 2, 3, "body"], [0, 0, 4, "body"], [0, 2, 4, "body"],
-      [0, 0, 5, "body"], [0, 1, 5, "body"], [0, 2, 5, "body"],
+      [0, 0, 1, "seat"], [0, 1, 1, "seat"], [0, 2, 1, "seat"],
+      [0, 0, 0, "body"], [0, 1, 0, "light"], [0, 2, 0, "body"],
+      [1, 0, 0, "ramp"], [1, 1, 0, "glass"], [1, 2, 0, "ramp"],
+      [1, 0, 1, "glass"], [1, 2, 1, "glass"],
+      [0, 0, 2, "body"], [0, 1, 2, "body"], [0, 2, 2, "body"],
+      [1, 0, 2, "body"], [1, 1, 2, "glass"], [1, 2, 2, "body"],
+      [2, 0, 1, "slab"], [2, 1, 1, "slab"], [2, 2, 1, "slab"], [2, 0, 2, "slab"], [2, 1, 2, "slab"], [2, 2, 2, "slab"], [2, 0, 0, "slab"], [2, 1, 0, "slab"], [2, 2, 0, "slab"],
+      [0, 0, 3, "slab"], [0, 2, 3, "slab"], [0, 0, 4, "slab"], [0, 2, 4, "slab"], [0, 0, 5, "slab"], [0, 1, 5, "slab"], [0, 2, 5, "slab"],
     ],
   },
   tractor: {
