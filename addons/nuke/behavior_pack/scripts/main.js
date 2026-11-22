@@ -1,4 +1,5 @@
 import { BlockVolume, system, world } from "@minecraft/server";
+import { buildColumns, depths, loadedReach } from "./crater.js";
 
 const REACH = 120; // how far away you can aim it
 
@@ -19,35 +20,14 @@ const MAX_PER_TICK = 6000; // all craters together clear at most this many block
 // What the blast leaves alone: the bottom of the world, and water and lava (clearing those makes them flow, which lags).
 const KEEP = { blockFilter: { excludeTypes: ["minecraft:bedrock", "minecraft:water", "minecraft:flowing_water", "minecraft:lava", "minecraft:flowing_lava"] } };
 
-/** @type {Map<string, { dx: Int16Array, dz: Int16Array, round: Int16Array }>} */
+/** @type {Map<string, { dx: Int16Array, dz: Int16Array }>} */
 const columnsOf = new Map();
 
-/**
- * Every column (x, z offset) of a crater, nearest the middle first, with how deep it goes there (`round`: 1000 in the middle, 0 at the edge). One fill per
- * column instead of one command per block, and nearest first makes the crater open outwards like a shockwave. Built when
- * the nuke is fired, in the countdown, and sorted by whole blocks of distance without a real sort (the biggest has 180,000 columns).
- */
+/** A size's columns, built once (the biggest has 180,000), and in the countdown, not in the tick it goes off. */
 function columns(size, id) {
-  const cached = columnsOf.get(id);
-  if (cached) return cached;
-  const { radius } = size;
-  const rings = Array.from({ length: radius + 2 }, () => 0);
-  for (let dx = -radius; dx <= radius; dx++) for (let dz = -radius; dz <= radius; dz++) if (Math.hypot(dx, dz) <= radius) rings[Math.floor(Math.hypot(dx, dz)) + 1]++;
-  for (let i = 1; i < rings.length; i++) rings[i] += rings[i - 1]; // where each ring starts
-  const total = rings[rings.length - 1];
-  const result = { dx: new Int16Array(total), dz: new Int16Array(total), round: new Int16Array(total) };
-  for (let dx = -radius; dx <= radius; dx++) {
-    for (let dz = -radius; dz <= radius; dz++) {
-      const flat = Math.hypot(dx, dz);
-      if (flat > radius) continue;
-      const at = rings[Math.floor(flat)]++;
-      result.dx[at] = dx;
-      result.dz[at] = dz;
-      result.round[at] = Math.round(1000 * Math.sqrt(1 - (flat * flat) / (radius * radius)));
-    }
-  }
-  columnsOf.set(id, result);
-  return result;
+  let cols = columnsOf.get(id);
+  if (!cols) columnsOf.set(id, (cols = buildColumns(size.radius)));
+  return cols;
 }
 
 function sound(dimension, id, location, volume, pitch = 1) {
@@ -73,18 +53,22 @@ let clearing; // the interval that clears them: it only runs while there is some
 function clearSome() {
   const perBlast = Math.max(1, Math.floor(MAX_PER_TICK / blasts.length));
   for (const blast of blasts) {
-    const { dimension, center, size, cols } = blast;
+    const { dimension, center, size, cols, reach } = blast;
     const budget = Math.min(size.perTick, perBlast);
     let spent = 0;
     let front = 0;
-    while (blast.next < cols.round.length && spent < budget) {
+    while (blast.next < cols.dx.length && spent < budget) {
       const i = blast.next++;
-      const round = cols.round[i] / 1000;
+      front = Math.hypot(cols.dx[i], cols.dz[i]);
+      if (front > reach) {
+        blast.next = cols.dx.length; // the columns go outwards, so the rest are outside the crater too
+        break;
+      }
       const x = center.x + cols.dx[i];
       const z = center.z + cols.dz[i];
-      const bottom = Math.max(center.y - Math.floor(size.down * round), -63);
-      const top = Math.min(center.y + Math.floor(size.up * round), 319);
-      front = Math.hypot(cols.dx[i], cols.dz[i]);
+      const { up, down } = depths(size, reach, front);
+      const bottom = Math.max(center.y - down, -63);
+      const top = Math.min(center.y + up, 319);
       spent += top - bottom + 1;
       try {
         dimension.fillBlocks(new BlockVolume({ x, y: bottom, z }, { x, y: top, z }), "minecraft:air", KEEP);
@@ -100,11 +84,11 @@ function clearSome() {
       }
       sound(dimension, "random.explode", center, 2, 0.7);
     }
-    if (blast.next >= cols.round.length) {
-      console.log(JSON.stringify({ "event.name": "minecraft.nuke.detonated", "minecraft.player.name": blast.player, "minecraft.nuke.type": blast.type, "minecraft.nuke.radius": size.radius }));
+    if (blast.next >= cols.dx.length) {
+      console.log(JSON.stringify({ "event.name": "minecraft.nuke.detonated", "minecraft.player.name": blast.player, "minecraft.nuke.type": blast.type, "minecraft.nuke.radius": reach }));
     }
   }
-  for (let i = blasts.length - 1; i >= 0; i--) if (blasts[i].next >= blasts[i].cols.round.length) blasts.splice(i, 1);
+  for (let i = blasts.length - 1; i >= 0; i--) if (blasts[i].next >= blasts[i].cols.dx.length) blasts.splice(i, 1);
   if (blasts.length === 0 && clearing !== undefined) {
     system.clearRun(clearing);
     clearing = undefined;
@@ -122,7 +106,21 @@ function detonate(dimension, center, player, type) {
       // already gone
     }
   }
-  blasts.push({ dimension, center, size, cols: columns(size, type), next: 0, rings: 0, player, type });
+  // Only loaded chunks can be cleared, so the crater shrinks to fit them and stays round (see loadedReach in crater.js).
+  const loaded = (dx, dz) => {
+    try {
+      return dimension.getBlock({ x: center.x + dx, y: center.y, z: center.z + dz }) !== undefined;
+    } catch {
+      return false;
+    }
+  };
+  const reach = loadedReach(loaded, size.radius);
+  if (reach < size.radius) {
+    for (const near of dimension.getPlayers({ location: center, maxDistance: size.radius * 2 })) {
+      near?.sendMessage(`§eThe crater is ${reach * 2} blocks across, not ${size.radius * 2}: the rest of the world isn't loaded. Stand in the middle of what you want cleared.`);
+    }
+  }
+  blasts.push({ dimension, center, size, cols: columns(size, type), reach, next: 0, rings: 0, player, type });
   clearing ??= system.runInterval(clearSome, 1);
 }
 
