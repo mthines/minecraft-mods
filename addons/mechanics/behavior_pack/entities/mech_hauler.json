@@ -6,191 +6,110 @@
       "is_spawnable": true,
       "is_summonable": true,
       "properties": {
-        "family:s0": {
+        "family:g0": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s1": {
+        "family:g1": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s2": {
+        "family:g2": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s3": {
+        "family:g3": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s4": {
+        "family:g4": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s5": {
+        "family:g5": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s6": {
+        "family:g6": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s7": {
+        "family:g7": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s8": {
+        "family:g8": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s9": {
+        "family:g9": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s10": {
+        "family:g10": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s11": {
+        "family:g11": {
           "type": "int",
           "range": [
             0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s12": {
-          "type": "int",
-          "range": [
-            0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s13": {
-          "type": "int",
-          "range": [
-            0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s14": {
-          "type": "int",
-          "range": [
-            0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s15": {
-          "type": "int",
-          "range": [
-            0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s16": {
-          "type": "int",
-          "range": [
-            0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s17": {
-          "type": "int",
-          "range": [
-            0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s18": {
-          "type": "int",
-          "range": [
-            0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s19": {
-          "type": "int",
-          "range": [
-            0,
-            9
-          ],
-          "default": 0,
-          "client_sync": true
-        },
-        "family:s20": {
-          "type": "int",
-          "range": [
-            0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
@@ -207,7 +126,7 @@
       }
     },
     "component_groups": {
-      "family:seats_1": {
+      "family:seats_0": {
         "minecraft:rideable": {
           "seat_count": 1,
           "family_types": [
@@ -226,7 +145,7 @@
           ]
         }
       },
-      "family:seats_2": {
+      "family:seats_0_1": {
         "minecraft:rideable": {
           "seat_count": 2,
           "family_types": [
@@ -252,7 +171,7 @@
           ]
         }
       },
-      "family:seats_3": {
+      "family:seats_0_1_2": {
         "minecraft:rideable": {
           "seat_count": 3,
           "family_types": [
@@ -280,6 +199,1092 @@
                 -1,
                 0.7999999999999999,
                 2.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_1_3": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_1_4": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_1_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_2": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_2_3": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_2_4": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_2_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_3": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_3_4": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_3_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_4": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_4_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_0_5": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_2": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_2_3": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_2_4": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_2_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_3": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_3_4": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_3_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_4": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_4_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_1_5": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_2": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_2_3": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_2_3_4": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_2_3_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_2_4": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_2_4_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_2_5": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                2.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_3": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_3_4": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_3_4_5": {
+        "minecraft:rideable": {
+          "seat_count": 3,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_3_5": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                1,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_4": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_4_5": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0,
+                0.7999999999999999,
+                1.5
+              ]
+            },
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_5": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -1,
+                0.7999999999999999,
+                1.5
               ]
             }
           ]
@@ -449,6 +1454,76 @@
                 "value": "family:mech_laser"
               },
               "event": "family:part_laser",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_slab"
+              },
+              "event": "family:part_slab",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_ramp"
+              },
+              "event": "family:part_ramp",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_ramp_back"
+              },
+              "event": "family:part_ramp_back",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_light"
+              },
+              "event": "family:part_light",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_spoiler"
+              },
+              "event": "family:part_spoiler",
               "target": "self"
             },
             "swing": true,
@@ -682,21 +1757,929 @@
       }
     },
     "events": {
+      "family:set_seats_none": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        }
+      },
       "family:set_seats_0": {
         "remove": {
           "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
             "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
             "family:seats_2",
-            "family:seats_3"
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0"
+          ]
+        }
+      },
+      "family:set_seats_0_1": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_1"
+          ]
+        }
+      },
+      "family:set_seats_0_1_2": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_1_2"
+          ]
+        }
+      },
+      "family:set_seats_0_1_3": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_1_3"
+          ]
+        }
+      },
+      "family:set_seats_0_1_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_1_4"
+          ]
+        }
+      },
+      "family:set_seats_0_1_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_1_5"
+          ]
+        }
+      },
+      "family:set_seats_0_2": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_2"
+          ]
+        }
+      },
+      "family:set_seats_0_2_3": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_2_3"
+          ]
+        }
+      },
+      "family:set_seats_0_2_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_2_4"
+          ]
+        }
+      },
+      "family:set_seats_0_2_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_2_5"
+          ]
+        }
+      },
+      "family:set_seats_0_3": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_3"
+          ]
+        }
+      },
+      "family:set_seats_0_3_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_3_4"
+          ]
+        }
+      },
+      "family:set_seats_0_3_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_3_5"
+          ]
+        }
+      },
+      "family:set_seats_0_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_4"
+          ]
+        }
+      },
+      "family:set_seats_0_4_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_4_5"
+          ]
+        }
+      },
+      "family:set_seats_0_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_0_5"
           ]
         }
       },
       "family:set_seats_1": {
         "remove": {
           "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
             "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
             "family:seats_2",
-            "family:seats_3"
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
           ]
         },
         "add": {
@@ -705,12 +2688,570 @@
           ]
         }
       },
+      "family:set_seats_1_2": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_2"
+          ]
+        }
+      },
+      "family:set_seats_1_2_3": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_2_3"
+          ]
+        }
+      },
+      "family:set_seats_1_2_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_2_4"
+          ]
+        }
+      },
+      "family:set_seats_1_2_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_2_5"
+          ]
+        }
+      },
+      "family:set_seats_1_3": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_3"
+          ]
+        }
+      },
+      "family:set_seats_1_3_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_3_4"
+          ]
+        }
+      },
+      "family:set_seats_1_3_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_3_5"
+          ]
+        }
+      },
+      "family:set_seats_1_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_4"
+          ]
+        }
+      },
+      "family:set_seats_1_4_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_4_5"
+          ]
+        }
+      },
+      "family:set_seats_1_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1_5"
+          ]
+        }
+      },
       "family:set_seats_2": {
         "remove": {
           "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
             "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
             "family:seats_2",
-            "family:seats_3"
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
           ]
         },
         "add": {
@@ -719,17 +3260,679 @@
           ]
         }
       },
+      "family:set_seats_2_3": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_2_3"
+          ]
+        }
+      },
+      "family:set_seats_2_3_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_2_3_4"
+          ]
+        }
+      },
+      "family:set_seats_2_3_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_2_3_5"
+          ]
+        }
+      },
+      "family:set_seats_2_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_2_4"
+          ]
+        }
+      },
+      "family:set_seats_2_4_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_2_4_5"
+          ]
+        }
+      },
+      "family:set_seats_2_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_2_5"
+          ]
+        }
+      },
       "family:set_seats_3": {
         "remove": {
           "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
             "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
             "family:seats_2",
-            "family:seats_3"
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
           ]
         },
         "add": {
           "component_groups": [
             "family:seats_3"
+          ]
+        }
+      },
+      "family:set_seats_3_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_3_4"
+          ]
+        }
+      },
+      "family:set_seats_3_4_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_3_4_5"
+          ]
+        }
+      },
+      "family:set_seats_3_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_3_5"
+          ]
+        }
+      },
+      "family:set_seats_4": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_4"
+          ]
+        }
+      },
+      "family:set_seats_4_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_4_5"
+          ]
+        }
+      },
+      "family:set_seats_5": {
+        "remove": {
+          "component_groups": [
+            "family:seats_0",
+            "family:seats_0_1",
+            "family:seats_0_1_2",
+            "family:seats_0_1_3",
+            "family:seats_0_1_4",
+            "family:seats_0_1_5",
+            "family:seats_0_2",
+            "family:seats_0_2_3",
+            "family:seats_0_2_4",
+            "family:seats_0_2_5",
+            "family:seats_0_3",
+            "family:seats_0_3_4",
+            "family:seats_0_3_5",
+            "family:seats_0_4",
+            "family:seats_0_4_5",
+            "family:seats_0_5",
+            "family:seats_1",
+            "family:seats_1_2",
+            "family:seats_1_2_3",
+            "family:seats_1_2_4",
+            "family:seats_1_2_5",
+            "family:seats_1_3",
+            "family:seats_1_3_4",
+            "family:seats_1_3_5",
+            "family:seats_1_4",
+            "family:seats_1_4_5",
+            "family:seats_1_5",
+            "family:seats_2",
+            "family:seats_2_3",
+            "family:seats_2_3_4",
+            "family:seats_2_3_5",
+            "family:seats_2_4",
+            "family:seats_2_4_5",
+            "family:seats_2_5",
+            "family:seats_3",
+            "family:seats_3_4",
+            "family:seats_3_4_5",
+            "family:seats_3_5",
+            "family:seats_4",
+            "family:seats_4_5",
+            "family:seats_5"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_5"
           ]
         }
       },
@@ -774,6 +3977,31 @@
         }
       },
       "family:part_laser": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_slab": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_ramp": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_ramp_back": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_light": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_spoiler": {
         "set_property": {
           "family:paint": "query.property('family:paint')"
         }

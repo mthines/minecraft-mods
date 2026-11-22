@@ -2,13 +2,13 @@ import { ButtonState, EntityDamageCause, EntityInitializationCause, EntitySwingS
 import { lore, MAX_DESIGNS, recall, remember } from "./blueprint.js";
 import { BASES, DYES, PART_BY_ID, PART_BY_KEY, PRESETS, partItem, presetItem, slotsOf } from "./catalog.js";
 import { armament, damageOf, firstTarget, powerOf, ready, WEAPONS } from "./combat.js";
-import { decode, dirToModel, encode, normalizeSeats, partsOn, pickFilledSlot, pickFreeSlot, presetDesign, toModel, count } from "./design.js";
+import { decode, dirToModel, encode, pack, partsOn, pickFilledSlot, pickFreeSlot, presetDesign, propertiesOf, seatsOf, toModel, unpack, count } from "./design.js";
 import { driveStep, flightHint, flightOf, forward, hoverStep, planeStep, statsOf, velocityOf } from "./drive.js";
 import { cellsToTill, fillOf, plowCells, tilled } from "./farm.js";
 import { emit } from "./telemetry.js";
 
-// Vehicles you build yourself. A vehicle is one entity with a slot per part (the entity properties family:s0, family:s1, ...),
-// and the resource pack shows the part in each slot. See README.md.
+// Vehicles you build yourself. A vehicle is one entity with a grid of slots; five slots share one entity property
+// (family:g0, family:g1, ...), a base-16 digit each, and the resource pack shows the part in each slot. See README.md.
 const VEHICLES = Object.values(BASES).map((base) => base.item);
 const WRENCH = "family:mech_wrench";
 const BLUEPRINT = "family:mech_blueprint";
@@ -30,13 +30,14 @@ const ridersOf = (/** @type {import("@minecraft/server").Entity} */ vehicle) => 
 /** @param {import("@minecraft/server").Entity} vehicle @returns {import("./design.js").Design} */
 function readDesign(vehicle) {
   const base = baseOf(vehicle);
-  return { base, slots: slotsOf(base).map(({ i }) => Number(vehicle.getProperty(`family:s${i}`) ?? 0)), paint: Number(vehicle.getProperty("family:paint") ?? 0) };
+  const values = Array.from({ length: propertiesOf(base) }, (_, g) => Number(vehicle.getProperty(`family:g${g}`) ?? 0));
+  return { base, slots: unpack(values, slotsOf(base).length), paint: Number(vehicle.getProperty("family:paint") ?? 0) };
 }
 
 function writeDesign(/** @type {import("@minecraft/server").Entity} */ vehicle, /** @type {import("./design.js").Design} */ design) {
-  for (const { i } of slotsOf(design.base)) vehicle.setProperty(`family:s${i}`, design.slots[i]);
+  pack(design.slots).forEach((value, g) => vehicle.setProperty(`family:g${g}`, value));
   vehicle.setProperty("family:paint", design.paint);
-  vehicle.triggerEvent(`family:set_seats_${count(design, "seat")}`);
+  vehicle.triggerEvent(`family:set_seats_${seatsOf(design).key}`);
   infos.delete(vehicle.id);
 }
 
@@ -98,7 +99,7 @@ function addPart(/** @type {import("@minecraft/server").Entity} */ vehicle, /** 
   if (ridersOf(vehicle).some((rider) => rider?.id !== player.id)) return tell(player, "Get off first, then you can change the vehicle.");
   const design = readDesign(vehicle);
   const slot = pickFreeSlot(design, key, aimAt(player, vehicle));
-  if (slot < 0) return tell(player, key === "seat" ? `No room for another seat on this ${BASES[design.base].name.toLowerCase()}: it's full, or its next seat spot has another part on it (take that off with the wrench).` : `The ${part.name.toLowerCase()} doesn't fit there. Aim at a free spot it can go in.`);
+  if (slot < 0) return tell(player, key === "seat" ? `No room for that seat: this ${BASES[design.base].name.toLowerCase()} is full, or you aimed at a spot that isn't a seat spot (the cells in the middle of the deck), already has a part, or is too close to another seat.` : `The ${part.name.toLowerCase()} doesn't fit there. Aim at a free spot it can go in.`);
   design.slots[slot] = part.id;
   writeDesign(vehicle, design);
   consume(player);
@@ -113,7 +114,6 @@ function removePart(/** @type {import("@minecraft/server").Entity} */ vehicle, /
   if (slot < 0) return tell(player, "Aim at a part to take it off.");
   const part = PART_BY_ID[design.slots[slot]];
   design.slots[slot] = 0;
-  normalizeSeats(design);
   writeDesign(vehicle, design);
   give(player, new ItemStack(partItem(part.key)));
   vehicle.dimension.playSound("random.anvil_use", vehicle.location, { volume: 0.5, pitch: 0.8 });
@@ -130,6 +130,38 @@ world.afterEvents.dataDrivenEntityTrigger.subscribe(({ entity: vehicle, eventId 
   if (player) consume(player);
   infos.delete(vehicle.id);
 }, { entityTypes: VEHICLES });
+
+// ── Showing where a part would go ────────────────────────────────────────────
+
+/** A point in the vehicle's own space, in the world. */
+function toWorld(/** @type {{ x: number, y: number, z: number }} */ model, /** @type {import("@minecraft/server").Entity} */ vehicle) {
+  const r = (vehicle.getRotation().y * Math.PI) / 180;
+  const at = vehicle.location;
+  return { x: at.x + model.x * Math.cos(r) + model.z * Math.sin(r), y: at.y + model.y, z: at.z + model.x * Math.sin(r) - model.z * Math.cos(r) };
+}
+
+// Holding a part (or the wrench) and looking at a vehicle: sparkles show the cell it would go in (or come off). Every 4 ticks, only for such players.
+system.runInterval(() => {
+  for (const player of world.getAllPlayers()) {
+    if (!player) continue; // NPCs come through as undefined in other mods
+    const held = heldBy(player)?.typeId;
+    const key = held === WRENCH ? "wrench" : held?.startsWith("family:mech_") ? held.slice("family:mech_".length) : "";
+    if (!key || (key !== "wrench" && !PART_BY_KEY[key])) continue;
+    try {
+      const vehicle = player.getEntitiesFromViewDirection({ maxDistance: 8, families: ["mechanics_vehicle"] })[0]?.entity;
+      if (!isVehicle(vehicle) || !vehicle) continue;
+      const design = readDesign(vehicle);
+      const aim = aimAt(player, vehicle);
+      const slot = key === "wrench" ? pickFilledSlot(design, aim) : pickFreeSlot(design, key, aim);
+      if (slot < 0) continue;
+      const place = slotsOf(design.base)[slot];
+      const point = toWorld({ x: place.x, y: BASES[design.base].deckTop + place.y + place.cell / 2, z: place.z }, vehicle);
+      player.dimension.spawnParticle(key === "wrench" ? "minecraft:redstone_ore_dust_particle" : "minecraft:villager_happy", point);
+    } catch {
+      // the vehicle went away, or the chunk isn't loaded
+    }
+  }
+}, 4);
 
 // ── Hitting a vehicle: the wrench, the blueprint, and picking it up ──────────
 
@@ -208,7 +240,7 @@ world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
 world.afterEvents.entitySpawn.subscribe(({ entity, cause }) => {
   if (cause !== EntityInitializationCause.Spawned || !isVehicle(entity) || partsOn(readDesign(entity)) > 0) return;
   for (const player of entity.dimension.getPlayers({ location: entity.location, maxDistance: 8 })) {
-    if (player) player.sendMessage("§6Vehicle base!§r Hold a part and use it on the base, aiming at where it goes. A seat in the front lets you drive: W goes, A and D steer. Hit it with the wrench to take a part off, and sneak-hit it with an empty hand to pick it up.");
+    if (player) player.sendMessage("§6Vehicle base!§r Hold a part and use it on the base, aiming at the spot where it goes: parts stack up in layers and snap next to each other. A seat lets you drive: W goes, A and D steer. Hit it with the wrench to take a part off, and sneak-hit it with an empty hand to pick it up.");
   }
 });
 
@@ -225,7 +257,7 @@ system.afterEvents.scriptEventReceive.subscribe(({ id, message, sourceEntity }) 
   testInput.set(sourceEntity.id, { x, y, jump: !!jump });
 });
 
-/** @type {Map<string, { speed: number, last: number }>} the speed of a vehicle and the tick it was last driven */
+/** @type {Map<string, { speed: number, last: number, blocked?: number }>} the speed of a vehicle, the tick it was last driven, and for how many ticks a step has been in its way */
 const speeds = new Map();
 /** @type {Map<string, string>} the plow's last cells, by vehicle id */
 const plowed = new Map();
@@ -282,7 +314,8 @@ function drive(/** @type {Player} */ player, /** @type {import("@minecraft/serve
     const v = velocityOf(next.heading, next.speed);
     const now = vehicle.getVelocity();
     vehicle.applyImpulse({ x: v.x - now.x, y: 0, z: v.z - now.z }); // sets the speed exactly; gravity is left alone
-    if (next.speed > 0.02) stepUp(vehicle, next.heading, BASES[design.base].width);
+    if (next.speed > 0.02) stepUp(vehicle, next.heading, BASES[design.base].width, state);
+    else state.blocked = 0;
     if (design.base === "farm" && count(design, "plow") > 0 && next.speed > 0.02) plow(vehicle, next.heading);
   }
   speeds.set(vehicle.id, state);
@@ -301,8 +334,13 @@ function drive(/** @type {Player} */ player, /** @type {import("@minecraft/serve
   }
 }
 
-/** A solid block in the way, with room above it: climb up one block. Three block lookups. */
-function stepUp(/** @type {import("@minecraft/server").Entity} */ vehicle, /** @type {number} */ heading, /** @type {number} */ width) {
+/** A block a vehicle can't drive through (Block.isSolid is false for plenty of full blocks, stone among them). */
+const blocks = (/** @type {import("@minecraft/server").Block | undefined} */ block) => !!block && !block.isAir && !block.isLiquid;
+const HOP = 0.5; // upward speed of a hop: clears a block, like a jump
+const HOP_TICKS = 6; // a hop that hasn't got it over the step by now: lift it up
+
+/** A solid block in the way, with room above it: hop up it, or lift the vehicle up if the hop didn't do it. Three block lookups. */
+function stepUp(/** @type {import("@minecraft/server").Entity} */ vehicle, /** @type {number} */ heading, /** @type {number} */ width, /** @type {{ blocked?: number }} */ state) {
   const dir = forward(heading);
   const reach = width / 2 + 0.4;
   const at = vehicle.location;
@@ -310,11 +348,17 @@ function stepUp(/** @type {import("@minecraft/server").Entity} */ vehicle, /** @
   const z = at.z + dir.z * reach;
   try {
     const ahead = vehicle.dimension.getBlock({ x, y: at.y + 0.1, z });
-    if (!ahead?.isSolid) return;
+    if (!blocks(ahead)) return void (state.blocked = 0);
     const room = vehicle.dimension.getBlock({ x, y: at.y + 1.1, z });
     const head = vehicle.dimension.getBlock({ x, y: at.y + 2.1, z });
-    if (room?.isSolid || head?.isSolid) return;
-    vehicle.teleport({ x: at.x + dir.x * 0.5, y: at.y + 1.05, z: at.z + dir.z * 0.5 });
+    if (blocks(room) || blocks(head)) return;
+    state.blocked = (state.blocked ?? 0) + 1;
+    if (state.blocked >= HOP_TICKS) {
+      state.blocked = 0;
+      vehicle.teleport({ x: at.x + dir.x * 0.5, y: at.y + 1.05, z: at.z + dir.z * 0.5 });
+    } else if (vehicle.isOnGround) {
+      vehicle.applyImpulse({ x: 0, y: HOP - vehicle.getVelocity().y, z: 0 });
+    }
   } catch {
     // the chunk ahead isn't loaded
   }

@@ -6,83 +6,137 @@
       "is_spawnable": true,
       "is_summonable": true,
       "properties": {
-        "family:s0": {
+        "family:g0": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s1": {
+        "family:g1": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s2": {
+        "family:g2": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s3": {
+        "family:g3": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s4": {
+        "family:g4": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s5": {
+        "family:g5": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s6": {
+        "family:g6": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s7": {
+        "family:g7": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s8": {
+        "family:g8": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g9": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g10": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g11": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g12": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g13": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g14": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
           ],
           "default": 0,
           "client_sync": true
@@ -99,7 +153,7 @@
       }
     },
     "component_groups": {
-      "family:seats_1": {
+      "family:seats_9": {
         "minecraft:rideable": {
           "seat_count": 1,
           "family_types": [
@@ -110,9 +164,66 @@
           "seats": [
             {
               "position": [
-                0.5,
+                0.25,
                 1,
-                0
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_10": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.25,
+                1,
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_13": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.25,
+                1,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_14": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.25,
+                1,
+                -0.25
               ]
             }
           ]
@@ -277,6 +388,76 @@
                 "value": "family:mech_laser"
               },
               "event": "family:part_laser",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_slab"
+              },
+              "event": "family:part_slab",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_ramp"
+              },
+              "event": "family:part_ramp",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_ramp_back"
+              },
+              "event": "family:part_ramp_back",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_light"
+              },
+              "event": "family:part_light",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_spoiler"
+              },
+              "event": "family:part_spoiler",
               "target": "self"
             },
             "swing": true,
@@ -510,22 +691,73 @@
       }
     },
     "events": {
-      "family:set_seats_0": {
+      "family:set_seats_none": {
         "remove": {
           "component_groups": [
-            "family:seats_1"
+            "family:seats_9",
+            "family:seats_10",
+            "family:seats_13",
+            "family:seats_14"
           ]
         }
       },
-      "family:set_seats_1": {
+      "family:set_seats_9": {
         "remove": {
           "component_groups": [
-            "family:seats_1"
+            "family:seats_9",
+            "family:seats_10",
+            "family:seats_13",
+            "family:seats_14"
           ]
         },
         "add": {
           "component_groups": [
-            "family:seats_1"
+            "family:seats_9"
+          ]
+        }
+      },
+      "family:set_seats_10": {
+        "remove": {
+          "component_groups": [
+            "family:seats_9",
+            "family:seats_10",
+            "family:seats_13",
+            "family:seats_14"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_10"
+          ]
+        }
+      },
+      "family:set_seats_13": {
+        "remove": {
+          "component_groups": [
+            "family:seats_9",
+            "family:seats_10",
+            "family:seats_13",
+            "family:seats_14"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_13"
+          ]
+        }
+      },
+      "family:set_seats_14": {
+        "remove": {
+          "component_groups": [
+            "family:seats_9",
+            "family:seats_10",
+            "family:seats_13",
+            "family:seats_14"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_14"
           ]
         }
       },
@@ -570,6 +802,31 @@
         }
       },
       "family:part_laser": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_slab": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_ramp": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_ramp_back": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_light": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_spoiler": {
         "set_property": {
           "family:paint": "query.property('family:paint')"
         }

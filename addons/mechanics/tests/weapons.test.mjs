@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { PART_BY_KEY } from "../behavior_pack/scripts/catalog.js";
+import { PART_BY_KEY, slotIndex } from "../behavior_pack/scripts/catalog.js";
 import { armament, damageOf, firstTarget, powerOf, ready, WEAPONS } from "../behavior_pack/scripts/combat.js";
 import { emptyDesign } from "../behavior_pack/scripts/design.js";
 
 const mounted = (kinds) => {
   const design = emptyDesign("hauler");
-  kinds.forEach((kind, i) => (design.slots[6 + i] = PART_BY_KEY[kind].id));
+  kinds.forEach((kind, i) => (design.slots[slotIndex("hauler", 0, i % 3, 2 + Math.floor(i / 3))] = PART_BY_KEY[kind].id));
   return design;
 };
 

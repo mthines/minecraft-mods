@@ -6,83 +6,137 @@
       "is_spawnable": true,
       "is_summonable": true,
       "properties": {
-        "family:s0": {
+        "family:g0": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s1": {
+        "family:g1": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s2": {
+        "family:g2": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s3": {
+        "family:g3": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s4": {
+        "family:g4": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s5": {
+        "family:g5": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s6": {
+        "family:g6": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s7": {
+        "family:g7": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
           ],
           "default": 0,
           "client_sync": true
         },
-        "family:s8": {
+        "family:g8": {
           "type": "int",
           "range": [
             0,
-            9
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g9": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g10": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g11": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g12": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g13": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:g14": {
+          "type": "int",
+          "range": [
+            0,
+            1048575
           ],
           "default": 0,
           "client_sync": true
@@ -99,7 +153,7 @@
       }
     },
     "component_groups": {
-      "family:seats_1": {
+      "family:seats_4": {
         "minecraft:rideable": {
           "seat_count": 1,
           "family_types": [
@@ -110,15 +164,15 @@
           "seats": [
             {
               "position": [
+                0.75,
                 0.5,
-                0.5,
-                1
+                0.75
               ]
             }
           ]
         }
       },
-      "family:seats_2": {
+      "family:seats_4_7": {
         "minecraft:rideable": {
           "seat_count": 2,
           "family_types": [
@@ -129,16 +183,475 @@
           "seats": [
             {
               "position": [
+                0.75,
                 0.5,
-                0.5,
-                1
+                0.75
               ]
             },
             {
               "position": [
-                -0.5,
+                -0.75,
                 0.5,
-                1
+                0.75
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_4_8": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.75
+              ]
+            },
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_4_11": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.75
+              ]
+            },
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_4_12": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.75
+              ]
+            },
+            {
+              "position": [
+                0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_4_15": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.75
+              ]
+            },
+            {
+              "position": [
+                -0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_7": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.75
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_7_8": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.75
+              ]
+            },
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_7_11": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.75
+              ]
+            },
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_7_12": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.75
+              ]
+            },
+            {
+              "position": [
+                0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_7_15": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.75
+              ]
+            },
+            {
+              "position": [
+                -0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_8": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_8_11": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.25
+              ]
+            },
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_8_12": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.25
+              ]
+            },
+            {
+              "position": [
+                0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_8_15": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                0.25
+              ]
+            },
+            {
+              "position": [
+                -0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_11": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_11_12": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.25
+              ]
+            },
+            {
+              "position": [
+                0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_11_15": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                0.25
+              ]
+            },
+            {
+              "position": [
+                -0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_12": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_12_15": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.75,
+                0.5,
+                -0.25
+              ]
+            },
+            {
+              "position": [
+                -0.75,
+                0.5,
+                -0.25
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_15": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                -0.75,
+                0.5,
+                -0.25
               ]
             }
           ]
@@ -303,6 +816,76 @@
                 "value": "family:mech_laser"
               },
               "event": "family:part_laser",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_slab"
+              },
+              "event": "family:part_slab",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_ramp"
+              },
+              "event": "family:part_ramp",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_ramp_back"
+              },
+              "event": "family:part_ramp_back",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_light"
+              },
+              "event": "family:part_light",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_spoiler"
+              },
+              "event": "family:part_spoiler",
               "target": "self"
             },
             "swing": true,
@@ -536,37 +1119,702 @@
       }
     },
     "events": {
-      "family:set_seats_0": {
+      "family:set_seats_none": {
         "remove": {
           "component_groups": [
-            "family:seats_1",
-            "family:seats_2"
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
           ]
         }
       },
-      "family:set_seats_1": {
+      "family:set_seats_4": {
         "remove": {
           "component_groups": [
-            "family:seats_1",
-            "family:seats_2"
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
           ]
         },
         "add": {
           "component_groups": [
-            "family:seats_1"
+            "family:seats_4"
           ]
         }
       },
-      "family:set_seats_2": {
+      "family:set_seats_4_7": {
         "remove": {
           "component_groups": [
-            "family:seats_1",
-            "family:seats_2"
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
           ]
         },
         "add": {
           "component_groups": [
-            "family:seats_2"
+            "family:seats_4_7"
+          ]
+        }
+      },
+      "family:set_seats_4_8": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_4_8"
+          ]
+        }
+      },
+      "family:set_seats_4_11": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_4_11"
+          ]
+        }
+      },
+      "family:set_seats_4_12": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_4_12"
+          ]
+        }
+      },
+      "family:set_seats_4_15": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_4_15"
+          ]
+        }
+      },
+      "family:set_seats_7": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_7"
+          ]
+        }
+      },
+      "family:set_seats_7_8": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_7_8"
+          ]
+        }
+      },
+      "family:set_seats_7_11": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_7_11"
+          ]
+        }
+      },
+      "family:set_seats_7_12": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_7_12"
+          ]
+        }
+      },
+      "family:set_seats_7_15": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_7_15"
+          ]
+        }
+      },
+      "family:set_seats_8": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_8"
+          ]
+        }
+      },
+      "family:set_seats_8_11": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_8_11"
+          ]
+        }
+      },
+      "family:set_seats_8_12": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_8_12"
+          ]
+        }
+      },
+      "family:set_seats_8_15": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_8_15"
+          ]
+        }
+      },
+      "family:set_seats_11": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_11"
+          ]
+        }
+      },
+      "family:set_seats_11_12": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_11_12"
+          ]
+        }
+      },
+      "family:set_seats_11_15": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_11_15"
+          ]
+        }
+      },
+      "family:set_seats_12": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_12"
+          ]
+        }
+      },
+      "family:set_seats_12_15": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_12_15"
+          ]
+        }
+      },
+      "family:set_seats_15": {
+        "remove": {
+          "component_groups": [
+            "family:seats_4",
+            "family:seats_4_7",
+            "family:seats_4_8",
+            "family:seats_4_11",
+            "family:seats_4_12",
+            "family:seats_4_15",
+            "family:seats_7",
+            "family:seats_7_8",
+            "family:seats_7_11",
+            "family:seats_7_12",
+            "family:seats_7_15",
+            "family:seats_8",
+            "family:seats_8_11",
+            "family:seats_8_12",
+            "family:seats_8_15",
+            "family:seats_11",
+            "family:seats_11_12",
+            "family:seats_11_15",
+            "family:seats_12",
+            "family:seats_12_15",
+            "family:seats_15"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_15"
           ]
         }
       },
@@ -611,6 +1859,31 @@
         }
       },
       "family:part_laser": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_slab": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_ramp": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_ramp_back": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_light": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_spoiler": {
         "set_property": {
           "family:paint": "query.property('family:paint')"
         }

@@ -1,17 +1,22 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { PART_BY_KEY } from "../behavior_pack/scripts/catalog.js";
+import { PART_BY_KEY, slotIndex, slotsOf } from "../behavior_pack/scripts/catalog.js";
 import { emptyDesign, presetDesign } from "../behavior_pack/scripts/design.js";
 import { flightHint, flightOf, hoverStep, planeStep, statsOf, CLIMB, SINK } from "../behavior_pack/scripts/drive.js";
 
-const withParts = (base, slots) => {
+// where: [col, row] on the bottom layer, or "wing" for a wing slot.
+const withParts = (base, parts) => {
   const design = emptyDesign(base);
-  for (const [i, key] of Object.entries(slots)) design.slots[i] = PART_BY_KEY[key].id;
+  let wings = 0;
+  for (const [key, where] of parts) {
+    const i = where === "wing" ? slotsOf(base).findIndex((slot) => slot.kind === "side") + wings++ : slotIndex(base, 0, where[0], where[1]);
+    design.slots[i] = PART_BY_KEY[key].id;
+  }
   return design;
 };
 
 test("a truck with one thruster stays on the ground and says it needs more", () => {
-  const truck = withParts("hauler", { 0: "seat", 3: "thruster" });
+  const truck = withParts("hauler", [["seat", [0, 0]], ["thruster", [0, 3]]]);
   const flight = flightOf(truck);
   assert.equal(flight.mode, "ground");
   assert.ok(flight.missing >= 1);
@@ -19,7 +24,7 @@ test("a truck with one thruster stays on the ground and says it needs more", () 
 });
 
 test("a racer with enough thrusters hovers, and holds its height for 2 seconds", () => {
-  const racer = withParts("racer", { 0: "seat", 2: "thruster", 3: "thruster" });
+  const racer = withParts("racer", [["seat", [0, 1]], ["thruster", [1, 4]], ["thruster", [2, 4]]]);
   const flight = flightOf(racer);
   assert.equal(flight.mode, "hover");
   let y = 0;
@@ -50,7 +55,7 @@ test("with a pair of wings it is a plane, and flies where you look", () => {
 });
 
 test("one wing is not a pair: it hovers", () => {
-  const design = withParts("racer", { 2: "thruster", 3: "thruster", 6: "wing" });
+  const design = withParts("racer", [["thruster", [1, 4]], ["thruster", [2, 4]], ["wing", "wing"]]);
   assert.equal(flightOf(design).mode, "hover");
 });
 

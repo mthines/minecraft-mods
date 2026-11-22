@@ -7,8 +7,9 @@ Build your own cars, trucks, tractors and planes. Put a **base** down, add a **s
 ## Playing
 
 - **Bases:** the racer (fast, small wheels), the hauler (a truck with a 27-slot cargo bed, slow, turns wide, slower when the bed is full), the farm base (a tractor: slow, steady, climbs a block).
-- **Parts:** hold a part and use it on the base, aiming at where it goes. It snaps onto the nearest free spot it fits. Seats go in the front (the first rider drives). Body blocks, windows, thrusters and weapons go on the deck, wings on the sides, a plow on the back. Use a dye on the vehicle to paint it.
-- **Driving:** W goes, S slows and backs up, A and D steer. The first one aboard drives.
+- **Parts:** hold a part and use it on the base, aiming at the spot where it goes: sparkles show which cell you are aiming at (the wrench shows the part it would take off). The deck is a grid (the racer and tractor 4 × 6 cells of half a block, the hauler 3 × 6 cells of a block) three layers high, so you can build roofs, cabs and spoilers. A part goes in the first free cell along your aim; above the deck it must sit against another part. Seats go on a seat spot (the front rows of the racer and tractor, the cab of the hauler), at least a bit apart, and the first rider (the front-most, left-most seat) drives. Body blocks, slabs, ramps, windows, lights, spoilers, thrusters and weapons go on the deck, wings on the sides, a plow on the back. Use a dye on the vehicle to paint it.
+- **Shapes:** body block, slab (half height), ramp (rises towards the back: a hood or a windshield), back ramp (rises towards the front: a fastback), window, light, spoiler.
+- **Driving:** W goes, S slows and backs up, A and D steer. The first one aboard drives. Steps of a block are hopped up automatically, so a vehicle climbs hills of steps.
 - **Flying:** three thrusters lift one block of vehicle. With enough thrusters it hovers (hold jump to climb, W/S/A/D drive). With a pair of wings too, it flies like a plane: W faster, S slower, it flies where you look. If it has some thrusters but not enough, the action bar says how many more.
 - **Weapons:** the driver taps attack. Gatling gun (a burst), rocket pod (blows up blocks), laser (a long, strong beam). Two of a kind hurt twice as much, up to three. Shots never hit the vehicle or anyone on it.
 - **Taking parts off:** hit the vehicle with the wrench, aiming at the part. **Picking it up:** sneak and hit it with an empty hand: it folds into a packed vehicle that remembers its parts, colors and seats.
@@ -26,7 +27,7 @@ Give that line to Claude: it adds a preset to `PRESETS` in `behavior_pack/script
 
 ## How it works
 
-A vehicle is **one entity** with a slot per part. Each slot is an integer entity property (`family:s0`, `family:s1`, ...) holding a part id, and the resource pack shows or hides the part's bones from it (a render controller with `part_visibility`). Nothing teleports, so there is no per-tick cost for the parts and no lag; a design is just its properties.
+A vehicle is **one entity** with a grid of slots (`slotsOf` in `catalog.js`). Five slots share one integer entity property (`family:g0`, `family:g1`, ...), a base-16 digit each holding a part id, and the resource pack shows or hides the part's bones from it (a render controller with `part_visibility`, digits taken with `math.mod`/`math.floor`). An entity may have 32 properties, and the biggest base uses 16. Seats: every choice of seats is a component group with its riders' positions (`seatSets`), swapped by an event when the design changes. Nothing teleports, so there is no per-tick cost for the parts and no lag; a design is just its properties.
 
 `behavior_pack/scripts/catalog.js` is the one place that knows the parts, bases, slots, presets and stats. Everything else is generated from it by `node addons/mechanics/gen/build.mjs`: the vehicle entities, models, render controllers, textures, item pictures, items, recipes and texts. **After editing `catalog.js`, run the generator**; `tests/generated.test.mjs` fails when the committed files are out of date. Pure code (`design.js`, `drive.js`, `combat.js`, `farm.js`, `blueprint.js`) has no Minecraft imports, so `npm test` runs it; `main.js` is the wiring.
 
@@ -43,7 +44,7 @@ The question: could kids build with *any* block, by putting a block-sized entity
 - **So it is not free-form.** Where a cube sits is decided by its order, not by where you aimed. Real placement anywhere would need an invisible placeholder rider in every empty cell, which for even a small 5×5×3 volume is 75 riders per vehicle, and the shuffling when someone boards would still need fixing every time.
 - Not tried: lag with several such vehicles, and what happens to the riders when the world reloads or a chunk unloads.
 
-**Decision:** keep the snap-on part slots (a fixed, generated model, free to move, any color with dye). To give more freedom without the problems above, the cheap way is more kinds of part in the same slots (stairs, slabs, fences, other windows), which is only data in `catalog.js` and the generator. Cubes in fixed cells (about 20) are possible later, but it is a project of its own.
+**Decision at the time:** keep the snap-on part slots (a fixed, generated model, free to move, any color with dye). To give more freedom without the problems above, the cheap way is more kinds of part in the same slots (stairs, slabs, fences, other windows), which is only data in `catalog.js` and the generator. Cubes in fixed cells (about 20) are possible later, but it is a project of its own.
 
 ## What the tests can't check
 
@@ -55,3 +56,7 @@ The question: could kids build with *any* block, by putting a block-sized entity
 - Lag with several vehicles and shooters at once; check `docker logs --since 5m family-bedrock 2>&1 | grep ERROR` after it reaches the server.
 - The garage tiles on the iPad at about 400px wide and the `k` menu in `mc dev` after restarting it. `mc dev` needs a terminal, so neither was checked.
 - The NPC `undefined` guards (`if (!player) continue;` in the drive loop and events): the tests make NPCs real players, so review them instead.
+
+## Finer grid, layers and shapes
+
+The first version had one coarse slot per block and one seat position, which looked fixed. Now the racer and tractor have half-block cells and every base has three layers, with ramps, slabs, lights and spoilers on top of the old parts. Saved designs from before this change (version 1) are refused: `decode` only reads version 2, because the slots mean something else. Models and render controllers are big (hundreds of bones per base): check how it looks and runs on the iPad.

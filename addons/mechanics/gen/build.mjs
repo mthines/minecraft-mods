@@ -5,12 +5,14 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { crc32, deflateSync } from "node:zlib";
-import { ALLOWED, BASES, DYES, PAINT_COLORS, PARTS, PRESETS, TOOLS, partItem, presetItem, slotsOf } from "../behavior_pack/scripts/catalog.js";
+import { ALLOWED, BASES, DYES, PAINT_COLORS, PARTS, PRESETS, TOOLS, partItem, presetItem, seatKey, seatSets, slotsOf } from "../behavior_pack/scripts/catalog.js";
+import { PROPERTY_MAX, SLOTS_PER_PROPERTY, propertiesOf } from "../behavior_pack/scripts/design.js";
 import { LOOK, pixels } from "./icons.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const PACK_VERSION = [1, 0, 0]; // the resource pack's version; raise it in its manifest and in the behavior pack's dependency when a picture changes
+const PACK_VERSION = [1, 1, 0]; // the resource pack's version; raise it in its manifest and in the behavior pack's dependency when a picture changes
 const json = (/** @type {unknown} */ value) => JSON.stringify(value, null, 2) + "\n";
+const compact = (/** @type {unknown} */ value) => JSON.stringify(value) + "\n"; // the big generated models and render controllers
 
 // ── Pictures ─────────────────────────────────────────────────────────────────
 
@@ -55,17 +57,31 @@ function cube(/** @type {Box} */ { o, s, c }) {
   return { origin: o, size: s, uv: { north: face, south: face, east: face, west: face, up: face, down: face } };
 }
 
-/** The boxes a part is drawn with, in the slot at (sx, sz) blocks, standing on `y0` pixels. */
-function partBoxes(/** @type {string} */ key, /** @type {"deck" | "side" | "rear"} */ kind, /** @type {number} */ sx, /** @type {number} */ sz, /** @type {number} */ y0, /** @type {number} */ cols) {
+/**
+ * The boxes a part is drawn with, in the slot at (sx, sz) blocks, standing on `y0` pixels. Body pieces are as big as a cell
+ * (`s` pixels); seats, thrusters, weapons, wings and the plow are the same size whatever the cell.
+ */
+function partBoxes(/** @type {string} */ key, /** @type {"deck" | "side" | "rear"} */ kind, /** @type {number} */ sx, /** @type {number} */ sz, /** @type {number} */ y0, /** @type {number} */ cols, /** @type {number} */ s) {
   const cx = sx * px;
   const cz = sz * px;
+  const h = s / 2;
   switch (key) {
     case "seat":
       return [{ o: [cx - 5, y0, cz - 5], s: [10, 4, 10], c: 3 }, { o: [cx - 5, y0 + 4, cz + 3], s: [10, 9, 2], c: 3 }];
     case "body":
-      return [{ o: [cx - 8, y0, cz - 8], s: [16, 10, 16], c: 0 }];
+      return [{ o: [cx - h, y0, cz - h], s: [s, s, s], c: 0 }];
     case "glass":
-      return [{ o: [cx - 7.5, y0, cz - 7.5], s: [15, 9, 15], c: 1 }];
+      return [{ o: [cx - h + 0.25, y0, cz - h + 0.25], s: [s - 0.5, s - 0.5, s - 0.5], c: 1 }];
+    case "slab":
+      return [{ o: [cx - h, y0, cz - h], s: [s, h, s], c: 0 }];
+    case "ramp": // rises towards the back (+z)
+      return [0, 1, 2].map((n) => ({ o: /** @type {[number, number, number]} */ ([cx - h, y0, cz - h + (n * s) / 3]), s: /** @type {[number, number, number]} */ ([s, ((n + 1) * s) / 3, s / 3 + 0.01]), c: 0 }));
+    case "ramp_back": // rises towards the front (-z)
+      return [0, 1, 2].map((n) => ({ o: /** @type {[number, number, number]} */ ([cx - h, y0, cz - h + (n * s) / 3]), s: /** @type {[number, number, number]} */ ([s, ((3 - n) * s) / 3, s / 3 + 0.01]), c: 0 }));
+    case "light":
+      return [{ o: [cx - s * 0.3, y0 + s * 0.2, cz - h], s: [s * 0.6, s * 0.5, s * 0.3], c: 7 }, { o: [cx - s * 0.35, y0 + s * 0.15, cz - h + s * 0.3], s: [s * 0.7, s * 0.6, s * 0.2], c: 2 }];
+    case "spoiler":
+      return [{ o: [cx - h, y0 + s * 0.75, cz - s * 0.3], s: [s, s * 0.2, s * 0.7], c: 0 }, { o: [cx - s * 0.4, y0, cz], s: [s * 0.15, s * 0.75, s * 0.15], c: 2 }, { o: [cx + s * 0.25, y0, cz], s: [s * 0.15, s * 0.75, s * 0.15], c: 2 }];
     case "thruster":
       return [{ o: [cx - 3, y0 + 1, cz - 6], s: [6, 6, 12], c: 2 }, { o: [cx - 4, y0, cz + 6], s: [8, 8, 2], c: 6 }, { o: [cx - 2, y0 + 2, cz + 8], s: [4, 4, 5], c: 5 }];
     case "wing": {
@@ -88,22 +104,30 @@ function partBoxes(/** @type {string} */ key, /** @type {"deck" | "side" | "rear
 function geometry(/** @type {keyof typeof BASES} */ key) {
   const base = BASES[key];
   const y0 = base.deckTop * px;
-  const body = [{ o: [-base.cols * 8, y0 - 6, -base.rows * 8], s: [base.cols * px, 6, base.rows * px], c: 0 }];
+  const body = [{ o: [-base.cols * base.cell * 8, y0 - 6, -base.rows * base.cell * 8], s: [base.cols * base.cell * px, 6, base.rows * base.cell * px], c: 0 }];
   const wheels = base.wheels.map(({ x, z, r }) => ({ o: /** @type {[number, number, number]} */ ([x * px - 2, 0, z * px - r * px]), s: /** @type {[number, number, number]} */ ([4, r * 2 * px, r * 2 * px]), c: 6 }));
   const bones = [{ name: "chassis", pivot: [0, 0, 0], cubes: [...body, ...wheels].map(cube) }];
   for (const slot of slotsOf(key)) {
+    const y = y0 + slot.y * px;
     for (const part of PARTS) {
       if (!ALLOWED[slot.kind].includes(part.key) || (part.key === "seat" && !slot.seat)) continue;
-      bones.push({ name: `s${slot.i}_${part.id}`, pivot: [slot.x * px, y0, slot.z * px], cubes: partBoxes(part.key, slot.kind, slot.x, slot.z, y0, base.cols).map(cube) });
+      bones.push({ name: `s${slot.i}_${part.id}`, pivot: [slot.x * px, y, slot.z * px], cubes: partBoxes(part.key, slot.kind, slot.x, slot.z, y, base.cols * base.cell, slot.cell * px).map(cube) });
     }
   }
   return {
     format_version: "1.12.0",
     "minecraft:geometry": [{
-      description: { identifier: `geometry.mech_${key}`, texture_width: 16, texture_height: 16, visible_bounds_width: base.cols + 8, visible_bounds_height: 4, visible_bounds_offset: [0, 1, 0] },
+      description: { identifier: `geometry.mech_${key}`, texture_width: 16, texture_height: 16, visible_bounds_width: base.cols * base.cell + 8, visible_bounds_height: 4, visible_bounds_offset: [0, 1, 0] },
       bones,
     }],
   };
+}
+
+/** The Molang for the part id in a slot: its digit of the packed property. */
+function digit(/** @type {number} */ i) {
+  const property = `query.property('family:g${Math.floor(i / SLOTS_PER_PROPERTY)}')`;
+  const d = i % SLOTS_PER_PROPERTY;
+  return d === 0 ? `math.mod(${property}, 16)` : `math.mod(math.floor(${property} / ${16 ** d}), 16)`;
 }
 
 function renderController(/** @type {keyof typeof BASES} */ key) {
@@ -111,7 +135,7 @@ function renderController(/** @type {keyof typeof BASES} */ key) {
   for (const slot of slotsOf(key)) {
     for (const part of PARTS) {
       if (!ALLOWED[slot.kind].includes(part.key) || (part.key === "seat" && !slot.seat)) continue;
-      visibility.push({ [`s${slot.i}_${part.id}`]: `query.property('family:s${slot.i}') == ${part.id}` });
+      visibility.push({ [`s${slot.i}_${part.id}`]: `${digit(slot.i)} == ${part.id}` });
     }
   }
   return {
@@ -131,22 +155,22 @@ function entity(/** @type {keyof typeof BASES} */ key) {
   const base = BASES[key];
   const slots = slotsOf(key);
   const properties = Object.fromEntries([
-    ...slots.map(({ i }) => [`family:s${i}`, { type: "int", range: [0, PARTS.length], default: 0, client_sync: true }]),
+    ...Array.from({ length: propertiesOf(key) }, (_, g) => [`family:g${g}`, { type: "int", range: [0, PROPERTY_MAX], default: 0, client_sync: true }]),
     ["family:paint", { type: "int", range: [0, 15], default: 0, client_sync: true }],
   ]);
-  const seatPlaces = base.seatSlots.map((i) => slots[i]);
-  const groups = Object.fromEntries(Array.from({ length: base.seatMax }, (_, k) => [`family:seats_${k + 1}`, {
+  const sets = seatSets(key);
+  const groups = Object.fromEntries(sets.map((set) => [`family:seats_${seatKey(set)}`, {
     "minecraft:rideable": {
-      seat_count: k + 1,
+      seat_count: set.length,
       family_types: ["player"],
       interact_text: "action.interact.ride.horse",
       pull_in_entities: false,
-      seats: seatPlaces.slice(0, k + 1).map(({ x, z }) => ({ position: [x, base.deckTop + 0.1, -z] })),
+      seats: set.map((i) => ({ position: [slots[i].x, base.deckTop + 0.1, -slots[i].z] })),
     },
   }]));
-  const seatEvents = Object.fromEntries(Array.from({ length: base.seatMax + 1 }, (_, n) => [`family:set_seats_${n}`, {
+  const seatEvents = Object.fromEntries([[], ...sets].map((set) => [`family:set_seats_${seatKey(set)}`, {
     remove: { component_groups: Object.keys(groups) },
-    ...(n > 0 ? { add: { component_groups: [`family:seats_${n}`] } } : {}),
+    ...(set.length ? { add: { component_groups: [`family:seats_${seatKey(set)}`] } } : {}),
   }]));
   const hand = (/** @type {string} */ item) => ({ test: "has_equipment", subject: "other", domain: "hand", value: item });
   const interactions = [
@@ -219,6 +243,11 @@ export const RECIPES = {
   gatling: [[...Array(5).fill("minecraft:iron_ingot"), "minecraft:gunpowder", "minecraft:gunpowder", "minecraft:redstone"], 1],
   rocket: [[...Array(3).fill("minecraft:iron_ingot"), ...Array(3).fill("minecraft:gunpowder"), "minecraft:tnt"], 1],
   laser: [["minecraft:diamond", "minecraft:redstone", "minecraft:redstone", "minecraft:glass"], 1],
+  slab: [["minecraft:iron_ingot", ...Array(4).fill("minecraft:white_concrete")], 8],
+  ramp: [["minecraft:iron_ingot", ...Array(3).fill("minecraft:white_concrete"), "minecraft:stone_stairs"], 4],
+  ramp_back: [["family:mech_ramp"], 1],
+  light: [["minecraft:iron_nugget", "minecraft:redstone", "minecraft:glowstone_dust"], 2],
+  spoiler: [["minecraft:iron_ingot", "minecraft:iron_ingot", ...Array(2).fill("minecraft:white_concrete")], 1],
   wrench: [["minecraft:iron_ingot", "minecraft:iron_ingot", "minecraft:iron_ingot"], 1],
   blueprint: [[...Array(4).fill("minecraft:paper"), "minecraft:blue_dye"], 4],
 };
@@ -241,7 +270,7 @@ export function generate() {
   const rp = "resource_pack";
   for (const key of /** @type {(keyof typeof BASES)[]} */ (Object.keys(BASES))) {
     files.set(`${bp}/entities/mech_${key}.json`, json(entity(key)));
-    files.set(`${rp}/models/entity/mech_${key}.geo.json`, json(geometry(key)));
+    files.set(`${rp}/models/entity/mech_${key}.geo.json`, compact(geometry(key)));
     files.set(`${rp}/entity/mech_${key}.entity.json`, json({
       format_version: "1.10.0",
       "minecraft:client_entity": {
@@ -256,7 +285,7 @@ export function generate() {
       },
     }));
   }
-  files.set(`${rp}/render_controllers/mechanics.render_controllers.json`, json({
+  files.set(`${rp}/render_controllers/mechanics.render_controllers.json`, compact({
     format_version: "1.8.0",
     render_controllers: Object.fromEntries(Object.keys(BASES).map((key) => [`controller.render.mech_${key}`, renderController(/** @type {keyof typeof BASES} */ (key))])),
   }));

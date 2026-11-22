@@ -13,6 +13,11 @@ export const ART = {
   gatling: ["........", "........", "ooooooo.", "oSSSSSSo", "oSSSSSSo", "oooooooK", "..oGGo.K", "..oGGo.."],
   rocket: ["........", "..oooooo", ".oGGGGGo", "oGKGKGGo", "oGGGGGGo", "oGKGKGGo", ".oGGGGGo", "..oooooo"],
   laser: ["........", "........", "......RR", ".ooooSRR", "oSSSSSS.", "oSSSSSS.", ".oooo...", ".oGGo..."],
+  slab: ["........", "........", "........", ".oooooo.", ".oCCCCo.", ".oCCCCo.", ".oooooo.", "........"],
+  ramp: ["........", "......oo", ".....oCo", "....oCCo", "...oCCCo", "..oCCCCo", ".oCCCCCo", ".oooooo."],
+  ramp_back: ["........", "oo......", "oCo.....", "oCCo....", "oCCCo...", "oCCCCo..", "oCCCCCo.", ".oooooo."],
+  light: ["........", "..oooo..", ".oYYYYo.", ".oYWWYo.", ".oYWWYo.", ".oYYYYo.", "..oooo..", "........"],
+  spoiler: ["........", "........", "oooooooo", "oCCCCCCo", "oooooooo", "..oK.oK.", "..oK.oK.", "..oK.oK."],
   wrench: ["........", "..oo.oo.", ".oSSoSSo", ".oSSSSo.", "..oSSo..", "..oCCo..", "..oCCo..", "...oo..."],
   wheel: ["........", "..oooo..", ".oKKKKo.", "oKKSSKKo", "oKKSSKKo", ".oKKKKo.", "..oooo..", "........"],
   blueprint: ["........", "oooooooo", "oCCCCCCo", "oCWWCWCo", "oCCCCCCo", "oCWCWWCo", "oCCCCCCo", "oooooooo"],
@@ -23,7 +28,7 @@ export const ART = {
 export const LOOK = {
   racer: ["racer", "#d83a34"], hauler: ["hauler", "#3a6fd8"], farm: ["farm", "#4f9a3a"],
   seat: ["seat", "#8a4a32"], body: ["body", "#d8d8d8"], glass: ["glass", "#a8dcff"], thruster: ["thruster", "#6a6e74"], wing: ["wing", "#e8e8e8"],
-  plow: ["plow", "#e8c020"], gatling: ["gatling", "#8a8e94"], rocket: ["rocket", "#5a6a46"], laser: ["laser", "#c8ccd2"],
+  plow: ["plow", "#e8c020"], slab: ["slab", "#d8d8d8"], ramp: ["ramp", "#d8d8d8"], ramp_back: ["ramp_back", "#d8d8d8"], light: ["light", "#e8c020"], spoiler: ["spoiler", "#d02020"], gatling: ["gatling", "#8a8e94"], rocket: ["rocket", "#5a6a46"], laser: ["laser", "#c8ccd2"],
   wrench: ["wrench", "#d89a30"], wheel: ["wheel", "#444"], blueprint: ["blueprint", "#3a78c8"], blueprint_saved: ["blueprint_saved", "#3a78c8"], packed: ["packed", "#b0824a"],
   ready_sports_car: ["racer", "#e02020"], ready_truck: ["hauler", "#2a5ac8"], ready_tractor: ["farm", "#40a030"], ready_jet: ["racer", "#e8e8f0"],
 };

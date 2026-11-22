@@ -38,6 +38,21 @@
     "family_mech_laser": {
       "textures": "textures/items/mech_laser"
     },
+    "family_mech_slab": {
+      "textures": "textures/items/mech_slab"
+    },
+    "family_mech_ramp": {
+      "textures": "textures/items/mech_ramp"
+    },
+    "family_mech_ramp_back": {
+      "textures": "textures/items/mech_ramp_back"
+    },
+    "family_mech_light": {
+      "textures": "textures/items/mech_light"
+    },
+    "family_mech_spoiler": {
+      "textures": "textures/items/mech_spoiler"
+    },
     "family_mech_wrench": {
       "textures": "textures/items/mech_wrench"
     },
