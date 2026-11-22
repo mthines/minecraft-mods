@@ -1,4 +1,4 @@
-import { ButtonState, EntityDamageCause, EntitySwingSource, EquipmentSlot, GameMode, InputButton, ItemStack, Player, system, world } from "@minecraft/server";
+import { ButtonState, EntityDamageCause, EntityInitializationCause, EntitySwingSource, EquipmentSlot, GameMode, InputButton, ItemStack, Player, system, world } from "@minecraft/server";
 import { lore, MAX_DESIGNS, recall, remember } from "./blueprint.js";
 import { BASES, DYES, PART_BY_ID, PART_BY_KEY, PRESETS, partItem, presetItem, slotsOf } from "./catalog.js";
 import { armament, damageOf, firstTarget, powerOf, ready, WEAPONS } from "./combat.js";
@@ -95,15 +95,15 @@ function addPart(/** @type {import("@minecraft/server").Entity} */ vehicle, /** 
   system.runTimeout(() => {
     if (player.isValid && vehicle.isValid && player.getComponent("minecraft:riding")?.entityRidingOn?.id === vehicle.id) vehicle.getComponent("minecraft:rideable")?.ejectRider(player);
   }, 1);
-  if (ridersOf(vehicle).length) return tell(player, "Get off first, then you can change the vehicle.");
+  if (ridersOf(vehicle).some((rider) => rider?.id !== player.id)) return tell(player, "Get off first, then you can change the vehicle.");
   const design = readDesign(vehicle);
   const slot = pickFreeSlot(design, key, aimAt(player, vehicle));
-  if (slot < 0) return tell(player, key === "seat" ? `No room for another seat on this ${BASES[design.base].name.toLowerCase()}.` : `The ${part.name.toLowerCase()} doesn't fit there. Aim at a free spot it can go in.`);
+  if (slot < 0) return tell(player, key === "seat" ? `No room for another seat on this ${BASES[design.base].name.toLowerCase()}: it's full, or its next seat spot has another part on it (take that off with the wrench).` : `The ${part.name.toLowerCase()} doesn't fit there. Aim at a free spot it can go in.`);
   design.slots[slot] = part.id;
   writeDesign(vehicle, design);
   consume(player);
   vehicle.dimension.playSound("random.anvil_use", vehicle.location, { volume: 0.5, pitch: 1.4 });
-  emit("mechanics.part_added", { base: design.base, part: key, parts: partsOn(design) });
+  emit("mechanics.part_added", { "minecraft.mechanics.base": design.base, "minecraft.mechanics.part": key, "minecraft.mechanics.parts": partsOn(design) });
 }
 
 function removePart(/** @type {import("@minecraft/server").Entity} */ vehicle, /** @type {Player} */ player) {
@@ -159,7 +159,7 @@ function packUp(/** @type {import("@minecraft/server").Entity} */ vehicle, /** @
   give(player, item);
   infos.delete(vehicle.id);
   vehicle.remove();
-  if (!bare) emit("mechanics.vehicle_packed", { base: design.base, parts: partsOn(design) });
+  if (!bare) emit("mechanics.vehicle_packed", { "minecraft.mechanics.base": design.base, "minecraft.mechanics.parts": partsOn(design) });
 }
 
 /** Hit a vehicle with a blank blueprint and the blueprint remembers its design. */
@@ -175,7 +175,7 @@ function saveBlueprint(/** @type {import("@minecraft/server").Entity} */ vehicle
   console.log(`[mechanics] design ${encode(design)}`); // one line a person can paste to Claude to make it a ready-made design (see README.md)
   player.playSound("random.levelup", { volume: 0.5 });
   tell(player, `Saved this ${BASES[design.base].name.toLowerCase()} on the blueprint. Use it on the ground to build another one, for free.`);
-  emit("mechanics.blueprint_saved", { base: design.base, parts: partsOn(design) });
+  emit("mechanics.blueprint_saved", { "minecraft.mechanics.base": design.base, "minecraft.mechanics.parts": partsOn(design) });
 }
 /** Every design a blueprint ever saved, read once. */
 /** @type {string[] | undefined} */
@@ -191,7 +191,7 @@ function build(/** @type {Player} */ player, /** @type {import("./design.js").De
   const vehicle = player.dimension.spawnEntity(BASES[design.base].item, { x: block.x + 0.5, y: block.y + 1, z: block.z + 0.5 });
   vehicle.setRotation({ x: 0, y: player.getRotation().y });
   writeDesign(vehicle, design);
-  emit("mechanics.vehicle_built", { base: design.base, parts: partsOn(design) });
+  emit("mechanics.vehicle_built", { "minecraft.mechanics.base": design.base, "minecraft.mechanics.parts": partsOn(design) });
   return vehicle;
 }
 
@@ -205,8 +205,8 @@ world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
 });
 
 // Tell whoever just put a base down how it works.
-world.afterEvents.entitySpawn.subscribe(({ entity }) => {
-  if (!isVehicle(entity) || partsOn(readDesign(entity)) > 0) return;
+world.afterEvents.entitySpawn.subscribe(({ entity, cause }) => {
+  if (cause !== EntityInitializationCause.Spawned || !isVehicle(entity) || partsOn(readDesign(entity)) > 0) return;
   for (const player of entity.dimension.getPlayers({ location: entity.location, maxDistance: 8 })) {
     if (player) player.sendMessage("§6Vehicle base!§r Hold a part and use it on the base, aiming at where it goes. A seat in the front lets you drive: W goes, A and D steer. Hit it with the wrench to take a part off, and sneak-hit it with an empty hand to pick it up.");
   }
@@ -225,7 +225,7 @@ system.afterEvents.scriptEventReceive.subscribe(({ id, message, sourceEntity }) 
   testInput.set(sourceEntity.id, { x, y, jump: !!jump });
 });
 
-/** @type {Map<string, { speed: number }>} */
+/** @type {Map<string, { speed: number, last: number }>} the speed of a vehicle and the tick it was last driven */
 const speeds = new Map();
 /** @type {Map<string, string>} the plow's last cells, by vehicle id */
 const plowed = new Map();
@@ -255,9 +255,12 @@ system.runInterval(() => {
 function drive(/** @type {Player} */ player, /** @type {import("@minecraft/server").Entity} */ vehicle) {
   const { design, flight, stats } = infoOf(vehicle);
   const keys = inputOf(player);
-  const state = speeds.get(vehicle.id) ?? { speed: 0 };
-  const heading = vehicle.getRotation().y;
   const tick = system.currentTick;
+  // A ride that stopped (everyone got off) starts from standing still the next time, not from the speed it had.
+  const known = speeds.get(vehicle.id);
+  const state = known && tick - known.last <= 2 ? known : { speed: 0, last: tick };
+  state.last = tick;
+  const heading = vehicle.getRotation().y;
 
   if (flight.mode === "plane") {
     const next = planeStep(state.speed, keys.y, player.getViewDirection(), flight);

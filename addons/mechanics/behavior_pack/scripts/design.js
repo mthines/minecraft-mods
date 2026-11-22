@@ -86,8 +86,10 @@ export function rayDistance(origin, dir, point) {
 export function pickFreeSlot(design, partKey, aim) {
   const places = slotsOf(design.base);
   if (partKey === "seat") {
+    // Riders sit in the first seat slots in order, so the next seat goes in the next one: not into a slot that holds another part.
     if (count(design, "seat") >= BASES[design.base].seatMax) return -1;
-    return BASES[design.base].seatSlots.find((i) => design.slots[i] === 0) ?? -1;
+    const next = BASES[design.base].seatSlots[count(design, "seat")];
+    return next !== undefined && design.slots[next] === 0 ? next : -1;
   }
   return nearest(design, aim, (slot) => design.slots[slot.i] === 0 && allowed(slot, partKey), places);
 }

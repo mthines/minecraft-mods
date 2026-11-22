@@ -1,6 +1,6 @@
 // How a vehicle moves: on the ground, hovering, and flying. No Minecraft imports here, so the tests can run it.
-import { BASES, PART_BY_KEY } from "./catalog.js";
-import { count, partsOn } from "./design.js";
+import { BASES, PART_BY_ID } from "./catalog.js";
+import { count } from "./design.js";
 
 const LIFT_PER_THRUSTER = 3;
 export const SINK = 0.02; // blocks per tick a hovering vehicle sinks with no input
@@ -56,7 +56,7 @@ export function velocityOf(/** @type {number} */ heading, /** @type {number} */ 
  */
 export function flightOf(design, fill = 0) {
   const base = BASES[design.base];
-  const weight = base.weight + partsOn(design) * PART_BY_KEY.seat.weight + (base.cargo ? fill * 2 : 0);
+  const weight = base.weight + design.slots.reduce((sum, id) => sum + (PART_BY_ID[id]?.weight ?? 0), 0) + (base.cargo ? fill * 2 : 0);
   const thrusters = count(design, "thruster");
   const lift = thrusters * LIFT_PER_THRUSTER;
   const wings = count(design, "wing");

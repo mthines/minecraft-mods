@@ -90,3 +90,14 @@ test("model space: ahead is the front (-z), and left is +x", () => {
   assert.ok(west.z < -2.9, `west ${JSON.stringify(west)}`);
   assert.ok(Math.abs(dirToModel({ x: 0, y: 0, z: 1 }, 0).z + 1) < 1e-9);
 });
+
+test("a seat isn't put where another part stands, since the rider would sit inside it", () => {
+  const design = emptyDesign("racer");
+  design.slots[0] = PART_BY_KEY.body.id;
+  assert.equal(pickFreeSlot(design, "seat", aimAtSlot("racer", 1)), -1);
+  design.slots[0] = 0;
+  assert.equal(pickFreeSlot(design, "seat", aimAtSlot("racer", 1)), 0);
+  design.slots[0] = PART_BY_KEY.seat.id;
+  design.slots[1] = PART_BY_KEY.glass.id;
+  assert.equal(pickFreeSlot(design, "seat", aimAtSlot("racer", 1)), -1, "the second seat's spot has a window on it");
+});

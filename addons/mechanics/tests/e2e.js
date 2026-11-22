@@ -77,6 +77,27 @@ export async function aSeatInHandPutsASeatOnTheBaseAndThenYouCanRide(t) {
   t.assert(riding(player)?.id === racer.id, "The player couldn't get on after the seat was added");
 }
 
+export async function aSecondSeatCanBeAddedToAVehicleThatAlreadyHasOne(t) {
+  const player = t.player();
+  const racer = build(t, RACER, { 0: "seat" }, 3);
+  await t.wait(5);
+  t.hold(player, ITEM("seat"));
+  player.lookAtLocation({ x: racer.location.x, y: racer.location.y + 1, z: racer.location.z });
+  await t.until(() => { if (slot(racer, 1) === 0) player.interactWithEntity(racer); return slot(racer, 1) === PART.seat; }, () => `A second seat didn't go on the racer (s1 is ${slot(racer, 1)})`, 40);
+  await t.wait(5);
+  t.assert(!riding(player), "Adding a seat should not leave the player sitting on the vehicle");
+}
+
+export async function aSeatDoesNotGoWhereAnotherPartStands(t) {
+  const player = t.player();
+  const racer = build(t, RACER, { 0: "body" }, 3);
+  await t.wait(5);
+  t.hold(player, ITEM("seat"));
+  player.lookAtLocation({ x: racer.location.x, y: racer.location.y + 1, z: racer.location.z });
+  for (let i = 0; i < 6; i++) { player.interactWithEntity(racer); await t.wait(3); }
+  t.assert(slot(racer, 0) === PART.body && [1, 2, 3, 4, 5].every((i) => slot(racer, i) !== PART.seat), `A seat went somewhere the driver would not sit: ${[0, 1, 2, 3, 4, 5].map((i) => slot(racer, i)).join(",")}`);
+}
+
 export async function holdingForwardMovesTheVehicleAheadAndTheKeysSteer(t) {
   const player = t.player();
   const racer = build(t, RACER, { 0: "seat" }, -10);
@@ -170,12 +191,13 @@ export async function aHaulersCargoSurvivesDriving(t) {
   const truck = build(t, HAULER, { 0: "seat" }, -12);
   truck.getComponent("minecraft:inventory").container.setItem(3, new ItemStack("minecraft:diamond", 5));
   await getOn(t, player, truck);
+  const startZ = truck.location.z;
   drive(player);
   await t.wait(30);
   release(player);
   const stack = truck.getComponent("minecraft:inventory").container.getItem(3);
   t.assert(stack?.typeId === "minecraft:diamond" && stack.amount === 5, `The cargo changed: ${stack?.typeId} x${stack?.amount}`);
-  t.assert(truck.location.z > -12 + t.origin.z + 3 || truck.location.z > truck.location.z - 1, "The truck should have moved");
+  t.assert(truck.location.z > startZ + 2, `The truck should have driven ahead while carrying the cargo, but moved ${(truck.location.z - startZ).toFixed(1)} blocks`);
 }
 
 export async function aPlowTurnsGrassBehindTheTractorIntoFarmland(t) {

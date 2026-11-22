@@ -230,7 +230,6 @@ const recipeJson = (/** @type {string} */ key) => {
     "minecraft:recipe_shapeless": { description: { identifier: `family:mech_${key}_recipe` }, tags: ["crafting_table"], unlock: [{ item: ingredients[0] }], ingredients: items, result: { item: `family:mech_${key}`, count: count } },
   };
 };
-const recipeOf = (/** @type {string} */ key) => (Object.hasOwn(BASES, key) ? key : key);
 
 // ── Everything ───────────────────────────────────────────────────────────────
 
@@ -271,7 +270,7 @@ export function generate() {
     itemTextures[item.icon] = { textures: `textures/items/${item.id.slice(7)}` };
   }
   files.set(`${rp}/textures/item_texture.json`, json({ resource_pack_name: "mechanics", texture_name: "atlas.items", texture_data: itemTextures }));
-  for (const key of Object.keys(RECIPES)) files.set(`${bp}/recipes/mech_${key}.json`, json(recipeJson(recipeOf(key))));
+  for (const key of Object.keys(RECIPES)) files.set(`${bp}/recipes/mech_${key}.json`, json(recipeJson(key)));
 
   files.set(`${rp}/texts/languages.json`, json(["en_US"]));
   files.set(`${rp}/texts/en_US.lang`, [

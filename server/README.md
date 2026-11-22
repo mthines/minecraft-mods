@@ -156,6 +156,8 @@ To turn it off, delete `server/.env` and run `./mc start` again.
 | `minecraft.trampoline.broken` | A trampoline stops working | `minecraft.trampoline.size`, and `minecraft.player.name` or `minecraft.trampoline.cause` |
 | `minecraft.starter_chest.given` | A first-time player gets the chest | `minecraft.player.name`, `minecraft.starter_chest.placed` |
 | `minecraft.rainbow_cookie.eaten` | Someone eats a rainbow cookie | `minecraft.player.name` |
+| `minecraft.mechanics.part_added` | Someone puts a part on a vehicle | `minecraft.mechanics.base` (`racer`, `hauler`, `farm`), `minecraft.mechanics.part` (like `seat`), `minecraft.mechanics.parts` (how many parts it has now) |
+| `minecraft.mechanics.vehicle_built` / `minecraft.mechanics.vehicle_packed` / `minecraft.mechanics.blueprint_saved` | A vehicle is built from an item, folded into one, or saved on a blueprint | `minecraft.mechanics.base`, `minecraft.mechanics.parts` |
 | `minecraft.block.broken` | Someone digs, chops, or mines a block | `minecraft.player.name`, `minecraft.block.type` (like `oak_log`), `minecraft.block.category` (`wood`, `dirt`, `stone`, `ore`, `sand`, `leaves`, `planks`, `plant`, or `other`), `minecraft.held_item.type` (`hand` when empty) |
 | `minecraft.block.placed` | Someone builds with a block | `minecraft.player.name`, `minecraft.block.type`, `minecraft.block.category` |
 | `minecraft.mob.killed` | A player beats a mob | `minecraft.player.name`, `minecraft.mob.type` (like `zombie`), `minecraft.held_item.type` (like `diamond_sword`, `hand` when empty) |
