@@ -29,7 +29,7 @@ export const ICONS = {
   "ingots-charcoal": "⬛🔥", "ingots-flint": "⚡🪨", "ingots-string": "🧵", "ingots-stick": "🥢", "ingots-leather": "🐄", "ingots-feather": "🪶", "ingots-bone": "🦴",
   "ingots-gunpowder": "🧨", "ingots-paper": "📄", "ingots-slime": "🟢🫧", "ingots-glowstone-dust": "✨🟡", "ingots-clay": lump("#b0b8c6"), "ingots-brick": ingot("#a34f3a"),
   "ingots-ink-sac": "🦑", "ingots-bone-meal": "🦴✨", "ingots-sugar-cane": "🎋", "ingots-wheat": "🌾", "ingots-honeycomb": "🍯", "ingots-nether-wart": "🔴🍄",
-  "light-torches": "🔥🪵", "light-soul-torches": "💙🔥", "light-glowstone": block("#f0c060"), "light-sea-lantern": block("#bfe8e4"), "light-froglights": "🐸💡",
+  "light-torches": "🔥🪵", "light-lanterns": "🏮", "light-soul-torches": "💙🔥", "light-soul-lanterns": "🏮💙", "light-glowstone": block("#f0c060"), "light-sea-lantern": block("#bfe8e4"), "light-froglights": "🐸💡",
   "light-redstone-lamps": "🔴💡", "light-end-rods": "🪄⚪", "light-candles": "🕯️",
   "rare-obsidian": "⬛", "rare-crying-obsidian": "😢🟣", "rare-nether-portal": "🌀🟣", "rare-diamond-block": block("#4ee3d6", "smooth"), "rare-gold-block": block("#fcdb4a", "smooth"),
   "rare-iron-block": block("#dcdcdc", "smooth"), "rare-emerald-block": block("#17dd62", "smooth"), "rare-lapis-block": block("#2d4fb5", "smooth"), "rare-redstone-block": block("#d6201a", "smooth"),

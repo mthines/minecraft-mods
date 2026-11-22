@@ -65,7 +65,7 @@ A wand that turns a creeper into a tame wolf. A pirate ship your friends sail wi
     </td>
     <td align="center" width="33%" valign="top">
       <img src="docs/images/items/hand_lantern.png" width="64" height="64" alt=""><br>
-      <b><a href="./addons/lantern">Hand lantern</a></b><br>
+      <b><a href="./addons/hand-lantern">Hand lantern</a></b><br>
       <sub>A light that walks with you, even from your pocket.</sub>
     </td>
   </tr>
@@ -134,7 +134,7 @@ flowchart LR
 | [`game-stats`](./addons/game-stats) | Counts what everyone digs, builds, beats, eats, and how they die, plus minutes played, blocks travelled, level-ups, and Nether trips, for the [Dash0 dashboard](./server/README.md#family-dashboard) | Code, with tests |
 | [`double-jump`](./addons/double-jump) | Golden feathers: each one is a flap in the air, and holding jump glides you down slowly. You get 64 when you join. | Item + picture + recipe + code, with tests |
 | [`football`](./addons/football) | A ball you kick by hitting it. Build two goals of the same size and a match starts; the ball in a goal scores. | Item + entity + model + pictures + recipe + code, with tests |
-| [`lantern`](./addons/lantern) | A hand lantern that lights up around you while it's anywhere in your inventory | Item + picture + recipe + code, with tests |
+| [`hand-lantern`](./addons/hand-lantern) | A hand lantern that lights up around you while it's anywhere in your inventory | Item + picture + recipe + code, with tests |
 | [`motorcycle`](./addons/motorcycle) | A motorcycle you place, ride, and pick up again, with a speedometer | Item + entity + model + pictures + recipe + code, with tests |
 | [`power-tools`](./addons/power-tools) | A drill that breaks stone and deepslate almost at once, a chainsaw for trees, and a power shovel, with machine noises | Items + pictures + recipes + code, with tests |
 | [`weapons`](./addons/weapons) | A pistol, a scoped rifle, a machine gun, bullets, and grenades | Items + entity + model + pictures + recipes + code, with tests |

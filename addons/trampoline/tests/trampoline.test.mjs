@@ -134,7 +134,7 @@ test("a new player starts with the other mods' items, each in its own place, and
   };
   assert.deepEqual(names(CHEST_KIT), names(kits.flatMap(read)));
   assert.deepEqual(names(HOTBAR_KIT), names([...read("power-tools/kit.json"), ...read("fill-bucket/kit.json")]));
-  assert.deepEqual(names([[OFFHAND_ITEM, 1]]), names(read("lantern/kit.json")));
+  assert.deepEqual(names([[OFFHAND_ITEM, 1]]), names(read("hand-lantern/kit.json")));
   const chest = starterChest();
   assert.ok(chest.every(({ amount }) => amount <= 64), "each slot holds at most one stack");
   assert.ok(chest.length <= 27, `everything fits in one chest (${chest.length} slots)`);

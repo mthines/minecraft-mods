@@ -1,5 +1,5 @@
 {
-  "about": "What mc kit lantern gives you: a hand lantern that lights up while it is anywhere in your inventory. With --craft, also what crafts another.",
+  "about": "What mc kit hand-lantern gives you: a hand lantern that lights up while it is anywhere in your inventory. With --craft, also what crafts another.",
   "emoji": "🏮",
   "items": [
     ["family:hand_lantern", 1]
