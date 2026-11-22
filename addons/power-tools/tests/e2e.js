@@ -108,3 +108,64 @@ export async function thePowerShovelHitsHardToo(t) {
   const took = await whack(t, "family:power_shovel");
   t.assert(took >= 10, `A power shovel hit took ${took.toFixed(1)} health; it should take about 12`);
 }
+
+const air = (t, x, y, z) => t.dimension.getBlock(t.at(x, y, z))?.isAir;
+
+export async function sneakingAndUsingTheDrillSwitchesTo2x1AndBack(t) {
+  const player = t.player("Switcher");
+  t.hold(player, "family:drill");
+  await t.wait(10);
+  player.isSneaking = true;
+  player.useItemInSlot(0);
+  await t.until(() => player.hasTag("family:power_tool_2x1"), "Sneak and use should switch the drill to 2x1 mode", 40);
+  player.stopUsingItem();
+  await t.wait(20);
+  player.useItemInSlot(0);
+  await t.until(() => !player.hasTag("family:power_tool_2x1"), "Sneak and use again should switch back", 40);
+  player.isSneaking = false;
+}
+
+export async function in2x1ModeTheDrillTakesTheBlockAboveToo(t) {
+  t.place("minecraft:stone", 0, 1, 2);
+  t.place("minecraft:stone", 0, 2, 2);
+  t.place("minecraft:stone", 0, 3, 2); // not this one
+  const player = t.player("Tunneler");
+  player.setItem(new ItemStack("family:drill", 1), 0, true);
+  player.addTag("family:power_tool_2x1");
+  await t.wait(10);
+  player.lookAtBlock(t.at(0, 1, 2));
+  player.breakBlock(t.at(0, 1, 2), Direction.North);
+  await t.until(() => air(t, 0, 1, 2) && air(t, 0, 2, 2), () => `Both blocks should be gone (${air(t, 0, 1, 2)}, ${air(t, 0, 2, 2)})`, 60);
+  player.stopBreakingBlock();
+  t.assert(!air(t, 0, 3, 2), "Only two blocks high: the third should still be there");
+}
+
+export async function inNormalModeTheDrillTakesOneBlock(t) {
+  t.place("minecraft:stone", 0, 1, 2);
+  t.place("minecraft:stone", 0, 2, 2);
+  const player = t.player("Plain");
+  player.setItem(new ItemStack("family:drill", 1), 0, true);
+  await t.wait(10);
+  player.lookAtBlock(t.at(0, 1, 2));
+  player.breakBlock(t.at(0, 1, 2), Direction.North);
+  await t.until(() => air(t, 0, 1, 2), "The block should break", 60);
+  player.stopBreakingBlock();
+  await t.wait(10);
+  t.assert(!air(t, 0, 2, 2), "In normal mode the block above should stay");
+}
+
+export async function lookingDownAtAStepMakesRoomForYourHeadToo(t) {
+  // Stairs down: a step below your feet, two blocks away, looking down at it. Floor, feet and head room go.
+  t.place("minecraft:stone", 0, 0, 2);
+  t.place("minecraft:stone", 0, 1, 2);
+  t.place("minecraft:stone", 0, 2, 2); // above the head room: stays
+  const player = t.player("Stairs");
+  player.setItem(new ItemStack("family:drill", 1), 0, true);
+  player.addTag("family:power_tool_2x1");
+  await t.wait(10);
+  player.lookAtBlock(t.at(0, -1, 2));
+  player.breakBlock(t.at(0, -1, 2), Direction.Up);
+  await t.until(() => air(t, 0, -1, 2) && air(t, 0, 0, 2) && air(t, 0, 1, 2), () => `The step and the room above it should be gone (${air(t, 0, -1, 2)}, ${air(t, 0, 0, 2)}, ${air(t, 0, 1, 2)})`, 60);
+  player.stopBreakingBlock();
+  t.assert(!air(t, 0, 2, 2), "Nothing above the head room should go");
+}

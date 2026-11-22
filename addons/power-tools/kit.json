@@ -1,18 +1,45 @@
 {
-  "about": "What mc kit power-tools gives you: a drill, a chainsaw, and a power shovel. With --craft, also what crafts more.",
+  "about": "What mc kit power-tools gives you: a drill, a chainsaw, and a power shovel. Sneak and use the drill or the shovel to switch to 2x1 mode (every dig takes the block above too: a tunnel you can walk in). With --craft, also what crafts more.",
   "emoji": "🪛",
   "category": "tools",
   "items": [
-    ["family:drill", 1],
-    ["family:chainsaw", 1],
-    ["family:power_shovel", 1]
+    [
+      "family:drill",
+      1
+    ],
+    [
+      "family:chainsaw",
+      1
+    ],
+    [
+      "family:power_shovel",
+      1
+    ]
   ],
   "craft": [
-    ["minecraft:crafting_table", 1],
-    ["minecraft:iron_ingot", 12],
-    ["minecraft:diamond", 1],
-    ["minecraft:redstone", 3],
-    ["minecraft:iron_nugget", 2],
-    ["minecraft:iron_shovel", 1]
+    [
+      "minecraft:crafting_table",
+      1
+    ],
+    [
+      "minecraft:iron_ingot",
+      12
+    ],
+    [
+      "minecraft:diamond",
+      1
+    ],
+    [
+      "minecraft:redstone",
+      3
+    ],
+    [
+      "minecraft:iron_nugget",
+      2
+    ],
+    [
+      "minecraft:iron_shovel",
+      1
+    ]
   ]
 }
