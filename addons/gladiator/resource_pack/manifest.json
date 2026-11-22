@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Gladiator Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "e801f892-fba2-4b4d-97fa-266bdb82e011",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "ab13a5c0-b483-4de7-a12f-1f3d913243fe",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

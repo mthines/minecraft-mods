@@ -1,0 +1,17 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "family:gladiator_holder", "is_spawnable": false, "is_summonable": true },
+    "components": {
+      "minecraft:type_family": { "family": ["gladiator_holder", "inanimate"] },
+      "minecraft:collision_box": { "width": 0.3, "height": 0.3 },
+      "minecraft:health": { "value": 20, "max": 20 },
+      "minecraft:damage_sensor": { "triggers": [{ "cause": "all", "deals_damage": "no" }] },
+      "minecraft:inventory": { "inventory_size": 54, "container_type": "container", "private": true, "can_be_siphoned_from": false },
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+      "minecraft:persistent": {},
+      "minecraft:fire_immune": {},
+      "minecraft:breathable": { "total_supply": 15, "suffocate_time": 0 }
+    }
+  }
+}

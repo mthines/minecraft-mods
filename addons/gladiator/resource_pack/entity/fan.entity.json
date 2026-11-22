@@ -1,0 +1,15 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:gladiator_fan",
+      "materials": { "default": "entity_alphatest" },
+      "textures": { "default": "textures/entity/gladiator_fan" },
+      "geometry": { "default": "geometry.family_gladiator_fan" },
+      "animations": { "cheer": "animation.family_gladiator_fan.cheer" },
+      "scripts": { "animate": ["cheer"] },
+      "render_controllers": ["controller.render.default"],
+      "spawn_egg": { "base_color": "#e0b050", "overlay_color": "#c03030" }
+    }
+  }
+}

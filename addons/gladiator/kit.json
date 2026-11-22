@@ -1,0 +1,18 @@
+{
+  "about": "What mc kit gladiator gives you: sandstone for a ring (radius 4 to 10), a gold block for its middle, and two buttons. Build the circle of sandstone around the gold block, stand inside with a friend, and both press a button.",
+  "emoji": "🤺",
+  "items": [
+    [
+      "minecraft:sandstone",
+      64
+    ],
+    [
+      "minecraft:gold_block",
+      1
+    ],
+    [
+      "minecraft:stone_button",
+      2
+    ]
+  ]
+}

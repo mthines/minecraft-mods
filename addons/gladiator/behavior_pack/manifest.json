@@ -1,0 +1,54 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Gladiator",
+    "description": "Gladiator ring: build sandstone around a gold block, two players press a button, and they fight with the same gear and nobody really gets hurt.",
+    "uuid": "fbb0aa85-ffc2-4035-b79a-50f894a3e5ab",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "d5061040-cbae-4fdb-94b7-eb2966b07f04",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "16a1109b-2b3c-44ff-b18e-66c3a6707ed0",
+      "version": [
+        1,
+        0,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "e801f892-fba2-4b4d-97fa-266bdb82e011",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.8.0"
+    }
+  ]
+}

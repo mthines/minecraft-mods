@@ -1,0 +1,23 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": { "identifier": "family:gladiator_fan", "is_spawnable": false, "is_summonable": true },
+    "component_groups": {
+      "family:go_home": { "minecraft:instant_despawn": {} }
+    },
+    "components": {
+      "minecraft:type_family": { "family": ["gladiator_fan", "inanimate"] },
+      "minecraft:collision_box": { "width": 0.6, "height": 1.8 },
+      "minecraft:health": { "value": 20, "max": 20 },
+      "minecraft:damage_sensor": { "triggers": [{ "cause": "all", "deals_damage": "no" }] },
+      "minecraft:physics": {},
+      "minecraft:pushable": { "is_pushable": false, "is_pushable_by_piston": false },
+      "minecraft:fire_immune": {},
+      "minecraft:breathable": { "total_supply": 15, "suffocate_time": 0 },
+      "minecraft:timer": { "time": 600, "looping": false, "time_down_event": { "event": "family:go_home", "target": "self" } }
+    },
+    "events": {
+      "family:go_home": { "add": { "component_groups": ["family:go_home"] } }
+    }
+  }
+}

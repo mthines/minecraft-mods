@@ -1,0 +1,13 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.family_gladiator_fan.cheer": {
+      "loop": true,
+      "bones": {
+        "rightArm": { "rotation": ["-150 + math.sin(query.life_time * 500) * 20", 0, "math.sin(query.life_time * 500) * 8"] },
+        "leftArm": { "rotation": ["-150 - math.sin(query.life_time * 500) * 20", 0, "-math.sin(query.life_time * 500) * 8"] },
+        "head": { "rotation": [0, "math.sin(query.life_time * 120) * 15", 0] }
+      }
+    }
+  }
+}
