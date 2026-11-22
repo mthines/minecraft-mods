@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:recipe_shaped": {
+    "description": { "identifier": "family:laser_drill" },
+    "tags": ["crafting_table"],
+    "pattern": ["DDI", " RI", "  I"],
+    "key": {
+      "D": "minecraft:diamond",
+      "R": "minecraft:redstone_block",
+      "I": "minecraft:iron_ingot"
+    },
+    "unlock": [{ "item": "minecraft:diamond" }],
+    "result": { "item": "family:laser_drill" }
+  }
+}

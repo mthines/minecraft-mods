@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Laser Drill Resources",
+    "description": "Pictures and sounds.",
+    "uuid": "3e62812d-7734-4ff5-8286-e2f12cb276fd",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "e5260c42-2f8e-40fb-8186-97ca2bcdfa52",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

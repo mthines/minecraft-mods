@@ -1,0 +1,14 @@
+{
+  "about": "What mc kit laser-drill gives you: a laser drill. Hold right-click and it digs a 3x3 tunnel the way you look, as long as you hold. With --craft, also what crafts one.",
+  "emoji": "🚇",
+  "category": "tools",
+  "items": [
+    ["family:laser_drill", 1]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 3],
+    ["minecraft:diamond", 2],
+    ["minecraft:redstone_block", 1]
+  ]
+}
