@@ -9,6 +9,7 @@ Bedrock add-ons for the family server. `README.md` explains the layout and the `
 - Pictures:
   - Held tools and weapons (`minecraft:hand_equipped`) are drawn diagonally like vanilla ones: handle at the bottom left, working end (drill bit, blade, barrel) at the top right. Drawn flat, they point the wrong way in the hand.
   - Entity models face -z: the front of a vehicle goes at negative z in `*.geo.json`. Seat positions in `minecraft:rideable` use +z as forward.
+- `addons/mechanics` is generated: edit `behavior_pack/scripts/catalog.js` (parts, bases, slots, presets) and run `node addons/mechanics/gen/build.mjs` to rewrite its vehicle entities, models, render controllers, textures, items, recipes and texts. `npm test` fails when the generated files are out of date. A new ready-made vehicle is a `PRESETS` entry plus a type in `kit-garage.json` and an `ICONS` entry.
 - An entity you can stand on (a ship deck) needs `minecraft:is_collidable` and a collision box as high as the deck. The box is always a square (only `width`), so a long ship needs it wide enough for its ends.
 - Keep a vehicle's parts below the rider's eyes, about 1 to 1.5 blocks above the seat: a steering wheel right in front of the seat filled the whole view.
 - When a resource pack changes, raise its `version` in its manifest and in the behavior pack's dependency on it. Devices keep the old pack otherwise.

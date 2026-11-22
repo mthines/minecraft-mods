@@ -1,0 +1,49 @@
+{
+  "format_version": "1.20.10",
+  "minecraft:recipe_shapeless": {
+    "description": {
+      "identifier": "family:mech_body_recipe"
+    },
+    "tags": [
+      "crafting_table"
+    ],
+    "unlock": [
+      {
+        "item": "minecraft:iron_ingot"
+      }
+    ],
+    "ingredients": [
+      {
+        "item": "minecraft:iron_ingot"
+      },
+      {
+        "item": "minecraft:white_concrete"
+      },
+      {
+        "item": "minecraft:white_concrete"
+      },
+      {
+        "item": "minecraft:white_concrete"
+      },
+      {
+        "item": "minecraft:white_concrete"
+      },
+      {
+        "item": "minecraft:white_concrete"
+      },
+      {
+        "item": "minecraft:white_concrete"
+      },
+      {
+        "item": "minecraft:white_concrete"
+      },
+      {
+        "item": "minecraft:white_concrete"
+      }
+    ],
+    "result": {
+      "item": "family:mech_body",
+      "count": 8
+    }
+  }
+}

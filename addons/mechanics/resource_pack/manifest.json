@@ -1,0 +1,29 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "Mechanics Resources",
+    "description": "Vehicle models and pictures.",
+    "uuid": "280acc8b-aa85-456d-af38-7868a3cca787",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      80
+    ]
+  },
+  "modules": [
+    {
+      "type": "resources",
+      "uuid": "fcf6dd16-cae2-4402-bca7-469f2c7e796f",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

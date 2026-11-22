@@ -1,0 +1,10 @@
+{
+  "about": "Ready-built vehicles: a sports car, a truck, a tractor and a jet. Use one on the ground and it is built for you.",
+  "emoji": "🏁",
+  "types": {
+    "sports-car": [["family:mech_ready_sports_car", 1]],
+    "truck": [["family:mech_ready_truck", 1]],
+    "tractor": [["family:mech_ready_tractor", 1]],
+    "jet": [["family:mech_ready_jet", 1]]
+  }
+}

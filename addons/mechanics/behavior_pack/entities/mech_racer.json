@@ -1,0 +1,700 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:entity": {
+    "description": {
+      "identifier": "family:mech_racer",
+      "is_spawnable": true,
+      "is_summonable": true,
+      "properties": {
+        "family:s0": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:s1": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:s2": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:s3": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:s4": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:s5": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:s6": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:s7": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:s8": {
+          "type": "int",
+          "range": [
+            0,
+            9
+          ],
+          "default": 0,
+          "client_sync": true
+        },
+        "family:paint": {
+          "type": "int",
+          "range": [
+            0,
+            15
+          ],
+          "default": 0,
+          "client_sync": true
+        }
+      }
+    },
+    "component_groups": {
+      "family:seats_1": {
+        "minecraft:rideable": {
+          "seat_count": 1,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.5,
+                0.5,
+                1
+              ]
+            }
+          ]
+        }
+      },
+      "family:seats_2": {
+        "minecraft:rideable": {
+          "seat_count": 2,
+          "family_types": [
+            "player"
+          ],
+          "interact_text": "action.interact.ride.horse",
+          "pull_in_entities": false,
+          "seats": [
+            {
+              "position": [
+                0.5,
+                0.5,
+                1
+              ]
+            },
+            {
+              "position": [
+                -0.5,
+                0.5,
+                1
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "components": {
+      "minecraft:type_family": {
+        "family": [
+          "mechanics_vehicle",
+          "mechanics_racer",
+          "inanimate"
+        ]
+      },
+      "minecraft:collision_box": {
+        "width": 2,
+        "height": 0.4
+      },
+      "minecraft:is_collidable": {},
+      "minecraft:health": {
+        "value": 100,
+        "max": 100
+      },
+      "minecraft:damage_sensor": {
+        "triggers": [
+          {
+            "cause": "all",
+            "deals_damage": "no"
+          }
+        ]
+      },
+      "minecraft:knockback_resistance": {
+        "value": 1
+      },
+      "minecraft:physics": {},
+      "minecraft:pushable": {
+        "is_pushable": false,
+        "is_pushable_by_piston": false
+      },
+      "minecraft:persistent": {},
+      "minecraft:fire_immune": {},
+      "minecraft:interact": {
+        "interactions": [
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_seat"
+              },
+              "event": "family:part_seat",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_body"
+              },
+              "event": "family:part_body",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_glass"
+              },
+              "event": "family:part_glass",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_thruster"
+              },
+              "event": "family:part_thruster",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_wing"
+              },
+              "event": "family:part_wing",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_plow"
+              },
+              "event": "family:part_plow",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_gatling"
+              },
+              "event": "family:part_gatling",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_rocket"
+              },
+              "event": "family:part_rocket",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "family:mech_laser"
+              },
+              "event": "family:part_laser",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_add"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:white_dye"
+              },
+              "event": "family:paint_0",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:orange_dye"
+              },
+              "event": "family:paint_1",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:magenta_dye"
+              },
+              "event": "family:paint_2",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:light_blue_dye"
+              },
+              "event": "family:paint_3",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:yellow_dye"
+              },
+              "event": "family:paint_4",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:lime_dye"
+              },
+              "event": "family:paint_5",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:pink_dye"
+              },
+              "event": "family:paint_6",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:gray_dye"
+              },
+              "event": "family:paint_7",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:light_gray_dye"
+              },
+              "event": "family:paint_8",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:cyan_dye"
+              },
+              "event": "family:paint_9",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:purple_dye"
+              },
+              "event": "family:paint_10",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:blue_dye"
+              },
+              "event": "family:paint_11",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:brown_dye"
+              },
+              "event": "family:paint_12",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:green_dye"
+              },
+              "event": "family:paint_13",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:red_dye"
+              },
+              "event": "family:paint_14",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          },
+          {
+            "on_interact": {
+              "filters": {
+                "test": "has_equipment",
+                "subject": "other",
+                "domain": "hand",
+                "value": "minecraft:black_dye"
+              },
+              "event": "family:paint_15",
+              "target": "self"
+            },
+            "swing": true,
+            "interact_text": "action.interact.mech_paint"
+          }
+        ]
+      }
+    },
+    "events": {
+      "family:set_seats_0": {
+        "remove": {
+          "component_groups": [
+            "family:seats_1",
+            "family:seats_2"
+          ]
+        }
+      },
+      "family:set_seats_1": {
+        "remove": {
+          "component_groups": [
+            "family:seats_1",
+            "family:seats_2"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_1"
+          ]
+        }
+      },
+      "family:set_seats_2": {
+        "remove": {
+          "component_groups": [
+            "family:seats_1",
+            "family:seats_2"
+          ]
+        },
+        "add": {
+          "component_groups": [
+            "family:seats_2"
+          ]
+        }
+      },
+      "family:part_seat": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_body": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_glass": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_thruster": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_wing": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_plow": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_gatling": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_rocket": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:part_laser": {
+        "set_property": {
+          "family:paint": "query.property('family:paint')"
+        }
+      },
+      "family:paint_0": {
+        "set_property": {
+          "family:paint": 0
+        }
+      },
+      "family:paint_1": {
+        "set_property": {
+          "family:paint": 1
+        }
+      },
+      "family:paint_2": {
+        "set_property": {
+          "family:paint": 2
+        }
+      },
+      "family:paint_3": {
+        "set_property": {
+          "family:paint": 3
+        }
+      },
+      "family:paint_4": {
+        "set_property": {
+          "family:paint": 4
+        }
+      },
+      "family:paint_5": {
+        "set_property": {
+          "family:paint": 5
+        }
+      },
+      "family:paint_6": {
+        "set_property": {
+          "family:paint": 6
+        }
+      },
+      "family:paint_7": {
+        "set_property": {
+          "family:paint": 7
+        }
+      },
+      "family:paint_8": {
+        "set_property": {
+          "family:paint": 8
+        }
+      },
+      "family:paint_9": {
+        "set_property": {
+          "family:paint": 9
+        }
+      },
+      "family:paint_10": {
+        "set_property": {
+          "family:paint": 10
+        }
+      },
+      "family:paint_11": {
+        "set_property": {
+          "family:paint": 11
+        }
+      },
+      "family:paint_12": {
+        "set_property": {
+          "family:paint": 12
+        }
+      },
+      "family:paint_13": {
+        "set_property": {
+          "family:paint": 13
+        }
+      },
+      "family:paint_14": {
+        "set_property": {
+          "family:paint": 14
+        }
+      },
+      "family:paint_15": {
+        "set_property": {
+          "family:paint": 15
+        }
+      }
+    }
+  }
+}

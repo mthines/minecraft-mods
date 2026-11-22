@@ -1,0 +1,39 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "family:mech_racer",
+      "materials": {
+        "default": "entity_alphatest"
+      },
+      "textures": {
+        "p0": "textures/entity/mechanics/paint_0",
+        "p1": "textures/entity/mechanics/paint_1",
+        "p2": "textures/entity/mechanics/paint_2",
+        "p3": "textures/entity/mechanics/paint_3",
+        "p4": "textures/entity/mechanics/paint_4",
+        "p5": "textures/entity/mechanics/paint_5",
+        "p6": "textures/entity/mechanics/paint_6",
+        "p7": "textures/entity/mechanics/paint_7",
+        "p8": "textures/entity/mechanics/paint_8",
+        "p9": "textures/entity/mechanics/paint_9",
+        "p10": "textures/entity/mechanics/paint_10",
+        "p11": "textures/entity/mechanics/paint_11",
+        "p12": "textures/entity/mechanics/paint_12",
+        "p13": "textures/entity/mechanics/paint_13",
+        "p14": "textures/entity/mechanics/paint_14",
+        "p15": "textures/entity/mechanics/paint_15"
+      },
+      "geometry": {
+        "default": "geometry.mech_racer"
+      },
+      "render_controllers": [
+        "controller.render.mech_racer"
+      ],
+      "spawn_egg": {
+        "base_color": "#d83a34",
+        "overlay_color": "#212121"
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "about": "What mc kit mechanics gives you: a wrench, blueprints, the three vehicle bases, and parts to build with (seats, body blocks, windows, thrusters, wings, a plow, dye). With --craft, also what crafts more.",
+  "emoji": "🔧",
+  "items": [
+    ["family:mech_wrench", 1],
+    ["family:mech_blueprint", 4],
+    ["family:mech_racer", 1],
+    ["family:mech_hauler", 1],
+    ["family:mech_farm", 1],
+    ["family:mech_seat", 4],
+    ["family:mech_body", 32],
+    ["family:mech_glass", 16],
+    ["family:mech_thruster", 6],
+    ["family:mech_wing", 2],
+    ["family:mech_plow", 1],
+    ["minecraft:red_dye", 16],
+    ["minecraft:blue_dye", 16],
+    ["minecraft:yellow_dye", 16]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 32],
+    ["minecraft:coal", 16],
+    ["minecraft:redstone", 8],
+    ["minecraft:white_wool", 8],
+    ["minecraft:oak_slab", 4],
+    ["minecraft:white_concrete", 16],
+    ["minecraft:glass_pane", 8],
+    ["minecraft:iron_nugget", 2],
+    ["minecraft:gunpowder", 8],
+    ["minecraft:chest", 1],
+    ["minecraft:hay_block", 1],
+    ["minecraft:paper", 4],
+    ["minecraft:blue_dye", 1],
+    ["minecraft:iron_hoe", 1]
+  ]
+}

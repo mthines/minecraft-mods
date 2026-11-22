@@ -1,0 +1,18 @@
+{
+  "format_version": "1.21.40",
+  "minecraft:item": {
+    "description": {
+      "identifier": "family:mech_ready_sports_car",
+      "menu_category": {
+        "category": "items"
+      }
+    },
+    "components": {
+      "minecraft:icon": "family_mech_ready_sports_car",
+      "minecraft:display_name": {
+        "value": "Sports car"
+      },
+      "minecraft:max_stack_size": 16
+    }
+  }
+}

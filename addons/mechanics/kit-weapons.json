@@ -1,0 +1,19 @@
+{
+  "about": "What mc kit mechanics-weapons gives you: a gatling gun, a rocket pod and a laser to mount on a vehicle. The driver taps attack to fire. With --craft, also what crafts more.",
+  "emoji": "🎯",
+  "category": "weapons",
+  "items": [
+    ["family:mech_gatling", 2],
+    ["family:mech_rocket", 2],
+    ["family:mech_laser", 2]
+  ],
+  "craft": [
+    ["minecraft:crafting_table", 1],
+    ["minecraft:iron_ingot", 16],
+    ["minecraft:gunpowder", 12],
+    ["minecraft:redstone", 6],
+    ["minecraft:tnt", 1],
+    ["minecraft:diamond", 1],
+    ["minecraft:glass", 1]
+  ]
+}

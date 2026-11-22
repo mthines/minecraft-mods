@@ -1,0 +1,69 @@
+{
+  "resource_pack_name": "mechanics",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "family_mech_racer": {
+      "textures": "textures/items/mech_racer"
+    },
+    "family_mech_hauler": {
+      "textures": "textures/items/mech_hauler"
+    },
+    "family_mech_farm": {
+      "textures": "textures/items/mech_farm"
+    },
+    "family_mech_seat": {
+      "textures": "textures/items/mech_seat"
+    },
+    "family_mech_body": {
+      "textures": "textures/items/mech_body"
+    },
+    "family_mech_glass": {
+      "textures": "textures/items/mech_glass"
+    },
+    "family_mech_thruster": {
+      "textures": "textures/items/mech_thruster"
+    },
+    "family_mech_wing": {
+      "textures": "textures/items/mech_wing"
+    },
+    "family_mech_plow": {
+      "textures": "textures/items/mech_plow"
+    },
+    "family_mech_gatling": {
+      "textures": "textures/items/mech_gatling"
+    },
+    "family_mech_rocket": {
+      "textures": "textures/items/mech_rocket"
+    },
+    "family_mech_laser": {
+      "textures": "textures/items/mech_laser"
+    },
+    "family_mech_wrench": {
+      "textures": "textures/items/mech_wrench"
+    },
+    "family_mech_wheel": {
+      "textures": "textures/items/mech_wheel"
+    },
+    "family_mech_blueprint": {
+      "textures": "textures/items/mech_blueprint"
+    },
+    "family_mech_blueprint_saved": {
+      "textures": "textures/items/mech_blueprint_saved"
+    },
+    "family_mech_packed": {
+      "textures": "textures/items/mech_packed"
+    },
+    "family_mech_ready_sports_car": {
+      "textures": "textures/items/mech_ready_sports_car"
+    },
+    "family_mech_ready_truck": {
+      "textures": "textures/items/mech_ready_truck"
+    },
+    "family_mech_ready_tractor": {
+      "textures": "textures/items/mech_ready_tractor"
+    },
+    "family_mech_ready_jet": {
+      "textures": "textures/items/mech_ready_jet"
+    }
+  }
+}

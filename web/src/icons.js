@@ -45,6 +45,7 @@ export const ICONS = {
   "wood-oak": block("#c19a5f", "planks"), "wood-spruce": block("#6b4f2e", "planks"), "wood-birch": block("#d6c98a", "planks"), "wood-jungle": block("#9c6b45", "planks"),
   "wood-acacia": block("#ba6a3a", "planks"), "wood-dark-oak": block("#3e2a14", "planks"), "wood-mangrove": block("#7a2f2c", "planks"), "wood-cherry": block("#e8b3be", "planks"),
   "wood-pale-oak": block("#e6e0d6", "planks"), "wood-bamboo": block("#c9b43c", "planks"), "wood-crimson": block("#7a2a4a", "planks"), "wood-warped": block("#1f7a73", "planks"),
+  "mechanics-garage-sports-car": "🏎️", "mechanics-garage-truck": "🚚", "mechanics-garage-tractor": "🚜", "mechanics-garage-jet": "✈️",
   "weapons-ammo-all": "🎁", "weapons-ammo-bullets": "🔫", "weapons-ammo-grenades": "💣", "weapons-ammo-missiles": "🚀",
 };
 
