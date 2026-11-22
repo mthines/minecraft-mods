@@ -55,14 +55,15 @@ export async function severalNukesCanBeFiredAtTheSameTime(t) {
   await t.until(() => block(0, 0, 8) === "minecraft:air" && block(0, 0, -8) === "minecraft:air", () => `Both towers should be gone (${block(0, 0, 8)}, ${block(0, 0, -8)})`, 20 * 20);
 }
 
-export async function everyoneGetsFourNukesWhenSpawning(t) {
+export async function nobodyStartsWithANuke(t) {
   const player = t.player("Soldier");
-  player.removeTag("family:e2e"); // test players are left out of the spawn nukes
+  player.removeTag("family:e2e"); // the tag only keeps test players out of spawn gifts: with it gone, a gift would show up
   player.getComponent("minecraft:inventory").container.clearAll();
   player.kill();
   await t.wait(20);
   player.respawn();
-  await t.until(() => count(player) === 4, () => `After respawning there should be 4 nukes, but there are ${count(player)}`, 60);
+  await t.wait(40);
+  t.assert(count(player) === 0, `A new player shouldn't get nukes, but has ${count(player)}`);
 }
 
 export async function everySizeIsAnItemYouCanHold16Of(t) {

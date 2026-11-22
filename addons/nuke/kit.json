@@ -1,5 +1,5 @@
 {
-  "about": "What mc kit nuke gives you: a stack of 16 nukes (you also get 4 when you join or respawn, and several can go off at once). Aim one at the ground: after a 3 second countdown it blows a big crater, spread over a few seconds so the server keeps up. With --craft, also what crafts it.",
+  "about": "What mc kit nuke gives you: a stack of 16 nukes (several can go off at once). Aim one at the ground: after a 3 second countdown it blows a big crater, spread over a few seconds so the server keeps up. With --craft, also what crafts it.",
   "emoji": "🌋",
   "items": [
     [

@@ -1,6 +1,5 @@
-import { BlockVolume, ItemStack, system, world } from "@minecraft/server";
+import { BlockVolume, system, world } from "@minecraft/server";
 
-const SPAWN_NUKES = 4; // everyone has at least this many plain nukes after joining or respawning (a stack holds 16, see items/nuke.json)
 const REACH = 120; // how far away you can aim it
 
 const SECONDS = 20; // Minecraft counts time in ticks: 20 ticks = 1 second.
@@ -161,22 +160,4 @@ world.afterEvents.itemUse.subscribe(({ source: player, itemStack }) => {
     }, (size.countdown - left) * SECONDS);
   }
   system.runTimeout(() => detonate(dimension, center, who, type), size.countdown * SECONDS);
-});
-
-function nukes(player) {
-  const container = player.getComponent("minecraft:inventory")?.container;
-  let count = 0;
-  for (let slot = 0; slot < (container?.size ?? 0); slot++) {
-    const item = container.getItem(slot);
-    if (item?.typeId === NUKE) count += item.amount;
-  }
-  return count;
-}
-
-// Joining, or coming back after dying, tops the nukes up to 4.
-// Not for NPCs, nor e2e test players (family:e2e), whose tests count on what's in their inventory.
-world.afterEvents.playerSpawn.subscribe(({ player }) => {
-  if (!player?.isValid || player.hasTag("family:npc") || player.hasTag("family:e2e")) return;
-  const missing = SPAWN_NUKES - nukes(player);
-  if (missing > 0) player.getComponent("minecraft:inventory")?.container?.addItem(new ItemStack(NUKE, missing));
 });
